@@ -31,7 +31,7 @@ the default target must be removed
 -->
 <project name="dispatch_uno_object" default="build-jar" basedir=".">
 	<description>
-        build the configuration viewer jar file (signature_component.jar)
+        build the configuration viewer jar file (dispatch_uno_object.jar)
     </description>
 	<!-- set global properties for this build -->
 	<property name="project_name" value="dispatch_uno_object" />
@@ -152,7 +152,7 @@ the default target must be removed
 				<attribute name="Implementation-Vendor" value="http://www.acca-esse.it" />
 				<attribute name="Ant-Version" value="${ant.version}" />
 				<attribute name="UNO-Type-Path" value="" />
-				<attribute name="RegistrationClassName" value="it.plio.ext.xades.RegisterServices" />
+				<attribute name="RegistrationClassName" value="org.openoffice.config.ConfigurationViewer" />
 				<attribute name="Class-Path" value="" />
 				<!--
 					the following is needed to start via java -jar namefile.jar
@@ -167,7 +167,7 @@ the default target must be removed
 				<attribute name="Main-Class" value="com.sun.star.lib.loader.Loader" />
 				<section name="com/sun/star/lib/loader/Loader.class">
 					<!-- this attribute is the real user start class -->
-					<attribute name="Application-Class" value="it.plio.ext.xades.MainStandAloneDebug" />
+					<attribute name="Application-Class" value="org.openoffice.config.MainStandAloneDebug" />
 				</section>
 				<!-- end of section to start via java -jar namefile.jar -->
 			</manifest>
