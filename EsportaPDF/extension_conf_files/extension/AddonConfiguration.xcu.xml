@@ -1,0 +1,698 @@
+<?xml version='1.0' encoding='UTF-8'?>
+
+<!--
+EsportaPDF per OpenOffice.org (OOo)
+
+Permette di gestire 6 profili diversi per l'esportazione
+PDF da OOo
+
+Copyright (C) 2008  Giuseppe Castagno
+
+This library is free software; you can redistribute it and/or
+modify it under the terms of the GNU Lesser General Public
+License as published by the Free Software Foundation.
+
+This library is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+Lesser General Public License for more details.
+
+Questions and/or comments:
+giuseppe.castagno@acca-esse.it
+beppec56@openoffice.org
+
+-->
+
+<oor:component-data xmlns:oor="http://openoffice.org/2001/registry" xmlns:xs="http://www.w3.org/2001/XMLSchema" oor:name="Configuration" oor:package="it.acca-esse.oxt.EsportaPDF">
+	<node oor:name="DialogParameters">
+<!-- il default è già impostato
+		<prop oor:name="PDFASelection" oor:type="xs:boolean">
+			<value>true</value>
+		</prop>
+		<prop oor:name="PresetSelectionPosition" oor:type="xs:int">
+			<value>2</value>
+		</prop>-->
+	</node>
+	<node oor:name="ExportParmsSets">
+		<node oor:name="Config0" oor:op="replace">
+			<prop oor:name="UseLosslessCompression" oor:type="xs:boolean">
+				<value>false</value>
+			</prop>
+			<prop oor:name="Quality" oor:type="xs:int">
+				<value>75</value>
+			</prop>
+			<prop oor:name="ReduceImageResolution" oor:type="xs:boolean">
+				<value>true</value>
+			</prop>
+			<prop oor:name="MaxImageResolution" oor:type="xs:int">
+				<value>300</value>
+			</prop>
+			<prop oor:name="UseTaggedPDF" oor:type="xs:boolean">
+				<value>false</value>
+			</prop>
+			<prop oor:name="ExportNotes" oor:type="xs:boolean">
+				<value>false</value>
+			</prop>
+			<prop oor:name="ExportBookmarks" oor:type="xs:boolean">
+				<value>true</value>
+			</prop>
+			<prop oor:name="OpenBookmarkLevels" oor:type="xs:int">
+				<value>1</value>
+			</prop>
+<!--			<prop oor:name="ExportNotesPages" oor:type="xs:boolean">
+				<value>false</value>
+			</prop>
+			<prop oor:name="UseTransitionEffects" oor:type="xs:boolean">
+				<value>true</value>
+			</prop>
+			<prop oor:name="ExportFormFields" oor:type="xs:boolean">
+				<value>false</value>
+			</prop>
+			<prop oor:name="FormsType" oor:type="xs:int">
+				<value>0</value>
+			</prop>
+			<prop oor:name="IsSkipEmptyPages" oor:type="xs:boolean">
+				<value>false</value>
+			</prop>
+			<prop oor:name="IsAddStream" oor:type="xs:boolean">
+				<value>false</value>
+			</prop>
+			<prop oor:name="HideViewerMenubar" oor:type="xs:boolean">
+				<value>false</value>
+			</prop>
+			<prop oor:name="HideViewerToolbar" oor:type="xs:boolean">
+				<value>false</value>
+			</prop>
+			<prop oor:name="HideViewerWindowControls" oor:type="xs:boolean">
+				<value>false</value>
+			</prop>
+			<prop oor:name="ResizeWindowToInitialPage" oor:type="xs:boolean">
+				<value>false</value>
+			</prop>
+			<prop oor:name="CenterWindow" oor:type="xs:boolean">
+				<value>false</value>
+			</prop>
+			<prop oor:name="OpenInFullScreenMode" oor:type="xs:boolean">
+				<value>false</value>
+			</prop>-->
+			<prop oor:name="DisplayPDFDocumentTitle" oor:type="xs:boolean">
+				<value>true</value>
+			</prop>
+			<prop oor:name="InitialView" oor:type="xs:int">
+				<value>2</value>
+			</prop>
+			<prop oor:name="Magnification" oor:type="xs:int">
+				<value>2</value>
+			</prop>
+<!--			<prop oor:name="Zoom" oor:type="xs:int">
+				<value>100</value>
+			</prop>-->
+			<prop oor:name="InitialPage" oor:type="xs:int">
+				<value>1</value>
+			</prop>
+			<prop oor:name="PageLayout" oor:type="xs:int">
+				<value>0</value>
+			</prop>
+<!--			<prop oor:name="FirstPageOnLeft" oor:type="xs:boolean">
+				<value>false</value>
+			</prop>-->
+			<prop oor:name="Printing" oor:type="xs:int">
+				<value>2</value>
+			</prop>
+			<prop oor:name="Changes" oor:type="xs:int">
+				<value>0</value>
+			</prop>
+			<prop oor:name="EnableCopyingOfContent" oor:type="xs:boolean">
+				<value>true</value>
+			</prop>
+			<prop oor:name="EnableTextAccessForAccessibilityTools" oor:type="xs:boolean">
+				<value>true</value>
+			</prop>
+<!--			<prop oor:name="SelectPdfVersion" oor:type="xs:int">
+				<value>0</value>
+			</prop>-->
+			<prop oor:name="ExportLinksRelativeFsys" oor:type="xs:boolean">
+				<value>true</value>
+			</prop>
+			<prop oor:name="PDFViewSelection" oor:type="xs:int">
+				<value>1</value>
+			</prop>
+			<prop oor:name="ConvertOOoTargetToPDFTarget" oor:type="xs:boolean">
+				<value>true</value>
+			</prop>
+			<prop oor:name="ExportBookmarksToPDFDestination" oor:type="xs:boolean">
+				<value>true</value>
+			</prop>
+<!--			<prop oor:name="EnableFileSecurity" oor:type="xs:boolean">
+				<value>true</value>
+			</prop>-->
+			<prop oor:name="Description" oor:type="xs:string">
+				<value>Esporta una fattura/offerta/lettera</value>
+			</prop>
+		</node>
+		<node oor:name="Config1" oor:op="replace">
+			<prop oor:name="UseLosslessCompression" oor:type="xs:boolean">
+				<value>false</value>
+			</prop>
+			<prop oor:name="Quality" oor:type="xs:int">
+				<value>85</value>
+			</prop>
+			<prop oor:name="ReduceImageResolution" oor:type="xs:boolean">
+				<value>true</value>
+			</prop>
+			<prop oor:name="MaxImageResolution" oor:type="xs:int">
+				<value>300</value>
+			</prop>
+			<prop oor:name="UseTaggedPDF" oor:type="xs:boolean">
+				<value>false</value>
+			</prop>
+			<prop oor:name="ExportNotes" oor:type="xs:boolean">
+				<value>false</value>
+			</prop>
+			<prop oor:name="ExportBookmarks" oor:type="xs:boolean">
+				<value>true</value>
+			</prop>
+			<prop oor:name="OpenBookmarkLevels" oor:type="xs:int">
+				<value>1</value>
+			</prop>
+<!--			<prop oor:name="ExportNotesPages" oor:type="xs:boolean">
+				<value>false</value>
+			</prop>
+			<prop oor:name="UseTransitionEffects" oor:type="xs:boolean">
+				<value>true</value>
+			</prop>
+			<prop oor:name="ExportFormFields" oor:type="xs:boolean">
+				<value>false</value>
+			</prop>
+			<prop oor:name="FormsType" oor:type="xs:int">
+				<value>0</value>
+			</prop>
+			<prop oor:name="IsSkipEmptyPages" oor:type="xs:boolean">
+				<value>false</value>
+			</prop>
+			<prop oor:name="IsAddStream" oor:type="xs:boolean">
+				<value>false</value>
+			</prop>
+			<prop oor:name="HideViewerMenubar" oor:type="xs:boolean">
+				<value>false</value>
+			</prop>
+			<prop oor:name="HideViewerToolbar" oor:type="xs:boolean">
+				<value>false</value>
+			</prop>
+			<prop oor:name="HideViewerWindowControls" oor:type="xs:boolean">
+				<value>false</value>
+			</prop>
+			<prop oor:name="ResizeWindowToInitialPage" oor:type="xs:boolean">
+				<value>false</value>
+			</prop>
+			<prop oor:name="CenterWindow" oor:type="xs:boolean">
+				<value>false</value>
+			</prop>
+			<prop oor:name="OpenInFullScreenMode" oor:type="xs:boolean">
+				<value>false</value>
+			</prop>-->
+			<prop oor:name="DisplayPDFDocumentTitle" oor:type="xs:boolean">
+				<value>true</value>
+			</prop>
+			<prop oor:name="InitialView" oor:type="xs:int">
+				<value>1</value>
+			</prop>
+			<prop oor:name="Magnification" oor:type="xs:int">
+				<value>2</value>
+			</prop>
+<!--			<prop oor:name="Zoom" oor:type="xs:int">
+				<value>100</value>
+			</prop>-->
+			<prop oor:name="InitialPage" oor:type="xs:int">
+				<value>1</value>
+			</prop>
+			<prop oor:name="PageLayout" oor:type="xs:int">
+				<value>0</value>
+			</prop>
+<!--			<prop oor:name="FirstPageOnLeft" oor:type="xs:boolean">
+				<value>false</value>
+			</prop>-->
+			<prop oor:name="Printing" oor:type="xs:int">
+				<value>2</value>
+			</prop>
+			<prop oor:name="Changes" oor:type="xs:int">
+				<value>0</value>
+			</prop>
+			<prop oor:name="EnableCopyingOfContent" oor:type="xs:boolean">
+				<value>true</value>
+			</prop>
+			<prop oor:name="EnableTextAccessForAccessibilityTools" oor:type="xs:boolean">
+				<value>true</value>
+			</prop>
+<!--			<prop oor:name="SelectPdfVersion" oor:type="xs:int">
+				<value>0</value>
+			</prop>-->
+			<prop oor:name="ExportLinksRelativeFsys" oor:type="xs:boolean">
+				<value>true</value>
+			</prop>
+			<prop oor:name="PDFViewSelection" oor:type="xs:int">
+				<value>1</value>
+			</prop>
+			<prop oor:name="ConvertOOoTargetToPDFTarget" oor:type="xs:boolean">
+				<value>true</value>
+			</prop>
+			<prop oor:name="ExportBookmarksToPDFDestination" oor:type="xs:boolean">
+				<value>true</value>
+			</prop>
+<!--			<prop oor:name="EnableFileSecurity" oor:type="xs:boolean">
+				<value>true</value>
+			</prop>-->
+			<prop oor:name="Description" oor:type="xs:string">
+				<value>Esporta come 'manuale' (risoluzione immagini ridotta)</value>
+			</prop>
+		</node>
+		<!-- default parameters for manuals, alternate version -->
+		<node oor:name="Config2" oor:op="replace">
+			<prop oor:name="UseLosslessCompression" oor:type="xs:boolean">
+				<value>true</value>
+			</prop>
+			<prop oor:name="Quality" oor:type="xs:int">
+				<value>85</value>
+			</prop>
+			<prop oor:name="ReduceImageResolution" oor:type="xs:boolean">
+				<value>false</value>
+			</prop>
+			<prop oor:name="MaxImageResolution" oor:type="xs:int">
+				<value>300</value>
+			</prop>
+			<prop oor:name="UseTaggedPDF" oor:type="xs:boolean">
+				<value>false</value>
+			</prop>
+			<prop oor:name="ExportNotes" oor:type="xs:boolean">
+				<value>false</value>
+			</prop>
+			<prop oor:name="ExportBookmarks" oor:type="xs:boolean">
+				<value>true</value>
+			</prop>
+			<prop oor:name="OpenBookmarkLevels" oor:type="xs:int">
+				<value>1</value>
+			</prop>
+<!--			<prop oor:name="ExportNotesPages" oor:type="xs:boolean">
+				<value>false</value>
+			</prop>
+			<prop oor:name="UseTransitionEffects" oor:type="xs:boolean">
+				<value>true</value>
+			</prop>
+			<prop oor:name="ExportFormFields" oor:type="xs:boolean">
+				<value>false</value>
+			</prop>
+			<prop oor:name="FormsType" oor:type="xs:int">
+				<value>0</value>
+			</prop>
+			<prop oor:name="IsSkipEmptyPages" oor:type="xs:boolean">
+				<value>false</value>
+			</prop>
+			<prop oor:name="IsAddStream" oor:type="xs:boolean">
+				<value>false</value>
+			</prop>
+			<prop oor:name="HideViewerMenubar" oor:type="xs:boolean">
+				<value>false</value>
+			</prop>
+			<prop oor:name="HideViewerToolbar" oor:type="xs:boolean">
+				<value>false</value>
+			</prop>
+			<prop oor:name="HideViewerWindowControls" oor:type="xs:boolean">
+				<value>false</value>
+			</prop>
+			<prop oor:name="ResizeWindowToInitialPage" oor:type="xs:boolean">
+				<value>false</value>
+			</prop>
+			<prop oor:name="CenterWindow" oor:type="xs:boolean">
+				<value>false</value>
+			</prop>
+			<prop oor:name="OpenInFullScreenMode" oor:type="xs:boolean">
+				<value>false</value>
+			</prop>-->
+			<prop oor:name="DisplayPDFDocumentTitle" oor:type="xs:boolean">
+				<value>true</value>
+			</prop>
+			<prop oor:name="InitialView" oor:type="xs:int">
+				<value>1</value>
+			</prop>
+			<prop oor:name="Magnification" oor:type="xs:int">
+				<value>2</value>
+			</prop>
+<!--			<prop oor:name="Zoom" oor:type="xs:int">
+				<value>100</value>
+			</prop>-->
+			<prop oor:name="InitialPage" oor:type="xs:int">
+				<value>1</value>
+			</prop>
+			<prop oor:name="PageLayout" oor:type="xs:int">
+				<value>0</value>
+			</prop>
+<!--			<prop oor:name="FirstPageOnLeft" oor:type="xs:boolean">
+				<value>false</value>
+			</prop>-->
+			<prop oor:name="Printing" oor:type="xs:int">
+				<value>2</value>
+			</prop>
+			<prop oor:name="Changes" oor:type="xs:int">
+				<value>0</value>
+			</prop>
+			<prop oor:name="EnableCopyingOfContent" oor:type="xs:boolean">
+				<value>true</value>
+			</prop>
+			<prop oor:name="EnableTextAccessForAccessibilityTools" oor:type="xs:boolean">
+				<value>true</value>
+			</prop>
+<!--			<prop oor:name="SelectPdfVersion" oor:type="xs:int">
+				<value>0</value>
+			</prop>-->
+			<prop oor:name="ExportLinksRelativeFsys" oor:type="xs:boolean">
+				<value>true</value>
+			</prop>
+			<prop oor:name="PDFViewSelection" oor:type="xs:int">
+				<value>1</value>
+			</prop>
+			<prop oor:name="ConvertOOoTargetToPDFTarget" oor:type="xs:boolean">
+				<value>true</value>
+			</prop>
+			<prop oor:name="ExportBookmarksToPDFDestination" oor:type="xs:boolean">
+				<value>true</value>
+			</prop>
+<!--			<prop oor:name="EnableFileSecurity" oor:type="xs:boolean">
+				<value>true</value>
+			</prop>-->
+			<prop oor:name="Description" oor:type="xs:string">
+				<value>Esporta come 'manuale' (risoluzione immagini nativa, file grande!)</value>
+			</prop>
+		</node>
+		<node oor:name="Config3" oor:op="replace">
+			<prop oor:name="UseLosslessCompression" oor:type="xs:boolean">
+				<value>false</value>
+			</prop>
+			<prop oor:name="Quality" oor:type="xs:int">
+				<value>65</value>
+			</prop>
+			<prop oor:name="ReduceImageResolution" oor:type="xs:boolean">
+				<value>true</value>
+			</prop>
+			<prop oor:name="MaxImageResolution" oor:type="xs:int">
+				<value>300</value>
+			</prop>
+			<prop oor:name="UseTaggedPDF" oor:type="xs:boolean">
+				<value>true</value>
+			</prop>
+			<prop oor:name="ExportNotes" oor:type="xs:boolean">
+				<value>false</value>
+			</prop>
+			<prop oor:name="ExportBookmarks" oor:type="xs:boolean">
+				<value>true</value>
+			</prop>
+			<prop oor:name="OpenBookmarkLevels" oor:type="xs:int">
+				<value>1</value>
+			</prop>
+<!--			<prop oor:name="ExportNotesPages" oor:type="xs:boolean">
+				<value>false</value>
+			</prop>
+			<prop oor:name="UseTransitionEffects" oor:type="xs:boolean">
+				<value>true</value>
+			</prop>-->
+			<prop oor:name="ExportFormFields" oor:type="xs:boolean">
+				<value>true</value>
+			</prop>
+			<prop oor:name="FormsType" oor:type="xs:int">
+				<value>0</value>
+			</prop>
+<!--			<prop oor:name="IsSkipEmptyPages" oor:type="xs:boolean">
+				<value>false</value>
+			</prop>
+			<prop oor:name="IsAddStream" oor:type="xs:boolean">
+				<value>false</value>
+			</prop>
+			<prop oor:name="HideViewerMenubar" oor:type="xs:boolean">
+				<value>false</value>
+			</prop>
+			<prop oor:name="HideViewerToolbar" oor:type="xs:boolean">
+				<value>false</value>
+			</prop>
+			<prop oor:name="HideViewerWindowControls" oor:type="xs:boolean">
+				<value>false</value>
+			</prop>
+			<prop oor:name="ResizeWindowToInitialPage" oor:type="xs:boolean">
+				<value>false</value>
+			</prop>
+			<prop oor:name="CenterWindow" oor:type="xs:boolean">
+				<value>false</value>
+			</prop>
+			<prop oor:name="OpenInFullScreenMode" oor:type="xs:boolean">
+				<value>false</value>
+			</prop>-->
+			<prop oor:name="DisplayPDFDocumentTitle" oor:type="xs:boolean">
+				<value>true</value>
+			</prop>
+			<prop oor:name="InitialView" oor:type="xs:int">
+				<value>0</value>
+			</prop>
+			<prop oor:name="Magnification" oor:type="xs:int">
+				<value>2</value>
+			</prop>
+<!--			<prop oor:name="Zoom" oor:type="xs:int">
+				<value>100</value>
+			</prop>-->
+			<prop oor:name="InitialPage" oor:type="xs:int">
+				<value>1</value>
+			</prop>
+			<prop oor:name="PageLayout" oor:type="xs:int">
+				<value>0</value>
+			</prop>
+<!--			<prop oor:name="FirstPageOnLeft" oor:type="xs:boolean">
+				<value>false</value>
+			</prop>-->
+			<prop oor:name="Printing" oor:type="xs:int">
+				<value>2</value>
+			</prop>
+			<prop oor:name="Changes" oor:type="xs:int">
+				<value>2</value>
+			</prop>
+			<prop oor:name="EnableCopyingOfContent" oor:type="xs:boolean">
+				<value>true</value>
+			</prop>
+			<prop oor:name="EnableTextAccessForAccessibilityTools" oor:type="xs:boolean">
+				<value>true</value>
+			</prop>
+<!--			<prop oor:name="SelectPdfVersion" oor:type="xs:int">
+				<value>0</value>
+			</prop>-->
+			<prop oor:name="ExportLinksRelativeFsys" oor:type="xs:boolean">
+				<value>true</value>
+			</prop>
+			<prop oor:name="PDFViewSelection" oor:type="xs:int">
+				<value>1</value>
+			</prop>
+			<prop oor:name="ConvertOOoTargetToPDFTarget" oor:type="xs:boolean">
+				<value>true</value>
+			</prop>
+			<prop oor:name="ExportBookmarksToPDFDestination" oor:type="xs:boolean">
+				<value>true</value>
+			</prop>
+			<!--			<prop oor:name="EnableFileSecurity" oor:type="xs:boolean">
+			    <value>true</value>
+			    </prop>-->
+			<prop oor:name="Description" oor:type="xs:string">
+				<value>Esporta un formulario modificabile</value>
+			</prop>
+		</node>
+		<node oor:name="Config4" oor:op="replace">
+			<prop oor:name="Description" oor:type="xs:string">
+				<value>Profilo 4</value>
+			</prop>
+		</node>
+		<node oor:name="Config5" oor:op="replace">
+			<prop oor:name="Description" oor:type="xs:string">
+				<value>Profilo 5</value>
+			</prop>
+		</node>
+	</node>
+	<node oor:name="Messages">
+		<node oor:name="About EsportaPDF" oor:op="replace">
+			<prop oor:name="Text" oor:type="xs:string" oor:localized="true">
+				<value>About EsportaPDF</value>
+				<value xml:lang="en_US">About EsportaPDF</value>
+				<value xml:lang="it_IT">Informazioni su EsportaPDF</value>
+			</prop>
+		</node>
+		<node oor:name="EsportaPDF Information" oor:op="replace">
+			<prop oor:name="Text" oor:type="xs:string" oor:localized="true">
+				<value>EsportaPDF Information</value>
+				<value xml:lang="en_US">EsportaPDF Information</value>
+				<value xml:lang="it_IT">EsportaPDF: Informazione</value>
+			</prop>
+		</node>
+		<node oor:name="Profile selection" oor:op="replace">
+			<prop oor:name="Text" oor:type="xs:string" oor:localized="true">
+				<value>Profile selection</value>
+				<value xml:lang="en_US">Profile selection</value>
+				<value xml:lang="it_IT">Selezione del profilo</value>
+			</prop>
+		</node>
+		<node oor:name="Select profile" oor:op="replace">
+			<prop oor:name="Text" oor:type="xs:string" oor:localized="true">
+				<value>Select profile</value>
+				<value xml:lang="en_US">Select profile</value>
+				<value xml:lang="it_IT">Selezionate il profilo</value>
+			</prop>
+		</node>
+		<node oor:name="Export" oor:op="replace">
+			<prop oor:name="Text" oor:type="xs:string" oor:localized="true">
+				<value>Export</value>
+				<value xml:lang="en_US">Export</value>
+				<value xml:lang="it_IT">Esporta</value>
+			</prop>
+		</node>
+		<node oor:name="Settings..." oor:op="replace">
+			<prop oor:name="Text" oor:type="xs:string" oor:localized="true">
+				<value>Settings...</value>
+				<value xml:lang="en_US">Settings...</value>
+				<value xml:lang="it_IT">Impostazioni...</value>
+			</prop>
+		</node>
+		<node oor:name="Cancel" oor:op="replace">
+			<prop oor:name="Text" oor:type="xs:string" oor:localized="true">
+				<value>Cancel</value>
+				<value xml:lang="en_US">Cancel</value>
+				<value xml:lang="it_IT">Annulla</value>
+			</prop>
+		</node>
+		<node oor:name="Profile 0" oor:op="replace">
+			<prop oor:name="Text" oor:type="xs:string" oor:localized="true">
+				<value>Profile 0</value>
+				<value xml:lang="en_US">Profile 0</value>
+				<value xml:lang="it_IT">Profilo 0</value>
+			</prop>
+		</node>
+		<!-- messaggi per dialog -->
+		<node oor:name="Profile" oor:op="replace">
+			<prop oor:name="Text" oor:type="xs:string" oor:localized="true">
+				<value>Profile</value>
+				<value xml:lang="en_US">Profile</value>
+				<value xml:lang="it_IT">Profilo</value>
+			</prop>
+		</node>
+		<node oor:name="General" oor:op="replace">
+			<prop oor:name="Text" oor:type="xs:string" oor:localized="true">
+				<value>General</value>
+				<value xml:lang="en_US">General</value>
+				<value xml:lang="it_IT">Generale</value>
+			</prop>
+		</node>
+		<node oor:name="Comment (shown on dialog)" oor:op="replace">
+			<prop oor:name="Text" oor:type="xs:string" oor:localized="true">
+				<value>General</value>
+				<value xml:lang="en_US">Comment (shown on dialog)</value>
+				<value xml:lang="it_IT">Commento (apparirà nel dialogo)</value>
+			</prop>
+		</node>
+		<node oor:name="Export bookmarks" oor:op="replace">
+			<prop oor:name="Text" oor:type="xs:string" oor:localized="true">
+				<value>Export bookmarks</value>
+				<value xml:lang="en_US">Export bookmarks</value>
+				<value xml:lang="it_IT">Esporta segnalibri</value>
+			</prop>
+		</node>
+		<node oor:name="Get last PDF export settings..." oor:op="replace">
+			<prop oor:name="Text" oor:type="xs:string" oor:localized="true">
+				<value>Get last PDF export settings...</value>
+				<value xml:lang="en_US">Get last PDF export settings...</value>
+				<value xml:lang="it_IT">Legge parametri ultima esportazione PDF...</value>
+			</prop>
+		</node>
+		<node oor:name="get settings help" oor:op="replace">
+			<prop oor:name="Text" oor:type="xs:string" oor:localized="true">
+				<value>Pressing the OK button, you may copy the last PDF export parameters in the current configuration. Pressing the Cancel button nothing happens.</value>
+				<value xml:lang="en_US">Pressing the OK button, you may copy the last PDF export parameters in the current configuration. Pressing the Cancel button nothing happens.</value>
+				<value xml:lang="it_IT">Con il pulsante Ok potete copiare nella configurazione corrente i parametri selezionati nell'ultima operazione di esportazione PDF. Il pulsante Annulla non esegue l'operazione.</value>
+			</prop>
+		</node>
+		<node oor:name="Security" oor:op="replace">
+			<prop oor:name="Text" oor:type="xs:string" oor:localized="true">
+				<value>Security</value>
+				<value xml:lang="en_US">Security</value>
+				<value xml:lang="it_IT">Configurazione sicurezza</value>
+			</prop>
+		</node>
+		<node oor:name="security note" oor:op="replace">
+			<prop oor:name="Text" oor:type="xs:string" oor:localized="true">
+				<value>NOTE: security permits only the permission restriction password. You should use the standard PDF feature of OpenOffice.org to set a PDF document user password.</value>
+				<value xml:lang="en_US">NOTE: security permits only the permission restriction password. You should use the standard PDF feature of OpenOffice.org to set a PDF document user password.</value>
+				<value xml:lang="it_IT">NOTA: la sicurezza prevede solo una password di protezione per le autorizzazioni. La protezione in lettura la si ottiene con l'esportazione PDF Standard.</value>
+			</prop>
+		</node>
+		<node oor:name="Restrict permissions" oor:op="replace">
+			<prop oor:name="Text" oor:type="xs:string" oor:localized="true">
+				<value>Restrict permissions</value>
+				<value xml:lang="en_US">Restrict permissions</value>
+				<value xml:lang="it_IT">Limita autorizzazioni</value>
+			</prop>
+		</node>
+		<node oor:name="Protect file (pseudo random generated password)" oor:op="replace">
+			<prop oor:name="Text" oor:type="xs:string" oor:localized="true">
+				<value>Protect file (pseudo random generated password)</value>
+				<value xml:lang="en_US">Protect file (pseudo random generated password)</value>
+				<value xml:lang="it_IT">Proteggi il file (password generata in modo pseudo casuale)</value>
+			</prop>
+		</node>
+		<node oor:name="Restrictions..." oor:op="replace">
+			<prop oor:name="Text" oor:type="xs:string" oor:localized="true">
+				<value>Restrictions...</value>
+				<value xml:lang="en_US">Restrictions...</value>
+				<value xml:lang="it_IT">Protezioni...</value>
+			</prop>
+		</node>
+		<node oor:name="Command not found" oor:op="replace">
+			<prop oor:name="Text" oor:type="xs:string" oor:localized="true">
+				<value>Command not found</value>
+				<value xml:lang="en_US">Command not found</value>
+				<value xml:lang="it_IT">Comando non trovato</value>
+			</prop>
+		</node>
+		<node oor:name="Command:" oor:op="replace">
+			<prop oor:name="Text" oor:type="xs:string" oor:localized="true">
+				<value>Command:</value>
+				<value xml:lang="en_US">Command:</value>
+				<value xml:lang="it_IT">Comando:</value>
+			</prop>
+		</node>
+		<node oor:name="Browse..." oor:op="replace">
+			<prop oor:name="Text" oor:type="xs:string" oor:localized="true">
+				<value>Browse...</value>
+				<value xml:lang="en_US">Browse...</value>
+				<value xml:lang="it_IT">Cerca...</value>
+			</prop>
+		</node>
+		<node oor:name="Select the command" oor:op="replace">
+			<prop oor:name="Text" oor:type="xs:string" oor:localized="true">
+				<value>Select the command</value>
+				<value xml:lang="en_US">Select the command</value>
+				<value xml:lang="it_IT">Seleziona il comando</value>
+			</prop>
+		</node>
+		<node oor:name="EsportaPDF error" oor:op="replace">
+			<prop oor:name="Text" oor:type="xs:string" oor:localized="true">
+				<value>EsportaPDF error</value>
+				<value xml:lang="en_US">EsportaPDF error</value>
+				<value xml:lang="it_IT">Errore di EsportaPDF</value>
+			</prop>
+		</node>
+		<node oor:name="Unsaved doc!" oor:op="replace">
+			<prop oor:name="Text" oor:type="xs:string" oor:localized="true">
+				<value>Document not saved yet. Save it before exporting!</value>
+				<value xml:lang="en_US">Document not saved yet. Save it before exporting!</value>
+				<value xml:lang="it_IT">Documento non ancora salvato. Salvare prima di esportare!</value>
+			</prop>
+		</node>
+		<node oor:name="still open?" oor:op="replace">
+			<prop oor:name="Text" oor:type="xs:string" oor:localized="true">
+				<value>can not be erased. Document still open in the PDF reader?</value>
+				<value xml:lang="en_US">can not be erased. Document still open in the PDF reader?</value>
+				<value xml:lang="it_IT">non è cancellabile. Ancora aperto con il lettore PDF?</value>
+			</prop>
+		</node>
+	</node>
+</oor:component-data>

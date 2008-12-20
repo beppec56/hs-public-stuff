@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE script:module PUBLIC "-//OpenOffice.org//DTD OfficeDocument 1.0//EN" "module.dtd">
+<script:module xmlns:script="http://openoffice.org/2000/script" script:name="DlgReaderCommandCode" script:language="StarBasic">REM  *****  BASIC  *****
+REM LGPL V 2.1 license apply
+REM Author Giuseppe Castagno [giuseppe.castagno@acca-esse.eu]
+REM							 [beppec56@openoffice.org]
+REM OOo minimum version: 2.4, in case of older OOo version the
+REM PDF output filter FilterData values will be ignored...
+
+Option explicit
+
+private oReaderAppDlg as object
+private oChildModel as object
+
+sub dlgSecurityCodeRun
+&apos;sReaderApp = &quot;&quot;
+	oReaderAppDlg = Tools.LoadDialog(&quot;it_acca_esse_EsportaPDF&quot;, &quot;DlgReaderCommand&quot;)
+	oChildModel = oReaderAppDlg.getModel()
+	oChildModel.PositionY = 20&apos;20 unità più in basso della finestra genitrice
+	oChildModel.PositionX = -( oChildModel.Width - oConfirmDialog.getModel().Width )/2 &apos;centra rispetto alla finestra genitrice
+	oChildModel.getByName(&quot;tfReaderAppName&quot;).Text = sReaderApp	
+	LocalizeDialog( oReaderAppDlg )
+	if oReaderAppDlg.execute = 1 then
+		sReaderApp = oChildModel.getByName(&quot;tfReaderAppName&quot;).Text
+	end if
+
+end sub
+
+&apos;istanzia la finestra di selezione di un file
+sub cbBrowseFilesPressed( oEvent as object )
+	Dim oFilePicker As Object
+	Dim mFiles() As Variant
+	dim sTest as string
+
+	oFilePicker = CreateUnoService( &quot;com.sun.star.ui.dialogs.OfficeFilePicker&quot; )	
+	oFilePicker.initialize(Array(com.sun.star.ui.dialogs.TemplateDescription.FILEOPEN_SIMPLE)) 
+	oFilePicker.AppendFilter(&quot;All files (*.*)&quot;, &quot;*.*&quot;)
+
+&apos; imposta directory iniziale
+&apos;	If Not IsMissing(sInitialDir) Then
+		oFilePicker.DisplayDirectory = _
+			DirectoryNameoutofPath( ConvertToURL( oChildModel.getByName(&quot;tfReaderAppName&quot;).Text ), &quot;/&quot; ) 
+
+&apos;	End If
+	
+&apos; imposta titolo
+	oFilePicker.Title = GetResString( &quot;Select the command&quot; )
+
+&apos;esegue il dialogo
+&apos;	iDlgResult = 
+	If oFilePicker.execute() = com.sun.star.ui.dialogs.ExecutableDialogResults.OK Then
+		mFiles() = oFilePicker.getFiles()
+&apos; ottiene il path dell&apos;oggetto in forma locale, platform dependent
+&apos; e lo assegna al controllo edit della dialog box
+		oChildModel.getByName(&quot;tfReaderAppName&quot;).Text = ConvertFromURL( mFiles(0) )
+	End If
+end sub
+
+</script:module>

@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE library:library PUBLIC "-//OpenOffice.org//DTD OfficeDocument 1.0//EN" "library.dtd">
+<library:library xmlns:library="http://openoffice.org/2000/library" library:name="it_acca_esse_EsportaPDF" library:readonly="false" library:passwordprotected="false">
+ <library:element library:name="DlgConfig"/>
+ <library:element library:name="AboutBox"/>
+ <library:element library:name="DlgSelTipoEsportaz"/>
+ <library:element library:name="DlgGetParmsHelp"/>
+ <library:element library:name="DlgSecurity"/>
+ <library:element library:name="DlgReaderCommand"/>
+</library:library>

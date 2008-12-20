@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE dlg:window PUBLIC "-//OpenOffice.org//DTD OfficeDocument 1.0//EN" "dialog.dtd">
+<dlg:window xmlns:dlg="http://openoffice.org/2000/dialog" xmlns:script="http://openoffice.org/2000/script" dlg:id="DlgSecurity" dlg:left="198" dlg:top="77" dlg:width="183" dlg:height="211" dlg:closeable="true" dlg:moveable="true" dlg:title="Security">
+ <dlg:bulletinboard>
+  <dlg:button dlg:id="CommandButton1" dlg:tab-index="0" dlg:left="10" dlg:top="190" dlg:width="44" dlg:height="14" dlg:value="Ok" dlg:button-type="ok"/>
+  <dlg:button dlg:id="CommandButton2" dlg:tab-index="1" dlg:left="126" dlg:top="190" dlg:width="44" dlg:height="14" dlg:value="Cancel" dlg:button-type="cancel"/>
+  <dlg:text dlg:id="Label2" dlg:tab-index="15" dlg:left="6" dlg:top="3" dlg:width="167" dlg:height="33" dlg:value="security note" dlg:multiline="true"/>
+  <dlg:fixedline dlg:id="FixedLine1" dlg:tab-index="13" dlg:left="6" dlg:top="42" dlg:width="167" dlg:height="10" dlg:value="Restrict permissions"/>
+  <dlg:fixedline dlg:id="FixedLine2" dlg:tab-index="16" dlg:left="74" dlg:top="67" dlg:width="2" dlg:height="0"/>
+  <dlg:fixedline dlg:id="FixedLine3" dlg:tab-index="17" dlg:left="71" dlg:top="124" dlg:width="2" dlg:height="0"/>
+  <dlg:fixedline dlg:id="FixedLine4" dlg:tab-index="14" dlg:left="12" dlg:top="53" dlg:width="161" dlg:height="10" dlg:value="Stampa"/>
+  <dlg:fixedline dlg:id="FixedLine5" dlg:tab-index="18" dlg:left="73" dlg:top="113" dlg:width="2" dlg:height="0"/>
+  <dlg:fixedline dlg:id="FixedLine6" dlg:tab-index="5" dlg:left="12" dlg:top="97" dlg:width="160" dlg:height="10" dlg:value="Modifiche"/>
+  <dlg:checkbox dlg:id="cbCopy" dlg:tab-index="11" dlg:left="12" dlg:top="163" dlg:width="152" dlg:height="10" dlg:value="Abilita copia del contenuto" dlg:checked="false">
+   <script:event script:event-name="on-itemstatechange" script:macro-name="vnd.sun.star.script:it_acca_esse_EsportaPDF.DlgConfigCode.cbRiduciRisolToggle?language=Basic&amp;location=application" script:language="Script"/>
+  </dlg:checkbox>
+  <dlg:checkbox dlg:id="cbAccessEnable" dlg:tab-index="12" dlg:left="12" dlg:top="174" dlg:width="163" dlg:height="10" dlg:value="Abilita accesso al testo con strumenti di accesso facilitato" dlg:checked="false">
+   <script:event script:event-name="on-itemstatechange" script:macro-name="vnd.sun.star.script:it_acca_esse_EsportaPDF.DlgConfigCode.cbRiduciRisolToggle?language=Basic&amp;location=application" script:language="Script"/>
+  </dlg:checkbox>
+  <dlg:radiogroup>
+   <dlg:radio dlg:id="obPrint0" dlg:tab-index="2" dlg:left="18" dlg:top="64" dlg:width="143" dlg:height="10" dlg:value="Non consentito" dlg:checked="true">
+    <script:event script:event-name="on-itemstatechange" script:macro-name="vnd.sun.star.script:it_acca_esse_EsportaPDF.DlgConfigCode.obBmkAllLevToggle?language=Basic&amp;location=application" script:language="Script"/>
+   </dlg:radio>
+   <dlg:radio dlg:id="obPrint1" dlg:tab-index="3" dlg:left="18" dlg:top="75" dlg:width="143" dlg:height="10" dlg:value="Bassa risoluzione (150 DPI)">
+    <script:event script:event-name="on-itemstatechange" script:macro-name="vnd.sun.star.script:it_acca_esse_EsportaPDF.DlgConfigCode.obBmkAllLevToggle?language=Basic&amp;location=application" script:language="Script"/>
+   </dlg:radio>
+   <dlg:radio dlg:id="obPrint2" dlg:tab-index="4" dlg:left="18" dlg:top="86" dlg:width="143" dlg:height="10" dlg:value="Alta risoluzione">
+    <script:event script:event-name="on-itemstatechange" script:macro-name="vnd.sun.star.script:it_acca_esse_EsportaPDF.DlgConfigCode.obBmkAllLevToggle?language=Basic&amp;location=application" script:language="Script"/>
+   </dlg:radio>
+   <dlg:radio dlg:id="obChange0" dlg:tab-index="6" dlg:left="18" dlg:top="108" dlg:width="143" dlg:height="10" dlg:value="Non consentite" dlg:checked="true">
+    <script:event script:event-name="on-itemstatechange" script:macro-name="vnd.sun.star.script:it_acca_esse_EsportaPDF.DlgConfigCode.obBmkAllLevToggle?language=Basic&amp;location=application" script:language="Script"/>
+   </dlg:radio>
+   <dlg:radio dlg:id="obChange1" dlg:tab-index="7" dlg:left="18" dlg:top="119" dlg:width="149" dlg:height="10" dlg:value="Inserimento, eliminazione e rotazione delle pagine">
+    <script:event script:event-name="on-itemstatechange" script:macro-name="vnd.sun.star.script:it_acca_esse_EsportaPDF.DlgConfigCode.obBmkAllLevToggle?language=Basic&amp;location=application" script:language="Script"/>
+   </dlg:radio>
+   <dlg:radio dlg:id="obChange2" dlg:tab-index="8" dlg:left="18" dlg:top="130" dlg:width="147" dlg:height="10" dlg:value="Compilazione campi formulario">
+    <script:event script:event-name="on-itemstatechange" script:macro-name="vnd.sun.star.script:it_acca_esse_EsportaPDF.DlgConfigCode.obBmkAllLevToggle?language=Basic&amp;location=application" script:language="Script"/>
+   </dlg:radio>
+   <dlg:radio dlg:id="obChange3" dlg:tab-index="9" dlg:left="18" dlg:top="141" dlg:width="147" dlg:height="10" dlg:value="Commento e compilazione campi formulario">
+    <script:event script:event-name="on-itemstatechange" script:macro-name="vnd.sun.star.script:it_acca_esse_EsportaPDF.DlgConfigCode.obBmkAllLevToggle?language=Basic&amp;location=application" script:language="Script"/>
+   </dlg:radio>
+   <dlg:radio dlg:id="obChange4" dlg:tab-index="10" dlg:left="18" dlg:top="152" dlg:width="147" dlg:height="10" dlg:value="Tutte le attività eccetto estrazione delle pagine">
+    <script:event script:event-name="on-itemstatechange" script:macro-name="vnd.sun.star.script:it_acca_esse_EsportaPDF.DlgConfigCode.obBmkAllLevToggle?language=Basic&amp;location=application" script:language="Script"/>
+   </dlg:radio>
+  </dlg:radiogroup>
+ </dlg:bulletinboard>
+</dlg:window>

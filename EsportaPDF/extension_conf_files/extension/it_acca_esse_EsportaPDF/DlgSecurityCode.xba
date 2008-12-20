@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE script:module PUBLIC "-//OpenOffice.org//DTD OfficeDocument 1.0//EN" "module.dtd">
+<script:module xmlns:script="http://openoffice.org/2000/script" script:name="DlgSecurityCode" script:language="StarBasic">REM  *****  BASIC  *****
+REM LGPL V 2.1 license apply
+REM Author Giuseppe Castagno [giuseppe.castagno@acca-esse.eu]
+REM							 [beppec56@openoffice.org]
+REM OOo minimum version: 2.4, in case of older OOo version the
+REM PDF output filter FilterData values will be ignored...
+
+Option explicit
+
+private oSecDlg as object
+private oChildModel as object
+
+&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;
+&apos; esecuzione
+sub dlgSecurityRun( oImpDlg as object, oExpParam as object )
+	oSecDlg = Tools.LoadDialog(&quot;it_acca_esse_EsportaPDF&quot;, &quot;DlgSecurity&quot;)
+&apos;posiziona la dialog
+&apos;correggi la posizione della dialog rispetto al parent
+	oChildModel = oSecDlg.getModel()
+	oChildModel.PositionY = 20&apos;20 unità più in basso della finestra genitrice
+	oChildModel.PositionX = -( oChildModel.Width - oImpDlg.getModel().Width )/2 &apos;centra rispetto alla finestra genitrice
+	InitDlgItem( oExpParam )
+	LocalizeDialog( oSecDlg )	
+	if oSecDlg.execute() = 1 then
+		StoreDlgValue( oExpParam )
+	end if
+end sub
+
+sub InitDlgItem( oExpParam as object )
+	oChildModel.getByName( &quot;obPrint&quot; &amp; oExpParam.Printing ).State = 1
+	oChildModel.getByName( &quot;obChange&quot; &amp; oExpParam.Changes ).State = 1
+	if oExpParam.EnableCopyingOfContent then
+		oChildModel.getByName( &quot;cbCopy&quot; ).State = 1
+	end if
+	if oExpParam.EnableTextAccessForAccessibilityTools then
+		oChildModel.getByName( &quot;cbAccessEnable&quot; ).State = 1
+	end if
+end sub
+
+sub StoreDlgValue( oExpParam as object)
+	dim nSelected as integer
+	for nSelected = 0 to 4 step 1
+		if oChildModel.getByName(&quot;obPrint&quot; &amp; nSelected ).State = 1 then
+			oExpParam.Printing = nSelected
+			exit for
+		end if
+	next
+	for nSelected = 0 to 4 step 1
+		if oChildModel.getByName(&quot;obChange&quot; &amp; nSelected ).State = 1 then
+			oExpParam.Changes = nSelected
+			exit for
+		end if
+	next
+	oExpParam.EnableCopyingOfContent = ( oChildModel.getByName( &quot;cbCopy&quot; ).State = 1 )
+	oExpParam.EnableTextAccessForAccessibilityTools = (oChildModel.getByName( &quot;cbAccessEnable&quot; ).State = 1 )
+end sub
+
+</script:module>
