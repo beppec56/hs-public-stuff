@@ -28,34 +28,6 @@
 	oor:package="org.openoffice.Office"
 	oor:name="Addons"	>
 	<node oor:name="AddonUI">
-		<!-- toolbar standard aggiunta -->
-		<node oor:name="OfficeToolBar">
-			<node oor:name="it.plio.ext.xades.OfficeToolBar" oor:op="replace">
-				<node oor:name="button1" oor:op="replace">
-					<prop oor:name="Context" oor:type="xs:string">
-						<value>com.sun.star.text.TextDocument,com.sun.star.sheet.SpreadsheetDocument,com.sun.star.drawing.DrawingDocument,com.sun.star.presentation.PresentationDocument</value>
-					</prop>
-					<prop oor:name="URL" oor:type="xs:string">
-						<value>it.plio.ext.xades.comp.SignatureHandler:SignDialogTB</value>
-					</prop>
-					<prop oor:name="ImageIdentifier" oor:type="xs:string">
-						<value>%origin%/images/writer-unknown</value>
-						<!-- value/ -->
-					</prop>
-					<prop oor:name="Title" oor:type="xs:string"  oor:localized="true">
-						<!-- value xml:lang="en">this string should be updated dynamically while the application is running</value -->
-						<value>...</value>
-					</prop>
-					<prop oor:name="Target" oor:type="xs:string">
-						<value>_self</value>
-					</prop>
-					<prop oor:name="ControlType" oor:type="xs:string">
-						<value>ImageButton</value>
-					</prop>
-				</node>
-			</node>
-		</node>
-
 		<!-- menu standard (File) -->
 		<!--
 		    inserisce nel menu File (dopo proprietà, prima della firma standard)
@@ -64,8 +36,8 @@
 		    nel codice sorgente di OOo
 		-->
 		<node oor:name="OfficeMenuBarMerging">
-			<node oor:name="it.plio.ext.xades.PopupMenu" oor:op="replace">
-				<node oor:name="S1" oor:op="replace">
+			<node oor:name="it.acca-esse.ext.configview.PopupMenu" oor:op="replace">
+                <node oor:name="S1" oor:op="replace">
 					<!--
 					    per il merge point vedere in:
 					    - sw/uiconfig/swriter/menubar/menubar.xml (dove si ha la formazione del menu in Writer, come esempio)
@@ -73,57 +45,41 @@
 					    - framework/source/uielement/menubarmerger.cxx alcune delle voci disponibili per il merge dei menu
 					    entrambi nel codice sorgente di OOo
 					-->
-					<prop oor:name="MergePoint">
-						<!-- significa il menu File (.uno:PickList) > Digital Signatures... ( .uno:Signature )-->
-						<value>.uno:PickList\.uno:Signature</value>
-					</prop>
-					<prop oor:name="MergeCommand">
-						<!-- valori possibili per MergeCommand:
-							AddAfter	dopo il target
-							AddBefore	prima del target
-							Replace		al posto del target (e lo ripristina togliendo la estensione)
-							Remove		
-						-->
-						<value>AddAfter</value>
-					</prop>
-					<prop oor:name="MergeFallback">
-						<!-- valori possibili per MergeFallback
-							AddPath
-							Ignore
-						-->
-						<value>AddPath</value>
-					</prop>
-					<prop oor:name="MergeContext">
-						<!-- contesto: vale per i tipi di documenti -->
-						<value/>
-					</prop>
-					<node oor:name="MenuItems">
-						<node oor:name="m1" oor:op="replace">
-							<!-- comando standard OOo, presente in tutti i contesti  -->
-							<prop oor:name="Context" oor:type="xs:string">
-								<value>com.sun.star.text.TextDocument,com.sun.star.sheet.SpreadsheetDocument,com.sun.star.drawing.DrawingDocument,com.sun.star.presentation.PresentationDocument</value>
-							</prop>
-							<prop oor:name="ImageIdentifier" oor:type="xs:string">
-								<value/>
-							</prop>
-							<prop oor:name="URL" oor:type="xs:string">
-								<value>it.plio.ext.xades.comp.SignatureHandler:SignDialog</value>
-							</prop>
-							<prop oor:name="Title" oor:type="xs:string"  oor:localized="true">
-								<value>Digital signatures XAdES (IT) mode...</value>
-								<value xml:lang="en">Digital signatures XAdES (IT) mode...</value>
-								<value xml:lang="it">Firme digitale modo XAdES (IT)...</value>
-							</prop>
-							<prop oor:name="Target" oor:type="xs:string">
-								<value>_self</value>
-							</prop>
-						</node>
-					</node>
-				</node>
+                    <prop oor:name="MergePoint">
+                        <value>.uno:ToolsMenu\.uno:OptionsTreeDialog</value>
+                    </prop>
+                    <prop oor:name="MergeCommand">
+                        <value>AddAfter</value>
+                    </prop>
+                    <prop oor:name="MergeFallback">
+                        <value>AddPath</value>
+                    </prop>
+                    
+                    <node oor:name="MenuItems">
+                        <node oor:name="m1" oor:op="replace">
+                            <prop oor:name="URL" oor:type="xs:string">
+                                <value>org.openoffice.config.configurationviewer:ViewConfig</value>
+                            </prop>
+                            <prop oor:name="ImageIdentifier" oor:type="xs:string">
+                                <value/>
+                            </prop>
+                            <prop oor:name="Target" oor:type="xs:string">
+                                <value>_self</value>
+                            </prop>
+                            <prop oor:name="Context" oor:type="xs:string">
+                                <value>com.sun.star.frame.Bibliography,com.sun.star.chart.ChartDocument,com.sun.star.drawing.DrawingDocument,com.sun.star.formula.FormulaProperties,com.sun.star.presentation.PresentationDocument,com.sun.star.sheet.SpreadsheetDocument,com.sun.star.text.TextDocument</value>
+                            </prop>
+                            <prop oor:name="Title" oor:type="xs:string">
+                                <value/>
+                                <value xml:lang="en">Configuration...</value>
+                            </prop>
+                        </node>
+                    </node>
+                </node>
 			</node>
 		</node>
 
-		<node oor:name="OfficeHelp">
+		<!--  node oor:name="OfficeHelp">
 			<node oor:name="it.plio.ext.xades.OfficeHelp" oor:op="replace">
 				<prop oor:name="Context" oor:type="xs:string">
 					<value></value>
@@ -143,6 +99,6 @@
 					<value>_self</value>
 				</prop>
 			</node>
-		</node>
+		</node -->
 	</node>
 </oor:component-data>

@@ -116,7 +116,7 @@ build-extension
 
 		
 		<mkdir dir="${extension_dest_dir}" />
-		<copy file="${basedir}/../${sig_comp_dir}/lib/${compview_comp_jar}" todir="${extension_dest_dir}" />
+		<copy file="${basedir}/../${compview_comp_dir}/lib/${compview_comp_jar}" todir="${extension_dest_dir}" />
 
 		<!-- copy metafile -->
 		<copy todir="${extension_dest_dir}${meta}">
