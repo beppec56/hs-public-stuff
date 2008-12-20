@@ -31,12 +31,12 @@ the default target must be removed
 build-extension
 
 -->
-<project name="xades_signature_extension" default="deploy-local" basedir=".">
+<project name="configuration_viewer_extension" default="deploy-local" basedir=".">
 	<description>
         build the xades_signature_extension extension
     </description>
 	<!-- set global properties for this build -->
-	<property name="project_name" value="xades_signature_extension" />
+	<property name="project_name" value="configuration_viewer_extension" />
 	<property name="support_files" value="extension_conf_files" />
 	<property name="doc_dir" value="${basedir}/../doc" />
 	<property name="src" location="src" />
@@ -61,7 +61,7 @@ build-extension
 	<property name="longversion" value="${version}.${build.number}" />
 	<property name="spec_version" value="1.0.0" />
 
-	<property name="webidentbase" value="it.plio.ext" />
+	<property name="webidentbase" value="it.acca-esse.ext" />
 	<!-- local (intranet) web properties -->
 	<property name="webhost" value="http://192.168.3.6" />
 	<property name="webpath" value="w2/acca-esse.it/dwnld/ooohs/extensions" />
@@ -71,7 +71,7 @@ build-extension
 	<property name="ooominversion" value="2.4" />
 
 	<!-- base name of the extension file -->
-	<property name="ext_name" value="xades_signature_extension" />
+	<property name="ext_name" value="configuration_viewer_extension" />
 
 	<!-- web repository subdirectory -->
 	<property name="wbme" value="${ext_name}" />
@@ -96,25 +96,14 @@ build-extension
 	<property name="arch" location="${archr}/${project_name}-${version}" />
 	<property name="archv" location="${archr}/${project_name}-${version}-${build.number}" />
 	
-	<property name="sig_comp" value="signature_component"/>
-	<property name="sig_comp_dir" value="signature_component/dist"/>
-	<property name="sig_comp_jar" value="${sig_comp}.uno.jar"/>
-
-	<property name="job_comp" value="sync_job_comp"/>
-	<property name="job_comp_dir" value="sync_job_comp/dist"/>
-	<property name="job_comp_jar" value="${job_comp}.uno.jar"/>	
+	<property name="compview_comp" value="dispatch_uno_object"/>
+	<property name="compview_comp_dir" value="dispatch_uno_object/dist"/>
+	<property name="compview_comp_jar" value="${compview_comp}.uno.jar"/>
 
 	<target name="build-jar" description="generate the subproject jar">
 		<subant target="build-jar">
 			<filelist dir="${basedir}/../">
-				<file name="${sig_comp}/build.xml" />
-			</filelist>
-		</subant>
-		<!-- IMPORTANT! the following project references classes from ${sig_comp} 
-			must be build AFTER -->
-		<subant target="build-jar">
-			<filelist dir="${basedir}/../">
-				<file name="${job_comp}/build.xml" />
+				<file name="${compview_comp}/build.xml" />
 			</filelist>
 		</subant>
 	</target>
@@ -127,22 +116,7 @@ build-extension
 
 		
 		<mkdir dir="${extension_dest_dir}" />
-		<copy file="${basedir}/../${sig_comp_dir}/lib/${sig_comp_jar}" todir="${extension_dest_dir}" />
-		<copy file="${basedir}/../${job_comp_dir}/lib/${job_comp_jar}" todir="${extension_dest_dir}" />
-		<copy todir="${extension_dest_dir}${ico}">
-			<!-- the icons files -->
-			<fileset dir="${extension_dir}${ico}">
-				<include name="**/signet_11x16_*.bmp" />
-			</fileset>
-		</copy>
-
-		<copy todir="${extension_dest_dir}${img}">
-			<!-- the icons files -->
-			<fileset dir="${extension_dir}${img}">
-				<include name="**/*.bmp" />
-				<include name="**/*.png" />
-			</fileset>
-		</copy>
+		<copy file="${basedir}/../${sig_comp_dir}/lib/${compview_comp_jar}" todir="${extension_dest_dir}" />
 
 		<!-- copy metafile -->
 		<copy todir="${extension_dest_dir}${meta}">
@@ -150,16 +124,6 @@ build-extension
 				<include name="**/*.xml" />
 			</fileset>
 		</copy>
-
-		<!-- copy Office/UI -->
-		<copy file="${extension_dir}${oui}/BaseWindowState.xcu.xml" tofile="${extension_dest_dir}${oui}/BaseWindowState.xcu"/>
-		<copy file="${extension_dir}${oui}/BasicIDEWindowState.xcu.xml" tofile="${extension_dest_dir}${oui}/BasicIDEWindowState.xcu"/>
-		<copy file="${extension_dir}${oui}/CalcWindowState.xcu.xml" tofile="${extension_dest_dir}${oui}/CalcWindowState.xcu"/>
-		<copy file="${extension_dir}${oui}/DrawWindowState.xcu.xml" tofile="${extension_dest_dir}${oui}/DrawWindowState.xcu"/>
-		<copy file="${extension_dir}${oui}/ImpressWindowState.xcu.xml" tofile="${extension_dest_dir}${oui}/ImpressWindowState.xcu"/>
-		<copy file="${extension_dir}${oui}/MathWindowState.xcu.xml" tofile="${extension_dest_dir}${oui}/MathWindowState.xcu"/>
-		<copy file="${extension_dir}${oui}/StartModuleWindowState.xcu.xml" tofile="${extension_dest_dir}${oui}/StartModuleWindowState.xcu"/>
-		<copy file="${extension_dir}${oui}/WriterWindowState.xcu.xml" tofile="${extension_dest_dir}${oui}/WriterWindowState.xcu"/>
 
 		<copy todir="${extension_dest_dir}${pdesc}">
 			<fileset dir="${extension_dir}${pdesc}">
@@ -174,12 +138,8 @@ build-extension
 		</copy>
 
 		<copy file="COPYING" tofile="${extension_dest_dir}/COPYING" />
-		<copy file="${extension_dir}/AddonConfiguration.xcs.xml" tofile="${extension_dest_dir}/AddonConfiguration.xcs" />
-		<copy file="${extension_dir}/AddonConfiguration.xcu.xml" tofile="${extension_dest_dir}/AddonConfiguration.xcu" />
-		<copy file="${extension_dir}/AddonMessages.xcu.xml" tofile="${extension_dest_dir}/AddonMessages.xcu" />
 		<copy file="${extension_dir}/Addons.xcu.xml" tofile="${extension_dest_dir}/Addons.xcu" />
 		<copy file="${extension_dir}/ProtocolHandler.xcu.xml" tofile="${extension_dest_dir}/ProtocolHandler.xcu" />
-		<copy file="${extension_dir}/SynchronousJob.xcu.xml" tofile="${extension_dest_dir}/SynchronousJob.xcu" />
 
 		<!--- end of subtask -->
 	</target>
@@ -312,13 +272,8 @@ build-extension
 				<file name="src-update.xml" />
 				<file name="release-notes_it.txt" />
 				<file name="release-notes_en.txt" />
-				<file name="AddonConfiguration.xcs.xml"/>
-				<file name="AddonConfiguration.xcu.xml"/>
-				<file name="AddonMessages.xcu.xml"/>
 				<file name="Addons.xcu.xml"/>
 				<file name="ProtocolHandler.xcu.xml"/>
-				<file name="SynchronousJob.xcu.xml"/>
-				<file name="AsynchronousJob.xcu.xml"/>
 			</filelist>
 		</copy>
 
