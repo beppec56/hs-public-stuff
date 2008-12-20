@@ -1,0 +1,40 @@
+Readme for signature_component UNO component extension
+
+License information: see file COPYING.
+
+To build
+========
+
+You need ant (http://ant.apache.org) installed and a java compiler Java 1.5 is suggested.
+Used ant 1.7.0 for testing.
+
+You need an OpenOffice.org installed, and an optional OpenOffice.org SDK.
+
+Edit the file build.xml in this root directory of the distribution and edit the
+value of properties 'ooosdk' and 'ooo_classes_path' to suit your installation.
+
+ooosdk is needed if you'd like to start your application with:
+
+java -jar signature_component.jar
+
+If the ooosdk is not present, the needed classes will not be added to the jar
+package, making the line above not functional.
+
+Localization
+============
+
+The string to be localized are in document localization-master.ods.
+The button "Export messages" export the messages to "AddonMessages.xcu.xml" file.
+
+The file path is fixed inside the macro. 
+Please have a look at the macro (Main.Main() )contained in the file.
+
+Building
+========
+
+The build.xml file in this directory is the mail ant build file.
+
+Running it you will be able to build the entire extension.
+
+For details see README in doc project.
+

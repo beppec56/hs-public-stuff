@@ -31,13 +31,13 @@ the default target must be removed
 build-extension
 
 -->
-<project name="configuration_viewer_extension" default="deploy-local" basedir=".">
+<project name="xades_signature_extension" default="deploy-local" basedir=".">
 	<description>
-        build the configuration_viever_extension extension
+        build the xades_signature_extension extension
     </description>
 	<!-- set global properties for this build -->
-	<property name="project_name" value="configuration_viewer_extension" />
-	<property name="support_files" value="extension_conf_files"/>
+	<property name="project_name" value="xades_signature_extension" />
+	<property name="support_files" value="extension_conf_files" />
 	<property name="doc_dir" value="${basedir}/../doc" />
 	<property name="src" location="src" />
 	<property name="build" location="build" />
@@ -57,11 +57,11 @@ build-extension
 
 	<!-- properties used when building/deploying the extension -->
 	<!-- version used for updating the extension, displayed on OOo interface -->
-	<property name="version" value="0.0.7" />
+	<property name="version" value="0.0.12" />
 	<property name="longversion" value="${version}.${build.number}" />
 	<property name="spec_version" value="1.0.0" />
 
-	<property name="webidentbase" value="it.acca-esse.ext" />
+	<property name="webidentbase" value="it.plio.ext" />
 	<!-- local (intranet) web properties -->
 	<property name="webhost" value="http://192.168.3.6" />
 	<property name="webpath" value="w2/acca-esse.it/dwnld/ooohs/extensions" />
@@ -71,7 +71,7 @@ build-extension
 	<property name="ooominversion" value="2.4" />
 
 	<!-- base name of the extension file -->
-	<property name="ext_name" value="configuration_viewer_extension" />
+	<property name="ext_name" value="xades_signature_extension" />
 
 	<!-- web repository subdirectory -->
 	<property name="wbme" value="${ext_name}" />

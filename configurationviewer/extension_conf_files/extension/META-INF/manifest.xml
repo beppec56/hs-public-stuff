@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    The Contents of this file are made available subject to
+    the terms of GNU Lesser General Public License Version 2.1.
+
+
+    GNU Lesser General Public License Version 2.1
+    =============================================
+    Copyright 2008 by Giuseppe Castagno beppec56@openoffice.org
+
+    This library is free software; you can redistribute it and/or
+    modify it under the terms of the GNU Lesser General Public
+    License version 2.1, as published by the Free Software Foundation.
+
+    This library is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+    Lesser General Public License for more details.
+
+    You should have received a copy of the GNU Lesser General Public
+    License along with this library; if not, write to the Free Software
+    Foundation, Inc., 59 Temple Place, Suite 330, Boston,
+    MA  02111-1307  USA
+-->
+<manifest:manifest>
+ <manifest:file-entry manifest:full-path="signature_component.uno.jar" manifest:media-type="application/vnd.sun.star.uno-component;type=Java"/>
+ <manifest:file-entry manifest:full-path="sync_job_comp.uno.jar" manifest:media-type="application/vnd.sun.star.uno-component;type=Java"/>
+ <manifest:file-entry manifest:full-path="pkg-desc/pkg-description.txt" manifest:media-type="application/vnd.sun.star.package-bundle-description"/>
+ <manifest:file-entry manifest:full-path="Addons.xcu" manifest:media-type="application/vnd.sun.star.configuration-data"/>
+ <manifest:file-entry manifest:full-path="AddonConfiguration.xcs" manifest:media-type="application/vnd.sun.star.configuration-schema"/>
+ <manifest:file-entry manifest:full-path="AddonConfiguration.xcu" manifest:media-type="application/vnd.sun.star.configuration-data"/>
+ <manifest:file-entry manifest:full-path="AddonMessages.xcu" manifest:media-type="application/vnd.sun.star.configuration-data"/>
+ <manifest:file-entry manifest:full-path="ProtocolHandler.xcu" manifest:media-type="application/vnd.sun.star.configuration-data"/>
+ <manifest:file-entry manifest:full-path="SynchronousJob.xcu" manifest:media-type="application/vnd.sun.star.configuration-data"/>
+<!--
+ <manifest:file-entry manifest:full-path="Office/UI/StartModuleWindowState.xcu" manifest:media-type="application/vnd.sun.star.configuration-data"/> -->
+<!--
+ <manifest:file-entry manifest:full-path="Office/UI/BasicIDEWindowState.xcu" manifest:media-type="application/vnd.sun.star.configuration-data"/> -->
+ <manifest:file-entry manifest:full-path="Office/UI/ImpressWindowState.xcu" manifest:media-type="application/vnd.sun.star.configuration-data"/>
+ <manifest:file-entry manifest:full-path="Office/UI/DrawWindowState.xcu" manifest:media-type="application/vnd.sun.star.configuration-data"/>
+ <manifest:file-entry manifest:full-path="Office/UI/CalcWindowState.xcu" manifest:media-type="application/vnd.sun.star.configuration-data"/>
+<!--
+ <manifest:file-entry manifest:full-path="Office/UI/BaseWindowState.xcu" manifest:media-type="application/vnd.sun.star.configuration-data"/> -->
+ <manifest:file-entry manifest:full-path="Office/UI/WriterWindowState.xcu" manifest:media-type="application/vnd.sun.star.configuration-data"/>
+<!--
+ <manifest:file-entry manifest:full-path="Office/UI/MathWindowState.xcu" manifest:media-type="application/vnd.sun.star.configuration-data"/> -->
+</manifest:manifest>
