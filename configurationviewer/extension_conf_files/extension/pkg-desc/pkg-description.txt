@@ -1,8 +1,9 @@
-Estensione per firma digitale
-modalità XAdES (IT).
-(it.plio.ext.xades)
-Licenza LGPL 2.1
+License LGPL 2.1
 Copyright (c) 2008 Giuseppe Castagno
+Copyright 1997-2008 Sun Microsystems, Inc. All rights reserved
 
-Proof of concept per l'interfaccia dell'estensione
-della firma digitale tipo XAdES (IT).
+Display OpenOffice.org configuration in a Java UI.
+
+IMPORTANT: do not use in a production environment!
+=================================================
+

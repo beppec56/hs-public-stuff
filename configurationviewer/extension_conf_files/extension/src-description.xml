@@ -43,15 +43,14 @@
     </simple-license>
   </registration -->
   <display-name>	
-	  <name lang="it">Firma digitale standard XAdES (IT)</name>
-	  <name lang="en">XAdES (IT) Standard Digital Signature</name>
-	  <name lang="fr">Signature numérique XAdES (IT) (standard italien)</name>
+	  <name lang="it">Mostra configurazione OpenOffice.org</name>
+	  <name lang="en">Display OpenOffice.org configuration</name>
   </display-name>
   <publisher>
-	  <name xlink:href="http://www.plio.it"
-		lang="it">PLIO</name>
-	  <name xlink:href="http://www.plio.it" 
-		lang="en">PLIO</name>
+	  <name xlink:href="http://www.acca-esse.it"
+		lang="it">Acca Esse</name>
+	  <name xlink:href="http://www.acca-esse.it" 
+		lang="en">Acca Esse</name>
   </publisher>
   <!-- release notes not yet used by Extension manager -->
   <release-notes>

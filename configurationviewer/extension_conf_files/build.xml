@@ -57,7 +57,7 @@ build-extension
 
 	<!-- properties used when building/deploying the extension -->
 	<!-- version used for updating the extension, displayed on OOo interface -->
-	<property name="version" value="0.0.12" />
+	<property name="version" value="0.1.1" />
 	<property name="longversion" value="${version}.${build.number}" />
 	<property name="spec_version" value="1.0.0" />
 
