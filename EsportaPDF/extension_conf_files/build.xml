@@ -62,7 +62,7 @@ build-extension
 		when the version is manually updated, please remove the "build.number" file from the
 		project directory
 	-->
-	<property name="version" value="0.2.2" />
+	<property name="version" value="0.2.4" />
 	<property name="longversion" value="${version}.${build.number}" />
 	<property name="spec_version" value="1.0.0" />
 
@@ -88,8 +88,8 @@ build-extension
 		EsportaPDF.setProperty("ext_name_small", EsportaPDF.getProperty("ext_name").toLowerCase());
 		]]> </script>
 	<!-- Display the values -->
-  	<echo>myprop=${ext_name}</echo>
-  	<echo>Myprop=${ext_name_small}</echo>
+  	<!-- echo>myprop=${ext_name}</echo>
+  	<echo>Myprop=${ext_name_small}</echo -->
 
 	<!-- web repository subdirectory, uses lower case path -->
 	<property name="wbme" value="${ext_name_small}" />
@@ -109,10 +109,12 @@ build-extension
 	<property name="extension_file" value="${ext_name}.oxt" />
 	<property name="readme_it" value="release-notes_it.txt" />
 	<property name="readme_en" value="release-notes_en.txt" />
+	<property name="briefdoc_it" value="brief-manual.pdfa.pdf" />
+	
 	<!-- directory to zip for archive -->
 	<property name="archr" location="../to-be-zipped" />
 	<property name="tar_dest" location="../tgz-files" />
-	<property name="arch" location="${archr}/${project_name}-${version}" />
+	<property name="arc1h" location="${archr}/${project_name}-${version}" />
 	<property name="archv" location="${archr}/${project_name}-${version}-${build.number}" />
 
 	<target name="prepare-extension" description="builds the extension package">
@@ -303,6 +305,10 @@ build-extension
 		<!-- copy realease description files -->
 		<copy file="${extension_dir}/${readme_en}" tofile="${copywebpath_ext}/${wbme}/${readme_en}" />
 		<copy file="${extension_dir}/${readme_it}" tofile="${copywebpath_ext}/${wbme}/${readme_it}" />
+		<!-- copy the brief document -->
+		<!--echo>doc= ${doc_dir}</echo -->
+		<copy  file="${doc_dir}/${briefdoc_it}" tofile="${copywebpath_ext}/${wbme}/${briefdoc_it}" />
+		<!-- copy>  file="${doc_dir}/${briefdoc_en}" tofile="${copywebpath_ext}/${wbme}/${briefdoc_en}" </copy -->
 
 		<!-- the following line is to simplify the first add of the extension (disable if not needed) -->
 		<!-- copy file="${extension_file}" todir="${user.home}" / -->
@@ -321,27 +327,9 @@ build-extension
 		<delete dir="${arch}" />
 		<mkdir dir="${arch}" />
 		<!-- copy src files -->
-		<copy todir="${arch}/${sig_comp}">
-			<fileset dir="${basedir}/../${sig_comp}">
-				<include name="**/*" />
-			</fileset>
-		</copy>
-
-		<copy todir="${arch}/${job_comp}">
-			<fileset dir="${basedir}/../${job_comp}">
-				<include name="**/*" />
-			</fileset>
-		</copy>
 
 		<!-- copy extension specific files -->
 		<copy todir="${arch}/${support_files}/extension">
-			<fileset dir="${extension_dir}">
-				<include name="**/*" />
-			</fileset>
-		</copy>
-
-		<!-- copy images work directory -->
-		<copy todir="${arch}/${support_files}/images-working-area">
 			<fileset dir="${extension_dir}">
 				<include name="**/*" />
 			</fileset>
@@ -357,16 +345,16 @@ build-extension
 				<file name="release-notes_en.txt" />
 				<file name="AddonConfiguration.xcs.xml"/>
 				<file name="AddonConfiguration.xcu.xml"/>
-				<file name="AddonMessages.xcu.xml"/>
+				<!-- file name="AddonMessages.xcu.xml"/ -->
 				<file name="Addons.xcu.xml"/>
 				<file name="ProtocolHandler.xcu.xml"/>
-				<file name="SynchronousJob.xcu.xml"/>
-				<file name="AsynchronousJob.xcu.xml"/>
-				<file name="DisableCommands.xcu.xml"/>
+				<!-- file name="SynchronousJob.xcu.xml"/ >
+				<file name="AsynchronousJob.xcu.xml"/ >
+				<file name="DisableCommands.xcu.xml"/ -->
 			</filelist>
 		</copy>
 
-		<copy file="${basedir}/localization-master.ods" tofile="${arch}/${support_files}/localization-master.ods" />
+		<!-- copy file="${basedir}/localization-master.ods" tofile="${arch}/${support_files}/localization-master.ods" / -->
 		<copy file="${basedir}/COPYING" tofile="${arch}/${support_files}/COPYING" />
 		<copy file="${basedir}/README" tofile="${arch}/${support_files}/README" />
 		<copy file="${basedir}/build.xml" tofile="${arch}/${support_files}/build.xml" />
