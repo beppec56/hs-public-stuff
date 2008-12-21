@@ -57,25 +57,42 @@ build-extension
 	<sleep milliseconds="2000" />
 
 	<!-- properties used when building/deploying the extension -->
-	<!-- version used for updating the extension, displayed on OOo interface -->
-	<property name="version" value="0.2.1" />
+	<!--
+		version used for updating the extension, displayed on OOo interface
+		when the version is manually updated, please remove the "build.number" file from the
+		project directory
+	-->
+	<property name="version" value="0.2.2" />
 	<property name="longversion" value="${version}.${build.number}" />
 	<property name="spec_version" value="1.0.0" />
 
 	<property name="webidentbase" value="it.acca-esse.oxt" />
 	<!-- local (intranet) web properties -->
 	<property name="webhost" value="http://192.168.3.6" />
+	<property name="webhost_ext" value="http://www.acca-esse.it" />
 	<property name="webpath" value="w2/acca-esse.it/dwnld/ooohs/extensions" />
+	<property name="webpath_ext" value="dwnld/ooohs/ext-www" />
 	<property name="copywebpath" value="/var/www/${webpath}" />
+	<!-- the following line prepares the copy (ftp) to be sent manually the external web site -->
+	<property name="copywebpath_ext" value="/var/www/w2/acca-esse.it/${webpath_ext}" />
 
 	<!-- minimum OOo version -->
 	<property name="ooominversion" value="2.3" />
 
 	<!-- base name of the extension file -->
 	<property name="ext_name" value="EsportaPDF" />
+	<!-- set the property at the lower case chars -->
+	<script language="javascript"> <![CDATA[
+    // getting the value, EsportaPDF is the project name
+	//IMPORTANT a JavaScript interpreter is needed for this	(javax.script.ScriptException)	
+		EsportaPDF.setProperty("ext_name_small", EsportaPDF.getProperty("ext_name").toLowerCase());
+		]]> </script>
+	<!-- Display the values -->
+  	<echo>myprop=${ext_name}</echo>
+  	<echo>Myprop=${ext_name_small}</echo>
 
-	<!-- web repository subdirectory -->
-	<property name="wbme" value="${ext_name}" />
+	<!-- web repository subdirectory, uses lower case path -->
+	<property name="wbme" value="${ext_name_small}" />
 
 	<!-- extension subdirectories -->
 	<property name="ico" value="/icons" />
@@ -214,6 +231,10 @@ build-extension
 		</copy>
 
 		<zip basedir="${extension_dest_dir}" destfile="${extension_file}" />
+		<!--
+			for the following to work you need an external JavaScript engine
+			not available on Windows!
+		-->
 
 		<mkdir dir="${copywebpath}/${wbme}" />
 		<!-- to avoid "modified in the future" warning -->
@@ -243,6 +264,50 @@ build-extension
 		<copy file="${extension_file}" todir="${user.home}" />
 	</target>
 
+	<target name="deploy-web" depends="clean,prepare-extension" description="deploy extension for Internet: http://www.acca-esse.it">
+		<!-- prepare the file description.xml, from src-description.xml, changing tokens -->
+		<copy file="${extension_dir}/src-description.xml" tofile="${extension_dest_dir}/description.xml">
+			<filterset>
+				<filter token="VERSION" value="${version}" />
+				<filter token="WEBIDENTBASE" value="${webidentbase}" />
+				<filter token="NAME" value="${ext_name}" />
+				<filter token="OOOMINVER" value="${ooominversion}" />
+				<filter token="WEBHOST" value="${webhost_ext}" />
+				<filter token="WEBPATH" value="${webpath_ext}" />
+				<filter token="WBME" value="${wbme}" />
+			</filterset >
+		</copy>
+
+		<zip basedir="${extension_dest_dir}" destfile="${extension_file}" />
+
+		<mkdir dir="${copywebpath_ext}/${wbme}" />
+		<!-- to avoid "modified in the future" warning -->
+		<sleep milliseconds="900" />
+		<dependset>
+			<srcfilelist dir="${extension_dest_dir}" files="description.xml" />
+			<targetfilelist dir="${copywebpath_ext}/${wbme}" files="${ext_name}.update.xml" />
+		</dependset>
+
+		<copy file="${extension_dir}/src-update.xml" tofile="${copywebpath_ext}/${wbme}/${ext_name}.update.xml">
+			<filterset>
+				<filter token="VERSION" value="${longversion}" />
+				<filter token="WEBIDENTBASE" value="${webidentbase}" />
+				<filter token="NAME" value="${ext_name}" />
+				<filter token="WEBHOST" value="${webhost_ext}" />
+				<filter token="WEBPATH" value="${webpath_ext}" />
+				<filter token="WBME" value="${wbme}" />
+			</filterset >
+		</copy>
+
+		<copy file="${extension_file}" tofile="${copywebpath_ext}/${wbme}/${extension_file}" />
+		<!-- copy realease description files -->
+		<copy file="${extension_dir}/${readme_en}" tofile="${copywebpath_ext}/${wbme}/${readme_en}" />
+		<copy file="${extension_dir}/${readme_it}" tofile="${copywebpath_ext}/${wbme}/${readme_it}" />
+
+		<!-- the following line is to simplify the first add of the extension (disable if not needed) -->
+		<!-- copy file="${extension_file}" todir="${user.home}" / -->
+	</target>
+	
 	<target name="clean" description="clean up the project">
 		<!-- Delete the ${build} and ${dist} directory trees -->
 		<!-- delete dir="${archr}" />
