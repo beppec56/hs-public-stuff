@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE dlg:window PUBLIC "-//OpenOffice.org//DTD OfficeDocument 1.0//EN" "dialog.dtd">
+<dlg:window xmlns:dlg="http://openoffice.org/2000/dialog" xmlns:script="http://openoffice.org/2000/script" dlg:id="DlgSegnaposto" dlg:left="205" dlg:top="87" dlg:width="163" dlg:height="50" dlg:closeable="true" dlg:moveable="true" dlg:title="Introduci il testo per il segnaposto">
+ <dlg:bulletinboard>
+  <dlg:button dlg:id="Cancella" dlg:tab-index="2" dlg:left="103" dlg:top="30" dlg:width="55" dlg:height="14" dlg:value="Cancella" dlg:button-type="cancel"/>
+  <dlg:button dlg:id="Inserisci" dlg:tab-index="1" dlg:left="5" dlg:top="30" dlg:width="55" dlg:height="14" dlg:default="true" dlg:value="Inserisci" dlg:button-type="ok" dlg:checked="true"/>
+  <dlg:textfield dlg:id="tfTestoSegnaposto" dlg:tab-index="0" dlg:left="3" dlg:top="7" dlg:width="156" dlg:height="12"/>
+ </dlg:bulletinboard>
+</dlg:window>

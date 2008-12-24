@@ -1,0 +1,1118 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE script:module PUBLIC "-//OpenOffice.org//DTD OfficeDocument 1.0//EN" "module.dtd">
+<script:module xmlns:script="http://openoffice.org/2000/script" script:name="Md1" script:language="StarBasic">REM  *****  BASIC  *****
+&apos;LGPL 2.1 License
+
+Option explicit
+
+Private const COND_SECT_FIELD_MASTER_NAME = &quot;com.sun.star.text.FieldMaster.User&quot;
+Private const COND_SECT_FIELD_USER_NAME = &quot;com.sun.star.text.TextField.User&quot;
+Private const COND_SECT_FIELD_NAME = &quot;NoteIdx&quot;
+
+Sub TestDialog
+
+dim oDoc as object
+dim odlg as object
+
+dim form as object
+
+&apos; GlobalScope.BasicLibraries.LoadLibrary(&quot;XrayTool&quot;)&apos;
+
+	oDoc = thiscomponent
+	
+&apos;	form = oDoc.getCurrentSelection()
+	
+&apos;	xray oDoc
+	ScanShapes
+	
+&apos;	setTemplateData	
+&apos;	odlg = createUnoService( &quot;com.sun.star.comp.PDF.PDFDialog&quot; )
+&apos;xray odlg
+&apos;	odlg.initialize
+&apos;	odlg.execute
+
+
+end sub
+
+&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;
+&apos;blocca (o sblocca) i controlli dopo/prima di modifiche
+&apos;da usare solo quando serve
+Sub ScanShapes
+	dim oDrawPage as variant
+	dim nCount as integer
+	dim nIndex as integer
+	dim oTag as variant
+&apos;prova ad accedere all&apos;oggetto draw esistente
+	oDrawPage = ThisComponent.DrawPage
+	nCount = oDrawPage.getCount()
+
+	for nIndex = 0 to nCount - 1
+		oTag = oDrawPage.getByIndex(nIndex)
+	
+	&apos;se è una shape
+		if oTag.supportsService(&quot;com.sun.star.drawing.Shape&quot;) then
+&apos;			xray oTag
+			if oTag.CharFontName = &quot;Times New Roman&quot; then
+				oTag.CharFontName = &quot;Arial Narrow&quot;
+			end if
+&apos;			print &quot;abort&quot;
+&apos;			oTag.MoveProtect = true
+&apos;			oTag.SizeProtect = true
+		end if
+		
+	next
+&apos;imposta il documento a modificato
+	ThisComponent.setModified( True )
+
+End Sub
+
+&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;
+&apos;blocca (o sblocca) i controlli dopo/prima di modifiche
+&apos;da usare solo quando serve
+Sub LockControlsHelper
+&apos;prova ad accedere all&apos;oggetto draw esistente
+	oDrawPage = ThisComponent.DrawPage
+	nCount = oDrawPage.getCount()
+	
+	for nIndex = 0 to nCount - 1
+		oTag = oDrawPage.getByIndex(nIndex)
+	
+	&apos;se è una shape
+		if oTag.supportsService(&quot;com.sun.star.drawing.Shape&quot;)	 then
+			oTag.MoveProtect = true
+			oTag.SizeProtect = true
+		end if
+		
+	next
+&apos;imposta il documento a modificato
+	ThisComponent.setModified( True )
+
+End Sub
+
+Sub RemoveFieldForConditionalSections
+&apos; rimuove tutti gli user field che dipendono da esso
+&apos;elimina il master un master field
+	dim oDoc as object
+	dim oText as object
+	dim oMasterFields as object
+	dim oMasterField as object
+	dim oUserField as object
+	dim sUserFieldName as string
+	dim sUserMasterFieldName as string
+	
+	sUserFieldName = COND_SECT_FIELD_NAME
+	sUserMasterFieldName = COND_SECT_FIELD_MASTER_NAME &amp; &quot;.&quot; &amp; COND_SECT_FIELD_NAME
+&apos; abilitare per debug con xray
+&apos; GlobalScope.BasicLibraries.LoadLibrary(&quot;XrayTool&quot;)&apos;
+	oDoc = ThisComponent
+	oText = oDoc.text
+	oMasterFields = oDoc.getTextFieldMasters()	
+&apos;xray oMasterField
+&apos;controlla se già c&apos;è un master
+	if oMasterFields.hasByName(sUserMasterFieldName) then
+		oMasterField = oMasterFields.getByName(sUserMasterFieldName)
+&apos;elimina tutti i campi utente usati
+		while UBound(oMasterField.DependentTextFields) &gt;= 0
+		  	oUserField = oMasterField.DependentTextFields(0)
+		  	oText.removeTextContent(oUserField)
+		wend
+&apos;infine elimina il masterfield
+		oMasterField.dispose()
+	end if
+end sub
+
+Sub AddFieldForConditionalSections
+&apos;nome del master: NoteIdx, tipo numerico valore 1
+&apos;prima un master field
+&apos;a cui assegno il valore
+	dim oDoc as object
+	dim oText as object
+	dim oMasterFields as object
+	dim oMasterField as object
+	dim oUserField as object
+	dim sUserFieldName as string
+	dim sUserMasterFieldName as string
+
+	sUserFieldName = COND_SECT_FIELD_NAME
+	sUserMasterFieldName = COND_SECT_FIELD_MASTER_NAME &amp; &quot;.&quot; &amp; COND_SECT_FIELD_NAME
+&apos; abilitare per debug con xray
+&apos; GlobalScope.BasicLibraries.LoadLibrary(&quot;XrayTool&quot;)&apos;
+	oDoc = ThisComponent
+	oText = oDoc.text
+	oMasterFields = oDoc.getTextFieldMasters()
+&apos;	oMasterField = oDoc.createInstance(&quot;com.sun.star.text.TextFieldMaster&quot;)
+&apos;xray oMasterField
+&apos;controlla se già c&apos;è un master
+	if oMasterFields.hasByName(sUserMasterFieldName) then
+		oMasterField = oMasterFields.getByName(sUserMasterFieldName)
+	else
+&apos;aggiungi il master e poi il campo utente
+&apos;prima crea il campo utente
+  		oUserField = oDoc.createInstance( COND_SECT_FIELD_USER_NAME )
+&apos;poi crea il master  
+  		oMasterField = oDoc.createInstance(COND_SECT_FIELD_MASTER_NAME )
+&apos;assegna il nome al campo master
+  		oMasterField.Name = sUserFieldName
+  REM This is the data that will be displayed. Remember that the
+  REM user field displays what the master tells it to display.
+  		oMasterField.IsExpression = true
+  		oMasterField.Content = &quot;&quot;
+  		oMasterField.Value = 1
+&apos;non è necessario attaccare il campo utente  		
+&apos;  		oUserField.attachTextFieldMaster(oMasterField)
+	end if
+end sub
+
+Sub Main
+set_lingua
+End Sub
+
+sub InsertBlankPage
+rem ----------------------------------------------------------------------
+rem define variables
+dim document   as object
+dim dispatcher as object
+rem ----------------------------------------------------------------------
+rem get access to the document
+document   = ThisComponent.CurrentController.Frame
+dispatcher = createUnoService(&quot;com.sun.star.frame.DispatchHelper&quot;)
+
+rem ----------------------------------------------------------------------
+dim args1(2) as new com.sun.star.beans.PropertyValue
+args1(0).Name = &quot;Kind&quot;
+args1(0).Value = 3
+args1(1).Name = &quot;TemplateName&quot;
+args1(1).Value = &quot;&quot;
+args1(2).Name = &quot;PageNumber&quot;
+args1(2).Value = 0
+
+dispatcher.executeDispatch(document, &quot;.uno:InsertBreak&quot;, &quot;&quot;, 0, args1())
+
+rem ----------------------------------------------------------------------
+dispatcher.executeDispatch(document, &quot;.uno:InsertPara&quot;, &quot;&quot;, 0, Array())
+
+rem ----------------------------------------------------------------------
+dim args3(0) as new com.sun.star.beans.PropertyValue
+args3(0).Name = &quot;Text&quot;
+args3(0).Value = &quot;NOTE:&quot;
+
+dispatcher.executeDispatch(document, &quot;.uno:InsertText&quot;, &quot;&quot;, 0, args3())
+
+rem ----------------------------------------------------------------------
+dispatcher.executeDispatch(document, &quot;.uno:InsertPara&quot;, &quot;&quot;, 0, Array())
+
+
+end sub
+
+sub set_lingua
+rem ----------------------------------------------------------------------
+rem define variables
+dim document   as object
+dim dispatcher as object
+rem ----------------------------------------------------------------------
+rem get access to the document
+document   = ThisComponent.CurrentController.Frame
+dispatcher = createUnoService(&quot;com.sun.star.frame.DispatchHelper&quot;)
+
+rem ----------------------------------------------------------------------
+dispatcher.executeDispatch(document, &quot;.uno:OptionsTreeDialog&quot;, &quot;&quot;, 0, Array())
+
+rem ----------------------------------------------------------------------
+dim args2(0) as new com.sun.star.beans.PropertyValue
+args2(0).Name = &quot;HideSpellMark&quot;
+args2(0).Value = false
+
+dispatcher.executeDispatch(document, &quot;.uno:HideSpellMark&quot;, &quot;&quot;, 0, args2())
+
+
+end sub
+
+
+sub StileCodice
+rem ----------------------------------------------------------------------
+rem define variables
+dim document   as object
+dim dispatcher as object
+rem ----------------------------------------------------------------------
+rem get access to the document
+document   = ThisComponent.CurrentController.Frame
+dispatcher = createUnoService(&quot;com.sun.star.frame.DispatchHelper&quot;)
+
+rem ----------------------------------------------------------------------
+dim args1(1) as new com.sun.star.beans.PropertyValue
+args1(0).Name = &quot;Template&quot;
+args1(0).Value = &quot;Codice&quot;
+args1(1).Name = &quot;Family&quot;
+args1(1).Value = 2
+
+dispatcher.executeDispatch(document, &quot;.uno:StyleApply&quot;, &quot;&quot;, 0, args1())
+
+
+end sub
+
+Sub MozProfile
+	Dim oMozBootstrap as Object
+	Dim sMsg as String
+	Dim sDefault as String
+
+	oMozBootstrap = createUnoService( &quot;com.sun.star.mozilla.MozillaBootstrap&quot; )
+	
+	sMsg = &quot;OpenOffice.org Mozilla Profile Detection&quot; + Chr$(10) + Chr$(10)
+	CheckMozProfile( oMozBootstrap, &quot;Thunderbird&quot;, com.sun.star.mozilla.MozillaProductType.Thunderbird, sMsg, sDefault )
+	sMsg = sMsg + Chr$(10)
+	CheckMozProfile( oMozBootstrap, &quot;Mozilla&quot;, com.sun.star.mozilla.MozillaProductType.Mozilla, sMsg, sDefault )
+	sMsg = sMsg + Chr$(10)
+	CheckMozProfile( oMozBootstrap, &quot;Firefox&quot;, com.sun.star.mozilla.MozillaProductType.Firefox, sMsg, sDefault )
+	sMsg = sMsg + Chr$(10)
+	CheckMozProfile( oMozBootstrap, &quot;Default&quot;, com.sun.star.mozilla.MozillaProductType.Default, sMsg, sDefault )
+	sMsg = sMsg + Chr$(10)
+	sMsg = sMsg + &quot;The first detected path will be used for certificates:&quot; + Chr$(10)
+	if Len( sDefault ) &gt; 0 Then
+		sMsg = sMsg + sDefault
+	else
+		sMsg = sMsg + &quot;No profile found!&quot;
+	end if
+	sMsg = sMsg + Chr$(10) + Chr$(10) + &quot;You can overwrite the path with environment variable MOZILLA_CERTIFICATE_FOLDER&quot; + Chr$(10) + &quot; &quot;
+	
+	
+	MsgBox sMsg,64
+
+End Sub
+
+Sub CheckMozProfile( oMozBootstrap, TypeName, TypeID, sMsg, sDefault )
+	Dim sProfile as String
+	Dim sPath as String
+
+	sMsg = sMsg + TypeName + &quot;:&quot; + Chr$(10) + &quot;Profile name: &quot;
+	sProfile = 	oMozBootstrap.getDefaultProfile(TypeID)
+	if Len( sProfile ) &gt; 0 Then
+		sMsg = sMsg + sProfile
+		sPath = oMozBootstrap.getProfilePath(TypeID, sProfile )
+		sMsg = sMsg + Chr$(10) + &quot;Profile path: &quot; + sPath + Chr$(10)
+		if Len( sDefault ) = 0 Then
+			sDefault = sPath
+		end if
+		
+	else
+		sMsg = sMsg + &quot;NOT FOUND&quot; + Chr$(10)
+	endif
+End Sub
+
+Function SortedFontDescriptors(oDoc, bDuplicates As Boolean)
+  Dim oWindow          &apos;Container window AWT XDevice interface.
+  Dim oFonts()         &apos;Array of awt FontDescriptor structures.
+  Dim oFinalFonts()    &apos;Font descriptors to return.
+  Dim nIndex() As Long &apos;Indirect sorted index into.
+  Dim sName$           &apos;Font name.
+  Dim i&amp;               &apos;General index variable.
+  Dim j&amp;               &apos;General index variable.
+  Dim n&amp;               &apos;General utility variable.
+  Dim k&amp;               &apos;General utility variable.
+  Dim bChanged As Boolean
+
+  oWindow  = oDoc.getCurrentController().getFrame().getContainerWindow()
+  oFonts() = oWindow.getFontDescriptors()
+  ReDim nIndex(UBound(oFonts()))
+  n = UBound(oFonts())
+  REM First, obtain an index into the unique values.
+  For i = 0 to n
+    nIndex(i) = i
+  Next
+
+  REM Sort the data!
+  For i = 0 To n-1
+    bChanged = False
+    For j = 1 To n-i
+      If oFonts(nIndex(j-1)).Name &gt; oFonts(nIndex(j)).Name Then
+        k = nIndex(j-1)
+        nIndex(j-1) = nIndex(j)
+        nIndex(j) = k
+        bChanged = True
+      End If
+    Next
+    If NOT bChanged Then Exit For
+  Next
+
+  REM Copy the font descriptor.
+  sName = &quot;&quot;
+  oFinalFonts() = DimArray(n)
+  j = -1
+  For i = 0 To n
+    If bDuplicates OR (sName &lt;&gt; oFonts(nIndex(i)).Name) Then
+      j = j + 1
+      oFinalFonts(j) = oFonts(nIndex(i))
+      sName = oFinalFonts(j).Name
+    End If
+  Next
+  REM Bug alert, if I do NOT perform a ReDim Preserve, then the returned 
+  REM value is Empty; even if the array does not change in size.
+  ReDim Preserve oFinalFonts(j)
+  SortedFontDescriptors = oFinalFonts()
+End Function
+
+Sub FontSummaryDocument
+  Dim sNewUrl$
+  Dim oDoc
+  sNewUrl = &quot;private:factory/swriter&quot;
+  oDoc = StarDesktop.loadComponentFromURL(sNewUrl,&quot;_blank&quot;, 0, Array())
+  Call FontSummary(oDoc)
+End Sub
+
+Sub FontCharacterDocument
+  Dim sNewUrl$
+  Dim oDoc
+  sNewUrl = &quot;private:factory/swriter&quot;
+  oDoc = StarDesktop.loadComponentFromURL(sNewUrl,&quot;_blank&quot;, 0, Array())
+  Call FontsInTable(oDoc)
+End Sub
+
+Sub SummaryAndTable
+  Dim sNewUrl$
+  Dim oDoc
+  Dim oCurs
+  Dim oText
+  sNewUrl = &quot;private:factory/swriter&quot;
+  oDoc = StarDesktop.loadComponentFromURL(sNewUrl,&quot;_blank&quot;, 0, Array())
+  Call FontSummary(oDoc)
+  oText = oDoc.getText()
+
+  REM How about a page break here!
+  oCurs = oText.createTextCursorByRange(oText.getEnd())
+  oCurs.PageDescName = oCurs.PageStyleName
+
+  Call FontsInTable(oDoc)
+  Call FontInfoToCalc()
+End Sub
+
+Sub FontsInTable(oDoc)
+  Dim oFonts()     &apos;Array of awt FontDescriptor structures.
+  Dim i%           &apos;General index variable.
+  Dim nRow%        &apos;General index variable.
+  Dim nCol%        &apos;General index variable.
+  Dim sFontName$   &apos;Name of one font.
+  Dim oText        &apos;Document text object, used to insert text objects.
+  Dim oCurs        &apos;Cursor used to insert text content.
+  Dim oTableCurs   &apos;Used to format cells in the inserted tables.
+  Dim sTData(16)   &apos;Data used to set populate the inserted tables.
+  Dim sChars(16)   &apos;Temporary used for individual rows added to sTData().
+  Dim x            &apos;Temporary utility variable.
+  Dim oTable       &apos;Table inserted into the document.
+  Dim oStyles      &apos;All of the paragraph styles. 
+  Dim oStyle       &apos;The created paragraph style.
+
+  REM The visible characters are generally from 32 to 65533.
+  REM I do not know how to easily figure out which characters are supported,
+  REM so I will simply display the charcters from 32 to 255.
+  REM Start with the heading data.
+  sChars() = Array(&quot;&quot;,  &quot;0&quot;, &quot;1&quot;, &quot;2&quot;, &quot;3&quot;, &quot;4&quot;, &quot;5&quot;, &quot;6&quot;, &quot;7&quot;, &quot;8&quot;, &quot;9&quot;, _
+                   &quot;A&quot;, &quot;B&quot;, &quot;C&quot;, &quot;D&quot;, &quot;E&quot;, &quot;F&quot;)
+  sTData(0) = sChars()
+
+  REM I want the table listings to ALWAYS stay with the table below it.
+  REM Create a style for this. Also, set some space between the paragraph
+  REM and the table.
+  oStyles = oDoc.getStyleFamilies().getByName(&quot;ParagraphStyles&quot;)
+  If NOT oStyles.hasByName(&quot;_clisting&quot;) Then
+    oStyle = oDoc.createInstance(&quot;com.sun.star.style.ParagraphStyle&quot;)
+    oStyle.setParentStyle(&quot;Default&quot;)
+    oStyle.ParaKeepTogether = True
+    oStyle.ParaBottomMargin = 200
+    oStyles.insertByName(&quot;_clisting&quot;, oStyle)
+  End If
+
+  REM i contains the ASCII value for the character.
+  i = 0
+  For nRow = 1 To 16
+    x = DimArray(16)
+    x(0) = sChars(nRow)
+    For nCol = 1 To 16
+      If i &gt; 31 Then
+        x(nCol) = CHR$(i)
+      Else
+        x(nCol) = &quot;&quot;
+      End If
+      i = i + 1
+    Next
+    sTData(nRow) = x
+  Next
+
+  oDoc.lockControllers()
+  oText = oDoc.getText()
+  oCurs = oText.createTextCursorByRange(oText.getEnd())
+  oFonts() = SortedFontDescriptors(oDoc, False)
+  oText.insertControlCharacter(oCurs, _
+       com.sun.star.text.ControlCharacter.LINE_BREAK, False)
+
+  For i = LBound(oFonts()) to UBound(oFonts())
+    &apos;If i &gt; 7 Then Exit For
+    REM We only obtained unique font names, so no need to check for that here.
+    sFontName = oFonts(i).Name
+    oCurs.CharWeight = com.sun.star.awt.FontWeight.BOLD
+    oText.insertString(oCurs, &quot;Table &quot;, FALSE)
+    Call AddTableExpressionField(oDoc, oCurs)
+    oText.insertString(oCurs, &quot;.&quot;, FALSE)
+    oCurs.CharWeight = com.sun.star.awt.FontWeight.NORMAL
+    oText.insertString(oCurs, &quot; Font: “&quot; &amp; sFontName &amp; &quot;”&quot;, FALSE)
+
+    oTable = oDoc.createInstance(&quot;com.sun.star.text.TextTable&quot;)
+    oTable.initialize(17, 17)
+    oText.insertTextContent(oCurs, oTable, False)
+    oText.insertControlCharacter(oCurs, _
+         com.sun.star.text.ControlCharacter.LINE_BREAK, False)
+    oTable.setDataArray(sTData())
+    oTableCurs = oTable.createCursorByCellName(&quot;A2&quot;)
+    oTableCurs.goRight(16, True)
+    oTableCurs.CharHeight = 10
+    oTableCurs.gotoCellByName(&quot;A2&quot;, False)
+    oTableCurs.goDown(15, True)
+    oTableCurs.CharHeight = 8
+    oTableCurs.CharWeight = com.sun.star.awt.FontWeight.BOLD
+
+    oTableCurs.gotoCellByName(&quot;B2&quot;, False)
+    oTableCurs.gotoEnd(True)
+    oTableCurs.CharHeight = 8
+    oTableCurs.CharFontName = sFontName
+  Next
+
+  Dim oDescriptor &apos;The search descriptor
+  Dim oFound &apos;The found range
+  Dim oFoundAll &apos;The found range
+  oDescriptor = oDoc.createSearchDescriptor()
+  oDescriptor.SearchString = &quot;Table&quot;
+  oDescriptor.SearchCaseSensitive = True
+  oDescriptor.SearchWords = True
+  oFoundAll = oDoc.findAll(oDescriptor)
+  For i = 0 to oFoundAll.getCount()-1
+    oFound = oFoundAll.getByIndex(i)
+    oFound.ParaStyleName = &quot;_clisting&quot;
+    If (i &gt; 0) AND (i MOD 2 = 0) Then
+      oFound.PageDescName = oFound.PageStyleName
+    End If
+  Next
+
+TheEnd:
+  oDoc.unlockControllers()
+End Sub
+
+Sub FontSummary(oDoc)
+  Dim oFonts()     &apos;Array of awt FontDescriptor structures.
+  Dim sFontName$   &apos;Name of one font.
+  Dim sLastFont$   &apos;Last used font.
+  Dim oText        &apos;Document&apos;s primary text object.
+  Dim oCurs        &apos;Text cursor used to insert the text.
+  Dim nSaveHeight  &apos;Initial character height.
+  Dim sSaveFont$   &apos;Initial font in effect.
+  Dim i%           &apos;General index variable.
+  Dim s$           &apos;Contains the sample text that is displayed using the font.
+
+&apos; abilitare per debug con xray
+&apos; GlobalScope.BasicLibraries.LoadLibrary(&quot;XrayTool&quot;)&apos;
+
+
+  s = &quot;ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789&quot;
+  oDoc.lockControllers()
+  &apos;On Error Goto EndLabel
+  oText    = oDoc.getText()
+  oCurs    = oText.createTextCursorByRange(oText.getEnd())
+  sSaveFont= oCurs.charFontName
+  oFonts() = SortedFontDescriptors(oDoc, False)
+&apos;  oText.insertControlCharacter(oCurs, _
+&apos;       com.sun.star.text.ControlCharacter.LINE_BREAK, False)
+
+  nSaveHeight = oCurs.CharHeight
+  oCurs.CharHeight = 10
+  
+&apos;  xray oCurs
+
+  REM for each font descriptor.
+  For i = LBound(oFonts()) to UBound(oFonts())
+    sFontName = oFonts(i).Name
+    If sFontName &lt;&gt; sLastFont Then
+      sLastFont = sFontName
+      
+      oCurs.ParaStyleName = &quot;Heading 1&quot;
+	  oCurs.CharHeight = 12
+
+      oText.insertString(oCurs, sFontName &amp; &quot;&quot;, FALSE)
+      
+&apos;beppec56
+	  oText.insertControlCharacter(oCurs, _
+       com.sun.star.text.ControlCharacter.PARAGRAPH_BREAK, False)
+
+&apos;need to add a check for locale, so to use the correct
+&apos;Default font name
+&apos;	  oCurs.ParaStyleName =&quot;Default&quot;
+	  oCurs.ParaStyleName =&quot;Standard&quot;
+	  oCurs.CharHeight = 10
+      oCurs.charFontName = sFontName
+      oText.insertString(oCurs, s, FALSE)
+      oCurs.charFontName = sSaveFont
+&apos;beppec56
+&apos;      oText.insertControlCharacter(oCurs, _
+&apos;           com.sun.star.text.ControlCharacter.LINE_BREAK, False)
+      oText.insertControlCharacter(oCurs, _
+           com.sun.star.text.ControlCharacter.PARAGRAPH_BREAK, False)
+    End If
+  Next
+  oCurs.CharHeight = nSaveHeight
+  EndLabel:
+  oDoc.unlockControllers()
+End Sub
+
+Sub FontInfoToCalc()
+  Dim sNewUrl$         &apos;URL required to create anew Calc document.
+  Dim oDoc             &apos;Newly created Calc document.
+  Dim oFonts()         &apos;Array of font descriptors supported by OOo.
+  Dim oFontFamily()    &apos;com.sun.star.awt.FontFamily constant group strings.
+  Dim oCharSet()       &apos;com.sun.star.awt.CharSet constant group strings.
+  Dim oFontPitch()     &apos;com.sun.star.awt.FontPitch constant group strings.
+  Dim oFontSlant()     &apos;com.sun.star.awt.FontSlant constant group strings.
+  Dim oFontUnderline() &apos;com.sun.star.awt.FontUnderline constant group strings.
+  Dim oFontStrikeout() &apos;com.sun.star.awt.FontStrikeout constant group strings.
+  Dim i As Long        &apos;General index variable.
+  Dim oData()          &apos;Data to store in the Calc document using setDataArray().
+  Dim x                &apos;Single font descriptor.
+  Dim oMetric          &apos;Individual font metric.
+  Dim oWindow          &apos;Container window AWT XDevice interface.
+
+  REM Create a new Calc document and obtain the supported font descriptors.
+  sNewUrl  = &quot;private:factory/scalc&quot;
+  oDoc     = StarDesktop.loadComponentFromURL(sNewUrl,&quot;_blank&quot;, 0, Array())
+  oDoc.lockControllers()
+  oFonts() = SortedFontDescriptors(oDoc, True)
+  oWindow  = oDoc.getCurrentController().getFrame().getContainerWindow()
+
+  REM Initialize the oData(0) array with appropriate header values.
+  oData()  = DimArray(UBound(oFonts()) + 1)
+  oData(0) = Array(&quot;Name&quot;, &quot;StyleName&quot;, &quot;Family&quot;, &quot;CharSet&quot;, &quot;Type&quot;, _
+       &quot;CharacterWidth&quot;, &quot;Width&quot;, &quot;Pitch&quot;, &quot;Height&quot;, &quot;Kerning&quot;, _
+       &quot;Orientation&quot;, &quot;Slant&quot;, &quot;Strikeout&quot;, &quot;Weight&quot;, &quot;Underline&quot;, _
+       &quot;WordLineMode&quot;, &quot;First Char&quot;, &quot;Last Char&quot;, &quot;Slant Degrees&quot;)
+
+  REM Get data for each font descriptor.
+  REM by converting the data to a string using CStr, a new string instance
+  REM is returned. If I do not do this, then there are errors in SafeArray().
+  REM Also, False is not valid for use in setDataArray(), but a string is.
+  For i = 0 To UBound(oFonts())
+    x = oFonts(i)
+    oMetric = oWindow.getFont(x).getFontMetric()
+    oData(i+1) = Array(       CStr(x.Name),      CStr(x.StyleName), _
+      CStr(x.Family),         CStr(x.CharSet),   CStr(x.Type), _
+      CStr(x.CharacterWidth), CStr(x.Width),     CStr(x.Pitch), _
+      CStr(x.Height),         CStr(x.Kerning),   CStr(x.Orientation), _
+      CStr(x.Slant),          CStr(x.Strikeout), CStr(x.Weight), _
+      CStr(x.Underline),      CStr(x.WordLineMode), _
+      CStr(ASC(CStr(oMetric.FirstChar))), _
+      CStr(ASC(CStr(oMetric.LastChar))), _
+      CStr(oMetric.Slant) )
+  Next
+
+  REM Initialize arrays with a text representation of the contant groups
+  REM used in the font descriptors.
+  oFontFamily() = Array(&quot;DONTKNOW&quot;, &quot;DECORATIVE&quot;, &quot;MODERN&quot;, _
+                        &quot;ROMAN&quot;, &quot;SCRIPT&quot;, &quot;SWISS&quot;, &quot;SYSTEM&quot;)
+
+  oCharSet() = Array(&quot;DONTKNOW&quot;, &quot;ANSI&quot;, &quot;MAC&quot;, &quot;IBMPC_437&quot;, _
+               &quot;IBMPC_850&quot;, &quot;IBMPC_860&quot;, &quot;IBMPC_861&quot;, &quot;IBMPC_863&quot;, _
+               &quot;IBMPC_865&quot;, &quot;SYSTEM&quot;, &quot;SYMBOL&quot;)
+
+  oFontPitch() = Array(&quot;DONTKNOW&quot;, &quot;FIXED&quot;, &quot;VARIABLE&quot;)
+
+
+  oFontSlant() = Array(&quot;NONE&quot;, &quot;OBLIQUE&quot;, &quot;ITALIC&quot;, &quot;DONTKNOW&quot;, _
+                       &quot;REVERSE_OBLIQUE&quot;, &quot;REVERSE_ITALIC&quot;)
+
+  oFontUnderline() = Array(&quot;NONE&quot;, &quot;SINGLE&quot;, &quot;DOUBLE&quot;, &quot;DOTTED&quot;, _
+                     &quot;DONTKNOW&quot;, &quot;DASH&quot;, &quot;LONGDASH&quot;, &quot;DASHDOT&quot;, &quot;DASHDOTDOT&quot;, _
+                     &quot;SMALLWAVE&quot;, &quot;WAVE&quot;, &quot;DOUBLEWAVE&quot;, &quot;BOLD&quot;, &quot;BOLDDOTTED&quot;, _
+                     &quot;BOLDDASH&quot;, &quot;BOLDLONGDASH&quot;, &quot;BOLDDASHDOT&quot;, _
+                     &quot;BOLDDASHDOTDOT&quot;, &quot;BOLDWAVE&quot;)
+
+  oFontStrikeout() = Array(&quot;NONE&quot;, &quot;SINGLE&quot;, &quot;DOUBLE&quot;, &quot;DONTKNOW&quot;, _
+                           &quot;BOLD&quot;, &quot;SLASH&quot;, &quot;X&quot;)
+
+  REM Convert the columns that use integers based on a constant group
+  REM to a string.
+  SafeArrayColumns(2,  oData(), oFontFamily(),    True)
+  SafeArrayColumns(3,  oData(), oCharSet(),       True)
+  SafeArrayColumns(7,  oData(), oFontPitch(),     True)
+  SafeArrayColumns(11, oData(), oFontSlant(),     True)
+  SafeArrayColumns(12, oData(), oFontStrikeout(), True)
+  SafeArrayColumns(14, oData(), oFontUnderline(), True)
+
+  REM Store the data into the Calc document.
+  AppendDataToCalcDoc(oDoc, oData())
+  oDoc.unlockControllers()
+End Sub
+
+
+sub macro2
+&apos; Recorded by Giuseppe Castagno
+&apos; Date: Sun Dec 23 11:11:43 2007
+	
+	&apos; get access to the document
+	oDocumentModel = ThisComponent
+	oDocumentView = oDocumentModel.getCurrentController()
+	oDocumentFrame = oDocumentView.Frame
+
+	&apos; the dispatcher service is used to send commands from the 
+	&apos; document frame to the underlaying office application
+	oDispatcher = CreateUnoService(&quot;com.sun.star.frame.DispatchHelper&quot;)
+	
+	Dim mArgs1(0) As New com.sun.star.beans.PropertyValue
+	mArgs1(0).Name = &quot;Text&quot;
+	mArgs1(0).Value = &quot;p&quot;
+	oDispatcher.executeDispatch(oDocumentFrame, &quot;.uno:InsertText&quot; ,&quot;&quot; ,0 ,mArgs1())
+
+	oDispatcher.executeDispatch(oDocumentFrame, &quot;.uno:SwBackspace&quot; ,&quot;&quot; ,0 ,Array())
+
+	oDispatcher.executeDispatch(oDocumentFrame, &quot;.uno:SwBackspace&quot; ,&quot;&quot; ,0 ,Array())
+
+	Dim mArgs2(0) As New com.sun.star.beans.PropertyValue
+	mArgs2(0).Name = &quot;Text&quot;
+	mArgs2(0).Value = &quot;d&quot;
+	oDispatcher.executeDispatch(oDocumentFrame, &quot;.uno:InsertText&quot; ,&quot;&quot; ,0 ,mArgs2())
+
+	oDispatcher.executeDispatch(oDocumentFrame, &quot;.uno:InsertPara&quot; ,&quot;&quot; ,0 ,Array())
+
+	Dim mArgs3(2) As New com.sun.star.beans.PropertyValue
+	mArgs3(0).Name = &quot;Kind&quot;
+	mArgs3(0).Value = 3
+	mArgs3(1).Name = &quot;TemplateName&quot;
+	mArgs3(1).Value = &quot;&quot;
+	mArgs3(2).Name = &quot;PageNumber&quot;
+	mArgs3(2).Value = 0
+	oDispatcher.executeDispatch(oDocumentFrame, &quot;.uno:InsertBreak&quot; ,&quot;&quot; ,0 ,mArgs3())
+
+	Dim mArgs4(0) As New com.sun.star.beans.PropertyValue
+	mArgs4(0).Name = &quot;Text&quot;
+	mArgs4(0).Value = &quot;a&quot;
+	oDispatcher.executeDispatch(oDocumentFrame, &quot;.uno:InsertText&quot; ,&quot;&quot; ,0 ,mArgs4())
+
+	oDispatcher.executeDispatch(oDocumentFrame, &quot;.uno:InsertPara&quot; ,&quot;&quot; ,0 ,Array())
+
+
+end sub
+
+
+Sub InsertLogo
+	Dim sGraphicURL as String, iAnchor as Long
+&apos;	oDialog.endExecute()
+	sFile =  &quot;&quot; &apos; oDialog.Model.FileControl1.Text
+		iAnchor = com.sun.star.text.TextContentAnchorType.AS_CHARACTER
+&apos;		iAnchor = com.sun.star.text.TextContentAnchorType.AT_PARAGRAPH
+	&apos; the File Selection control returns a system path, we have to transform it to a File URL
+	&apos; We use a small helper function MakeFileURL for this purpose (see below)
+	sGraphicURL = ConvertToURL(sFile)
+	&apos; access the document model
+	oDoc = ThisComponent
+	&apos; get the Text service of the document
+	oText = oDoc.getText()
+	&apos; create an instance of a graphic object using the document service factory
+	oGraphicObject = oDoc.createInstance(&quot;com.sun.star.text.GraphicObject&quot;)
+	&apos; set the URL of the graphic
+	oGraphicObject.GraphicURL = sGraphicURL
+	oGraphicObject.AnchorType = iAnchor
+&apos; set High and Width directly in 1/100 di mm	
+	oGraphicObject.Height = 633
+	oGraphicObject.Width = 2993
+ &apos;   MsgBox oGraphicObject.Dbg_Properties
+
+	&apos; get the current cursor position in the GUI and create a text cursor from it
+	oViewCursor = oDoc.getCurrentController().getViewCursor()
+	DisplayMethods(oViewCursor,&quot;p&quot;)
+&apos;MsgBox 	oViewCursor.Dbg_Properties
+
+	oCursor = oText.createTextCursorByRange(oViewCursor.getStart())
+	&apos; insert the graphical object at the beginning of the text
+	oText.insertTextContent(oCursor.getStart(), oGraphicObject, false)		
+End Sub
+
+&apos;sWhat = m (methods), s = interfaces, p = properties
+&apos;
+Sub DisplayMethods(oObj as Object, SWhat as String)
+	Dim sMethodLIst as String, sMsgBox as String
+	Dim fs, ep as Integer
+	Dim i as INteger
+	Dim EOL as Boolean
+	If IsNull(oObj) Then
+		print &quot;Object does not exist.&quot;
+	Else
+		If sWhat = &quot;m&quot; Then
+			sMethodList = oObj.DBG_Methods
+		ElseIf sWhat = &quot;s&quot; Then
+			sMethodList = oObj.DBG_SupportedInterfaces
+		ElseIf sWhat = &quot;p&quot; Then
+			sMethodLIst = oObj.DBG_Properties
+		End If
+		fs = 1
+		EOL = FALSE
+		While fs &lt;= Len(sMethodList)
+			sMsgBox = &quot;&quot;
+			For i = 0 to 15
+				ep = InStr(fs, sMethodList, &quot;;&quot;)
+				If ep = 0 then
+					ep = Len(sMethodList)
+				End If
+				sMsgBox = sMsgBox &amp; Mid$(sMethodList, fs, ep - fs) &amp; chr$(13)
+				fs = ep + 1
+			Next i
+			MsgBox sMsgBox
+		Wend
+	End If
+End Sub
+
+
+sub InsertLogoDispatch
+rem ----------------------------------------------------------------------
+rem define variables
+dim document   as object
+dim dispatcher as object
+rem ----------------------------------------------------------------------
+rem get access to the document
+document   = ThisComponent.CurrentController.Frame
+dispatcher = createUnoService(&quot;com.sun.star.frame.DispatchHelper&quot;)
+
+rem ----------------------------------------------------------------------
+dim args1(3) as new com.sun.star.beans.PropertyValue
+args1(0).Name = &quot;FileName&quot;
+args1(0).Value = &quot;file:///&quot;
+args1(1).Name = &quot;FilterName&quot;
+args1(1).Value = &quot;&lt;All formats&gt;&quot;
+args1(2).Name = &quot;AsLink&quot;
+args1(2).Value = true
+args1(3).Name = &quot;Style&quot;
+args1(3).Value = &quot;Graphics&quot;
+
+dispatcher.executeDispatch(document, &quot;.uno:InsertGraphic&quot;, &quot;&quot;, 0, args1())
+
+rem ----------------------------------------------------------------------
+dim args2(4) as new com.sun.star.beans.PropertyValue
+args2(0).Name = &quot;BackgroundPattern.Transparent&quot;
+args2(0).Value = true
+args2(1).Name = &quot;BackgroundPattern.BackColor&quot;
+args2(1).Value = -1
+args2(2).Name = &quot;BackgroundPattern.URL&quot;
+args2(2).Value = &quot;&quot;
+args2(3).Name = &quot;BackgroundPattern.Filtername&quot;
+args2(3).Value = &quot;&quot;
+args2(4).Name = &quot;BackgroundPattern.Position&quot;
+args2(4).Value = com.sun.star.style.GraphicLocation.NONE
+
+dispatcher.executeDispatch(document, &quot;.uno:BackgroundPattern&quot;, &quot;&quot;, 0, args2())
+
+rem ----------------------------------------------------------------------
+dim args3(4) as new com.sun.star.beans.PropertyValue
+args3(0).Name = &quot;BorderInner.Horizontal&quot;
+args3(0).Value = Array(0,0,0,0)
+args3(1).Name = &quot;BorderInner.Vertical&quot;
+args3(1).Value = Array(0,0,0,0)
+args3(2).Name = &quot;BorderInner.Flags&quot;
+args3(2).Value = 2
+args3(3).Name = &quot;BorderInner.ValidFlags&quot;
+args3(3).Value = 63
+args3(4).Name = &quot;BorderInner.DefaultDistance&quot;
+args3(4).Value = 49
+
+dispatcher.executeDispatch(document, &quot;.uno:BorderInner&quot;, &quot;&quot;, 0, args3())
+
+rem ----------------------------------------------------------------------
+dispatcher.executeDispatch(document, &quot;.uno:SetAnchorToChar&quot;, &quot;&quot;, 0, Array())
+
+end sub
+
+Sub AboutDialogBox
+	dim oAboutDialog as object
+
+&apos;	GlobalScope.BasicLibraries.LoadLibrary(&quot;Tools&quot;)&apos;contiene LoadDialog, usata più sotto
+	oAboutDialog = Tools.LoadDialog(&quot;it_acca_esse_MacroBeppe&quot;, &quot;AboutDialog&quot;)
+	oAboutDialog.execute()
+end sub
+
+&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;
+&apos; bisogna mettere le informazioni sul formato qui, all&apos;interno
+&apos;
+Sub setTemplateData
+	dim odoc as object
+	dim styles as object
+	dim odocinfo as object
+	dim curl as string
+
+	odoc=thiscomponent
+	&apos; the information about the template used to create/maintain this doc is in documentinfo
+	curl=converttourl(&quot;/home/beppe/.ooohs2/user/template/Manuali/Manuali hardware-logo3.ott&quot;)
+	styles=odoc.getStyleFamilies()  &apos;get the interface to load styles
+	styles.loadStylesFromURL(curl,Array()) &apos; by default loads &amp; overrides all styles
+	odocinfo=odoc.getDocumentInfo()
+	odocinfo.Template=&quot;Manuali hardware-logo3&quot;
+	odocinfo.TemplateFilename=curl
+&apos; set to today
+	odocinfo.TemplateDate.Year=Year(now())
+	odocinfo.TemplateDate.Month=Month(now())
+	odocinfo.TemplateDate.Day=Day(Now())
+End Sub
+
+&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;
+&apos;
+&apos;
+Sub GetTemplatePath
+	dim odoc as object
+	dim odocinfo as object
+	dim templatename as string
+	dim templatefile as string
+	dim datestr as string
+	dim	vart as integer
+	dim yr as integer
+	dim mth as integer
+	dim dy as integer
+
+	on error goto notemplate
+	odoc=thiscomponent
+&apos; the information about the template used to create/maintain this doc is in documentinfo
+	odocinfo=odoc.getDocumentInfo()
+	templatename=odocinfo.Template
+	templatefile=odocinfo.TemplateFilename
+	yr=odocinfo.TemplateDate.Year
+	mth=odocinfo.TemplateDate.Month
+	Dy=odocinfo.TemplateDate.Day
+	Datestr=format(yr,&quot;0000&quot;)&amp;&quot;-&quot;&amp;format(mth,&quot;00&quot;)&amp;&quot;-&quot;&amp;format(dy,&quot;00&quot;)
+	msgbox &quot;Template: &quot;&amp;templatename &amp; chr(13)&amp;&quot;File: &quot;&amp; templatefile &amp;chr(13)&amp;&quot;Date: &quot;&amp; datestr
+	on error goto 0
+	exit sub
+notemplate:
+	msgbox &quot;Template: &quot;&amp;templatename &amp; chr(13)&amp;&quot;File: &quot;&amp; templatefile &amp;chr(13)&amp;&quot;Date: &quot;&amp; datestr
+	on error goto 0	
+End Sub
+
+
+Sub FixTemplateName
+	TemplateName = ThisComponent.DocumentInfo.Template
+   	if TemplateName &lt;&gt; &quot;&quot; then
+   		ThisComponent.DocumentInfo.Template = TemplateName
+   	end if
+end sub
+
+sub GetTemplatePathx
+&apos;	getTemplateData
+&apos;Document = ThisComponent
+&apos;xray Document
+&apos;print &quot;TemplateFileName is: &quot;+Document.DocumentInfo.TemplateFileName
+&apos;print &quot;Template is: &quot;+Document.DocumentInfo.Template
+end sub
+
+
+sub changeData
+rem ----------------------------------------------------------------------
+rem define variables
+dim document   as object
+dim dispatcher as object
+rem ----------------------------------------------------------------------
+rem get access to the document
+document   = ThisComponent.CurrentController.Frame
+dispatcher = createUnoService(&quot;com.sun.star.frame.DispatchHelper&quot;)
+
+rem ----------------------------------------------------------------------
+dim args1(0) as new com.sun.star.beans.PropertyValue
+args1(0).Name = &quot;ShowProperties&quot;
+args1(0).Value = false
+
+dispatcher.executeDispatch(document, &quot;.uno:ShowProperties&quot;, &quot;&quot;, 0, args1())
+
+rem ----------------------------------------------------------------------
+dim args2(0) as new com.sun.star.beans.PropertyValue
+args2(0).Name = &quot;ShowProperties&quot;
+args2(0).Value = false
+
+dispatcher.executeDispatch(document, &quot;.uno:ShowProperties&quot;, &quot;&quot;, 0, args2())
+
+
+end sub
+
+private ShowFirstMessage as boolean
+private ShowStylesInUse as boolean
+private AskDelete as boolean
+private PreDefined as object
+
+Sub DeleteExcessParagraphStyles &apos;Version 2, John Vigor, Jr., 10/22/06
+&apos;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;USER VARIABLES&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;
+ShowFirstMessage = True &apos;Change to False to avoid 1st message.
+ShowStylesInUse = False &apos;Change to True to display currently
+&apos;used styles. &quot;Standard&quot; is the internal name for &quot;Default&quot;. 
+AskDelete = True &apos;Change to False if you don&apos;t want to be
+&apos;asked about deleting any style.
+&apos;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;END USER VARIABLES&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;
+Dim inUse()
+oDoc = ThisComponent
+If ShowFirstMessage then
+ a$ = &quot;IMPORTANT: the US English interface MUST be selected!&quot; &amp; chr(13) &amp; &quot;==========================&quot; &amp; chr(13) &amp;&quot;Remove unused styles?&quot; &amp; chr(13) &amp; &quot;This will not affect OOo&apos;s predefined styles.&quot; 
+ If MsgBox(a$,4,&quot;Paragraph Style Remover&quot;) = 7 then End
+EndIf
+PreDefined = PreDefineStyles &apos;Array of all predefined paragraph styles.
+oEnum = oDoc.Text.createEnumeration
+While oEnum.hasMoreElements
+ thisElement = oEnum.nextElement
+ If Not thisElement.SupportsService(&quot;com.sun.star.text.TextTable&quot;) then
+   FillInUse(InUse,thisElement)
+  Else EnumerateTable(InUse,thisElement)
+ EndIf
+Wend
+oFrames = oDoc.getTextFrames
+cnt = oFrames.getCount - 1
+For c = 0 to cnt
+ thisFrame = oFrames.getByIndex(c)
+ oEnum = thisFrame.createEnumeration
+ While oEnum.hasMoreElements
+  thisElement = oEnum.nextElement
+  If Not thisElement.SupportsService(&quot;com.sun.star.text.TextTable&quot;) then
+    FillInUse(InUse,thisElement)
+   Else EnumerateTable(InUse,thisElement)
+  EndIf
+ Wend
+Next
+If ShowStylesInUse then
+ Print &quot;Current document styles are &quot; &amp; Join(inUse(),&quot; - &quot;)
+EndIf
+oStyles = oDoc.getStyleFamilies
+oParaStyles = oStyles.getByName(&quot;ParagraphStyles&quot;)
+oParaStyleNames() = oParaStyles.getElementNames()
+For i = 0 to uBound(oParaStyleNames)
+ thisName = oParaStyleNames(i)
+ Do
+  For c = 0 to uBound(inUse())
+   If inUse(c) = thisName then Exit Do
+  Next c
+  For c = 0 to uBound(PreDefined())
+   If PreDefined(c) = thisName then Exit Do
+  Next c
+  If AskDelete then
+   a$ = &quot;Delete unused paragraph style &lt;&quot; &amp; thisName &amp; &quot;&gt;? &quot;
+   iAns = MsgBox(a$,3)
+   If iAns = 2 then End &apos;Cancel button.
+   If iAns = 7 then goto Skip &apos;No button.
+  EndIf
+  oParaStyles.removeByName(thisName)
+  DeletedStyles = DeletedStyles &amp; thisName &amp; Chr(13)
+  SKIP:
+ Loop Until c &gt; uBound(inUse())
+Next i
+If Len(DeletedStyles) = 0 then DeletedStyles = &quot;None&quot;
+MsgBox (DeletedStyles,,&quot;The following unused custom styles were deleted:&quot;)
+End Sub
+
+Sub EnumerateTable(InUse,thisElement)
+aCellNames = thisElement.getCellNames
+For c = 0 to uBound(aCellNames)
+ oCell = thisElement.getCellByName(aCellNames(c))
+ ParaEnum = oCell.createEnumeration
+ While ParaEnum.hasMoreElements
+  thisPara = ParaEnum.nextElement
+  FillInUse(InUse,thisPara)
+ Wend
+Next 
+End Sub
+
+Sub FillInUse(InUse,Para)
+Do
+ For i = 0 to uBound(inUse())
+  If inUse(i) = Para.ParaStyleName then Exit Do
+ Next
+ ReDim Preserve inUse(i)
+ inUse(i) = Para.ParaStyleName
+Loop Until i &gt; uBound(inUse())
+End Sub
+
+Function PreDefineStyles
+aray = Array(&quot;Standard&quot;,&quot;Text body&quot;,&quot;Heading&quot;,&quot;List&quot;,&quot;Caption&quot;,_
+&quot;Index&quot;,&quot;First line indent&quot;,&quot;Hanging indent&quot;,&quot;Text body indent&quot;,_
+&quot;Salutation&quot;,&quot;Signature&quot;,&quot;List Indent&quot;,&quot;Marginalia&quot;,&quot;Heading 1&quot;,_
+&quot;Heading 2&quot;,&quot;Heading 3&quot;,&quot;Heading 4&quot;,&quot;Heading 5&quot;,&quot;Heading 6&quot;,_
+&quot;Heading 7&quot;,&quot;Heading 8&quot;,&quot;Heading 9&quot;,&quot;Heading 10&quot;,&quot;Title&quot;,&quot;Subtitle&quot;,_
+&quot;Numbering 1 Start&quot;,&quot;Numbering 1&quot;,&quot;Numbering 1 End&quot;,_
+&quot;Numbering 1 Cont.&quot;,&quot;Numbering 2 Start&quot;,&quot;Numbering 2&quot;,_
+&quot;Numbering 2 End&quot;,&quot;Numbering 2 Cont.&quot;,&quot;Numbering 3 Start&quot;,_
+&quot;Numbering 3&quot;,&quot;Numbering 3 End&quot;,&quot;Numbering 3 Cont.&quot;,_
+&quot;Numbering 4 Start&quot;,&quot;Numbering 4&quot;,&quot;Numbering 4 End&quot;,_
+&quot;Numbering 4 Cont.&quot;,&quot;Numbering 5 Start&quot;,&quot;Numbering 5&quot;,_
+&quot;Numbering 5 End&quot;,&quot;Numbering 5 Cont.&quot;,&quot;List 1 Start&quot;,&quot;List 1&quot;,_
+&quot;List 1 End&quot;,&quot;List 1 Cont.&quot;,&quot;List 2 Start&quot;,&quot;List 2&quot;,&quot;List 2 End&quot;,_
+&quot;List 2 Cont.&quot;,&quot;List 3 Start&quot;,&quot;List 3&quot;,&quot;List 3 End&quot;,&quot;List 3 Cont.&quot;,_
+&quot;List 4 Start&quot;,&quot;List 4&quot;,&quot;List 4 End&quot;,&quot;List 4 Cont.&quot;,&quot;List 5 Start&quot;,_
+&quot;List 5&quot;,&quot;List 5 End&quot;,&quot;List 5 Cont.&quot;,&quot;Index Heading&quot;,&quot;Index 1&quot;,_
+&quot;Index 2&quot;,&quot;Index 3&quot;,&quot;Index Separator&quot;,&quot;Contents Heading&quot;,&quot;Contents 1&quot;,_
+&quot;Contents 2&quot;,&quot;Contents 3&quot;,&quot;Contents 4&quot;,&quot;Contents 5&quot;,_
+&quot;User Index Heading&quot;,&quot;User Index 1&quot;,&quot;User Index 2&quot;,&quot;User Index 3&quot;,_
+&quot;User Index 4&quot;,&quot;User Index 5&quot;,&quot;Contents 6&quot;,&quot;Contents 7&quot;,&quot;Contents 8&quot;,_
+&quot;Contents 9&quot;,&quot;Contents 10&quot;,&quot;Illustration Index Heading&quot;,_
+&quot;Illustration Index 1&quot;,&quot;Object index heading&quot;,&quot;Object index 1&quot;,_
+&quot;Table index heading&quot;,&quot;Table index 1&quot;,&quot;Bibliography Heading&quot;,_
+&quot;Bibliography 1&quot;,&quot;User Index 6&quot;,&quot;User Index 7&quot;,&quot;User Index 8&quot;,_
+&quot;User Index 9&quot;,&quot;User Index 10&quot;,&quot;Header&quot;,&quot;Header left&quot;,&quot;Header right&quot;,_
+&quot;Footer&quot;,&quot;Footer left&quot;,&quot;Footer right&quot;,&quot;Table Contents&quot;,&quot;Table Heading&quot;,_
+&quot;Illustration&quot;,&quot;Table&quot;,&quot;Text&quot;,&quot;Frame contents&quot;,&quot;Footnote&quot;,&quot;Addressee&quot;,_
+&quot;Sender&quot;,&quot;Endnote&quot;,&quot;Drawing&quot;,&quot;Quotations&quot;,&quot;Preformatted Text&quot;,_
+&quot;Horizontal Line&quot;,&quot;List Contents&quot;,&quot;List Heading&quot;)
+PreDefineStyles = aray
+End Function
+
+sub inserisciSegnapostoTesto
+	Dim oThisDialog as object
+	dim sTestoSegnaPosto as string
+
+
+&apos; abilitare per debug con xray
+&apos;GlobalScope.BasicLibraries.LoadLibrary(&quot;XrayTool&quot;)&apos;
+
+&apos;richiama funzione per dialogs
+&apos;	GlobalScope.BasicLibraries.LoadLibrary(&quot;Tools&quot;)&apos;contiene LoadDialog, usata più sotto
+&apos;1) out dialog per inserzione segnaposto tipo testo
+	oThisDialog = Tools.LoadDialog(&quot;it_acca_esse_MacroBeppe&quot;, &quot;DlgSegnaposto&quot;)
+
+	if oThisDialog.execute() = 1 then
+		Wait(1000) &apos;per problemi di refresh video...
+&apos;2) al ritorno della dialog verificare se ok o cancel
+&apos;se ok, allora richiama l&apos;uno dispatcher con a parametro
+&apos; il valore di stringa introdotto
+&apos; prende la stringa del testo
+&apos; se vuota inserisce &apos;Manca il testo&apos;
+
+&apos;aggiunge
+&apos;		sTestoSegnaPosto = &quot;.....&quot;
+		sTestoSegnaPosto = oThisDialog.getControl(&quot;tfTestoSegnaposto&quot; ).Text
+&apos;		xray(sTestoSegnaPosto)
+
+&apos;verifica se la stringa non è nulla		
+		
+		if Len(sTestoSegnaPosto) = 0 then
+			sTestoSegnaPosto = &quot;Manca il testo&quot;
+		end if
+		
+&apos;		print sTestoSegnaPosto
+
+		rem ----------------------------------------------------------------------
+		rem define variables
+		dim document   as object
+		dim dispatcher as object
+		rem ----------------------------------------------------------------------
+		rem get access to the document
+		document   = ThisComponent.CurrentController.Frame
+		dispatcher = createUnoService(&quot;com.sun.star.frame.DispatchHelper&quot;)
+		
+		rem ----------------------------------------------------------------------
+		dim args1(5) as new com.sun.star.beans.PropertyValue
+		args1(0).Name = &quot;Type&quot;
+		args1(0).Value = 38
+		args1(1).Name = &quot;SubType&quot;
+		args1(1).Value = 0
+		args1(2).Name = &quot;Name&quot;
+		args1(2).Value = sTestoSegnaPosto
+		args1(3).Name = &quot;Content&quot;
+		args1(3).Value = sTestoSegnaPosto
+		args1(4).Name = &quot;Format&quot;
+		args1(4).Value = 0
+		args1(5).Name = &quot;Separator&quot;
+		args1(5).Value = &quot; &quot;
+		dispatcher.executeDispatch(document, &quot;.uno:InsertField&quot;, &quot;&quot;, 0, args1())
+	end if
+end sub
+
+</script:module>
