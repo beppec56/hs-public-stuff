@@ -824,8 +824,8 @@ end sub
 Sub AboutDialogBox
 	dim oAboutDialog as object
 
-&apos;	GlobalScope.BasicLibraries.LoadLibrary(&quot;Tools&quot;)&apos;contiene LoadDialog, usata più sotto
-	oAboutDialog = Tools.LoadDialog(&quot;it_acca_esse_MacroBeppe&quot;, &quot;AboutDialog&quot;)
+	GlobalScope.BasicLibraries.LoadLibrary(&quot;Tools&quot;)&apos;contiene LoadDialog, usata più sotto
+	oAboutDialog = Tools.LoadDialog(&quot;it_acca_esse_MacroVarie&quot;, &quot;AboutDialog&quot;)
 	oAboutDialog.execute()
 end sub
 
@@ -1063,9 +1063,9 @@ sub inserisciSegnapostoTesto
 &apos;GlobalScope.BasicLibraries.LoadLibrary(&quot;XrayTool&quot;)&apos;
 
 &apos;richiama funzione per dialogs
-&apos;	GlobalScope.BasicLibraries.LoadLibrary(&quot;Tools&quot;)&apos;contiene LoadDialog, usata più sotto
+	GlobalScope.BasicLibraries.LoadLibrary(&quot;Tools&quot;)&apos;contiene LoadDialog, usata più sotto
 &apos;1) out dialog per inserzione segnaposto tipo testo
-	oThisDialog = Tools.LoadDialog(&quot;it_acca_esse_MacroBeppe&quot;, &quot;DlgSegnaposto&quot;)
+	oThisDialog = Tools.LoadDialog(&quot;it_acca_esse_MacroVarie&quot;, &quot;DlgSegnaposto&quot;)
 
 	if oThisDialog.execute() = 1 then
 		Wait(1000) &apos;per problemi di refresh video...
