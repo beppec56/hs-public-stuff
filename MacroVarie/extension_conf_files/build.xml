@@ -31,7 +31,7 @@ the default target must be removed
 build-extension
 
 -->
-<project name="MacroVarie" default="deploy-local" basedir=".">
+<project name="MacroVarie" default="deploy-home" basedir=".">
 	<description>
         build MacroVarie extension (main build).
     </description>
@@ -218,7 +218,7 @@ build-extension
 
 	<!-- -->
 
-	<target name="deploy-local" depends="prepare-extension" description="deploy extension in local intranet: http://192.168.3.6">
+	<target name="deploy-home" depends="clean,prepare-extension" description="deploy extension in user root directory">
 		<!-- prepare the file description.xml, from src-description.xml, changing tokens -->
 		<copy file="${extension_dir}/src-description.xml" tofile="${extension_dest_dir}/description.xml">
 			<filterset>
@@ -233,10 +233,12 @@ build-extension
 		</copy>
 
 		<zip basedir="${extension_dest_dir}" destfile="${extension_file}" />
-		<!--
-			for the following to work you need an external JavaScript engine
-			not available on Windows!
-		-->
+
+		<!-- the following line is to simplify the first add of the extension (disable if not needed) -->
+		<copy file="${extension_file}" todir="${user.home}" />
+	</target>
+
+	<target name="deploy-web-local" depends="deploy-home" description="deploy extension in local intranet: http://192.168.3.6">
 
 		<mkdir dir="${copywebpath}/${wbme}" />
 		<!-- to avoid "modified in the future" warning -->
@@ -262,8 +264,6 @@ build-extension
 		<copy file="${extension_dir}/${readme_en}" tofile="${copywebpath}/${wbme}/${readme_en}" />
 		<copy file="${extension_dir}/${readme_it}" tofile="${copywebpath}/${wbme}/${readme_it}" />
 
-		<!-- the following line is to simplify the first add of the extension (disable if not needed) -->
-		<copy file="${extension_file}" todir="${user.home}" />
 	</target>
 
 	<target name="deploy-web" depends="clean,prepare-extension" description="deploy extension for Internet: http://www.acca-esse.it">
