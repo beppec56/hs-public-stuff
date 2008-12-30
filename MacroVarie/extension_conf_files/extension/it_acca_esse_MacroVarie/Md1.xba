@@ -204,6 +204,7 @@ dispatcher.executeDispatch(document, &quot;.uno:InsertPara&quot;, &quot;&quot;, 
 
 end sub
 
+&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;
 sub set_lingua
 rem ----------------------------------------------------------------------
 rem define variables
@@ -227,7 +228,7 @@ dispatcher.executeDispatch(document, &quot;.uno:HideSpellMark&quot;, &quot;&quot
 
 end sub
 
-
+&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;
 sub StileCodice
 rem ----------------------------------------------------------------------
 rem define variables
@@ -246,9 +247,102 @@ args1(1).Name = &quot;Family&quot;
 args1(1).Value = 2
 
 dispatcher.executeDispatch(document, &quot;.uno:StyleApply&quot;, &quot;&quot;, 0, args1())
+end sub
+
+sub StileParagrafo
+rem ----------------------------------------------------------------------
+rem define variables
+dim document   as object
+dim dispatcher as object
+rem ----------------------------------------------------------------------
+rem get access to the document
+document   = ThisComponent.CurrentController.Frame
+dispatcher = createUnoService(&quot;com.sun.star.frame.DispatchHelper&quot;)
+
+rem ----------------------------------------------------------------------
+dim args1(1) as new com.sun.star.beans.PropertyValue
+args1(0).Name = &quot;Template&quot;
+args1(0).Value = &quot;Paragrafo&quot;
+args1(1).Name = &quot;Family&quot;
+args1(1).Value = 2
+
+dispatcher.executeDispatch(document, &quot;.uno:StyleApply&quot;, &quot;&quot;, 0, args1())
+end sub
+
+&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;
+sub StileCodiceChars
+rem ----------------------------------------------------------------------
+rem define variables
+dim document   as object
+dim dispatcher as object
+rem ----------------------------------------------------------------------
+rem get access to the document
+document   = ThisComponent.CurrentController.Frame
+dispatcher = createUnoService(&quot;com.sun.star.frame.DispatchHelper&quot;)
+
+rem ----------------------------------------------------------------------
+&apos;dim args1(0) as new com.sun.star.beans.PropertyValue
+&apos;args1(0).Name = &quot;DesignerDialog&quot;
+&apos;args1(0).Value = true
+
+&apos;dispatcher.executeDispatch(document, &quot;.uno:DesignerDialog&quot;, &quot;&quot;, 0, args1())
+
+rem ----------------------------------------------------------------------
+dim args2(1) as new com.sun.star.beans.PropertyValue
+args2(0).Name = &quot;Template&quot;
+args2(0).Value = &quot;Codice&quot;
+args2(1).Name = &quot;Family&quot;
+args2(1).Value = 1
+
+dispatcher.executeDispatch(document, &quot;.uno:StyleApply&quot;, &quot;&quot;, 0, args2())
+
+rem ----------------------------------------------------------------------
+&apos;dim args3(0) as new com.sun.star.beans.PropertyValue
+&apos;args3(0).Name = &quot;DesignerDialog&quot;
+&apos;args3(0).Value = false
+
+&apos;dispatcher.executeDispatch(document, &quot;.uno:DesignerDialog&quot;, &quot;&quot;, 0, args3())
+
+end sub
+
+&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;
+sub StileCodiceStandard
+rem ----------------------------------------------------------------------
+rem define variables
+dim document   as object
+dim dispatcher as object
+rem ----------------------------------------------------------------------
+rem get access to the document
+document   = ThisComponent.CurrentController.Frame
+dispatcher = createUnoService(&quot;com.sun.star.frame.DispatchHelper&quot;)
+
+rem ----------------------------------------------------------------------
+&apos;dim args1(0) as new com.sun.star.beans.PropertyValue
+&apos;args1(0).Name = &quot;DesignerDialog&quot;
+&apos;args1(0).Value = true
+
+&apos;dispatcher.executeDispatch(document, &quot;.uno:DesignerDialog&quot;, &quot;&quot;, 0, args1())
+
+rem ----------------------------------------------------------------------
+dim args2(1) as new com.sun.star.beans.PropertyValue
+args2(0).Name = &quot;Template&quot;
+args2(0).Value = &quot;Standard&quot;
+args2(1).Name = &quot;Family&quot;
+args2(1).Value = 1
+
+dispatcher.executeDispatch(document, &quot;.uno:StyleApply&quot;, &quot;&quot;, 0, args2())
+
+rem ----------------------------------------------------------------------
+&apos;dim args3(0) as new com.sun.star.beans.PropertyValue
+&apos;args3(0).Name = &quot;DesignerDialog&quot;
+&apos;args3(0).Value = false
+
+&apos;dispatcher.executeDispatch(document, &quot;.uno:DesignerDialog&quot;, &quot;&quot;, 0, args3())
 
 
 end sub
+&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;
+
 
 Sub MozProfile
 	Dim oMozBootstrap as Object
@@ -942,10 +1036,12 @@ AskDelete = True &apos;Change to False if you don&apos;t want to be
 &apos;asked about deleting any style.
 &apos;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;END USER VARIABLES&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;
 Dim inUse()
+dim oDoc as object
+dim aSt as string
 oDoc = ThisComponent
 If ShowFirstMessage then
- a$ = &quot;IMPORTANT: the US English interface MUST be selected!&quot; &amp; chr(13) &amp; &quot;==========================&quot; &amp; chr(13) &amp;&quot;Remove unused styles?&quot; &amp; chr(13) &amp; &quot;This will not affect OOo&apos;s predefined styles.&quot; 
- If MsgBox(a$,4,&quot;Paragraph Style Remover&quot;) = 7 then End
+ aSt = &quot;IMPORTANT: the US English interface MUST be selected!&quot; &amp; chr(13) &amp; &quot;==========================&quot; &amp; chr(13) &amp;&quot;Remove unused styles?&quot; &amp; chr(13) &amp; &quot;This will not affect OOo&apos;s predefined styles.&quot; 
+ If MsgBox(aSt,4,&quot;Paragraph Style Remover&quot;) = 7 then End
 EndIf
 PreDefined = PreDefineStyles &apos;Array of all predefined paragraph styles.
 oEnum = oDoc.Text.createEnumeration

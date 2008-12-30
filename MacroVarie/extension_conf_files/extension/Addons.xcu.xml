@@ -141,19 +141,70 @@
 								    <value></value>
 								</prop>
 								<prop oor:name="URL" oor:type="xs:string">
-								    <value>macro:///it_acca_esse_MacroVarie.Md1.StileCodice</value>
+								    <value>macro:///it_acca_esse_MacroVarie.Md1.StileParagrafo</value>
 								</prop>
 								<prop oor:name="ImageIdentifier" oor:type="xs:string">
 								    <value></value>
 								</prop>
 								<prop oor:name="Title" oor:type="xs:string">
-								    <value>Imposta StileCodice</value>
+								    <value>Stile Paragrafo</value>
 								</prop>
 								<prop oor:name="Target" oor:type="xs:string">
 								    <value>_self</value>
 								</prop>
 						    </node>
 						    <node oor:name="m2" oor:op="replace">
+								<prop oor:name="Context" oor:type="xs:string">
+								    <value></value>
+								</prop>
+								<prop oor:name="URL" oor:type="xs:string">
+								    <value>macro:///it_acca_esse_MacroVarie.Md1.StileCodice</value>
+								</prop>
+								<prop oor:name="ImageIdentifier" oor:type="xs:string">
+								    <value></value>
+								</prop>
+								<prop oor:name="Title" oor:type="xs:string">
+								    <value>Stile Codice al paragrafo</value>
+								</prop>
+								<prop oor:name="Target" oor:type="xs:string">
+								    <value>_self</value>
+								</prop>
+						    </node>
+						    <node oor:name="m3" oor:op="replace">
+								<prop oor:name="Context" oor:type="xs:string">
+								    <value></value>
+								</prop>
+								<prop oor:name="URL" oor:type="xs:string">
+								    <value>macro:///it_acca_esse_MacroVarie.Md1.StileCodiceChars</value>
+								</prop>
+								<prop oor:name="ImageIdentifier" oor:type="xs:string">
+								    <value></value>
+								</prop>
+								<prop oor:name="Title" oor:type="xs:string">
+								    <value>Carattere Codice</value>
+								</prop>
+								<prop oor:name="Target" oor:type="xs:string">
+								    <value>_self</value>
+								</prop>
+						    </node>
+						    <node oor:name="m4" oor:op="replace">
+								<prop oor:name="Context" oor:type="xs:string">
+								    <value></value>
+								</prop>
+								<prop oor:name="URL" oor:type="xs:string">
+								    <value>macro:///it_acca_esse_MacroVarie.Md1.StileCodiceStandard</value>
+								</prop>
+								<prop oor:name="ImageIdentifier" oor:type="xs:string">
+								    <value></value>
+								</prop>
+								<prop oor:name="Title" oor:type="xs:string">
+								    <value>Carattere Standard</value>
+								</prop>
+								<prop oor:name="Target" oor:type="xs:string">
+								    <value>_self</value>
+								</prop>
+						    </node>
+						    <node oor:name="m5" oor:op="replace">
 								<prop oor:name="Context" oor:type="xs:string">
 								    <value>com.sun.star.text.TextDocument,com.sun.star.text.GlobalDocument</value>
 								</prop>

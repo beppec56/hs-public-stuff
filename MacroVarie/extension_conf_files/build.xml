@@ -31,7 +31,7 @@ the default target must be removed
 build-extension
 
 -->
-<project name="MacroVarie" default="deploy-home" basedir=".">
+<project name="MacroVarie" default="deploy-web-local" basedir=".">
 	<description>
         build MacroVarie extension (main build).
     </description>
