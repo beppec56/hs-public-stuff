@@ -32,6 +32,7 @@ build-extension
 
 -->
 <project name="EsportaPDF" default="deploy-home" basedir=".">
+	<!-- project name="EsportaPDF" default="deploy-web-local" basedir="." -->
 	<description>
         build EsportaPDF extension (main build).
     </description>
@@ -77,7 +78,7 @@ build-extension
 	<property name="copywebpath_ext" value="/var/www/w2/acca-esse.it/${webpath_ext}" />
 
 	<!-- minimum OOo version -->
-	<property name="ooominversion" value="2.3" />
+	<property name="ooominversion" value="2.4" />
 
 	<!-- base name of the extension file -->
 	<property name="ext_name" value="EsportaPDF" />
