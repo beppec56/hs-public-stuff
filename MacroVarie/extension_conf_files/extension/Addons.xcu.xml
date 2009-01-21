@@ -6,7 +6,7 @@
 
     GNU Lesser General Public License Version 2.1
     =============================================
-    Copyright 2008 by Giuseppe Castagno beppec56@openoffice.org
+    Copyright 2009 by Giuseppe Castagno beppec56@openoffice.org
 
     This library is free software; you can redistribute it and/or
     modify it under the terms of the GNU Lesser General Public
@@ -246,6 +246,23 @@
 								</prop>
 								<prop oor:name="Title" oor:type="xs:string">
 								    <value>FontSummaryDocument</value>
+								</prop>
+								<prop oor:name="Target" oor:type="xs:string">
+								    <value>_self</value>
+								</prop>
+						    </node>
+						    <node oor:name="m2" oor:op="replace">
+								<prop oor:name="Context" oor:type="xs:string">
+								    <value></value>
+								</prop>
+								<prop oor:name="URL" oor:type="xs:string">
+								    <value>macro:///it_acca_esse_MacroVarie.Md1.FontSummaryDocumentIPAExt</value>
+								</prop>
+								<prop oor:name="ImageIdentifier" oor:type="xs:string">
+								    <value></value>
+								</prop>
+								<prop oor:name="Title" oor:type="xs:string">
+								    <value>FontSummaryDocument IPA Extensions only</value>
 								</prop>
 								<prop oor:name="Target" oor:type="xs:string">
 								    <value>_self</value>
