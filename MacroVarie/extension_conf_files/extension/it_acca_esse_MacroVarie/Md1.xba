@@ -450,6 +450,16 @@ Sub FontSummaryDocument
   sNewUrl = &quot;private:factory/swriter&quot;
   oDoc = StarDesktop.loadComponentFromURL(sNewUrl,&quot;_blank&quot;, 0, Array())
   Call FontSummary(oDoc)
+&apos;  Call FontSummaryIPA(oDoc)
+End Sub
+
+Sub FontSummaryDocumentIPAExt
+  Dim sNewUrl$
+  Dim oDoc
+  sNewUrl = &quot;private:factory/swriter&quot;
+  oDoc = StarDesktop.loadComponentFromURL(sNewUrl,&quot;_blank&quot;, 0, Array())
+&apos;  Call FontSummary(oDoc)
+  Call FontSummaryIPA(oDoc)
 End Sub
 
 Sub FontCharacterDocument
@@ -585,6 +595,89 @@ Sub FontsInTable(oDoc)
   Next
 
 TheEnd:
+  oDoc.unlockControllers()
+End Sub
+
+Sub FontSummaryIPA(oDoc)
+  Dim oFonts()     &apos;Array of awt FontDescriptor structures.
+  Dim sFontName$   &apos;Name of one font.
+  Dim sLastFont$   &apos;Last used font.
+  Dim oText        &apos;Document&apos;s primary text object.
+  Dim oCurs        &apos;Text cursor used to insert the text.
+  Dim nSaveHeight  &apos;Initial character height.
+  Dim sSaveFont$   &apos;Initial font in effect.
+  Dim i%           &apos;General index variable.
+  Dim s$           &apos;Contains the sample text that is displayed using the font.
+
+&apos; abilitare per debug con xray
+&apos; GlobalScope.BasicLibraries.LoadLibrary(&quot;XrayTool&quot;)&apos;
+
+  s = &quot;&quot;
+  oDoc.lockControllers()
+  &apos;On Error Goto EndLabel
+  oText    = oDoc.getText()
+  oCurs    = oText.createTextCursorByRange(oText.getEnd())
+  sSaveFont= oCurs.charFontName
+  oFonts() = SortedFontDescriptors(oDoc, False)
+&apos;  oText.insertControlCharacter(oCurs, _
+&apos;       com.sun.star.text.ControlCharacter.LINE_BREAK, False)
+
+  nSaveHeight = oCurs.CharHeight
+  oCurs.CharHeight = 10
+  
+&apos;  xray oCurs
+&apos;  sFontName = &quot;Doulos SIL&quot;
+      
+&apos;   oCurs.ParaStyleName = &quot;Heading 1&quot;
+&apos;   oCurs.CharHeight = 12
+
+&apos;   oText.insertString(oCurs, sFontName &amp; &quot;&quot;, FALSE)
+      
+&apos;beppec56
+&apos;   oText.insertControlCharacter(oCurs, _
+ &apos;      com.sun.star.text.ControlCharacter.PARAGRAPH_BREAK, False)
+
+	for i = 592 to 767
+		s = s + Chr(i)
+		s = s + &quot; &quot;
+	next i
+&apos;    oText.insertString(oCurs, s, FALSE)
+&apos;	oDoc.unlockControllers()
+	
+&apos;	exit sub
+
+  REM for each font descriptor.
+ For i = LBound(oFonts()) to UBound(oFonts())
+   sFontName = oFonts(i).Name
+   If sFontName &lt;&gt; sLastFont Then
+    sLastFont = sFontName
+      
+    oCurs.ParaStyleName = &quot;Heading 1&quot;
+    oCurs.CharHeight = 12
+
+    oText.insertString(oCurs, sFontName &amp; &quot;&quot;, FALSE)
+      
+&apos;beppec56
+    oText.insertControlCharacter(oCurs, _
+       com.sun.star.text.ControlCharacter.PARAGRAPH_BREAK, False)
+
+&apos;need to add a check for locale, so to use the correct
+&apos;Default font name
+&apos;	 oCurs.ParaStyleName =&quot;Default&quot;
+	oCurs.ParaStyleName =&quot;Standard&quot;
+	oCurs.CharHeight = 15
+    oCurs.charFontName = sFontName
+    oText.insertString(oCurs, s, FALSE)
+    oCurs.charFontName = sSaveFont
+&apos;beppec56
+&apos;      oText.insertControlCharacter(oCurs, _
+&apos;           com.sun.star.text.ControlCharacter.LINE_BREAK, False)
+    oText.insertControlCharacter(oCurs, _
+           com.sun.star.text.ControlCharacter.PARAGRAPH_BREAK, False)
+    End If
+  Next
+  oCurs.CharHeight = nSaveHeight
+  EndLabel:
   oDoc.unlockControllers()
 End Sub
 
