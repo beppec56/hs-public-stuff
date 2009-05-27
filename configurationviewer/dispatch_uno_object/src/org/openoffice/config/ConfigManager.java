@@ -80,6 +80,7 @@ class ConfigManager {
     public TreeNode getConfigRootNode() {
 //        DefaultMutableTreeNode root = new DefaultMutableTreeNode( "/org.openoffice" );
         DefaultMutableTreeNode root = new DefaultMutableTreeNode( new ConfigValueList("/org.openoffice","/org.openoffice") );
+//        DefaultMutableTreeNode root = new DefaultMutableTreeNode( new ConfigValueList("/it.plio","/it.plio") );
         
         ;
 //        DefaultMutableTreeNode root = new DefaultMutableTreeNode( "/it.plio" );
