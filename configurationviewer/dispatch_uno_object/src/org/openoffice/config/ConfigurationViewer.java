@@ -248,6 +248,7 @@ public final class ConfigurationViewer extends WeakBase
                     continue;
                 dir = new File( new File( dir, "org"), "openoffice" );
                 findConfigurationRoots( roots, dir, "/org.openoffice." );
+//                findConfigurationRoots( roots, dir, "/it.plio.ext.oxsit." );
             } catch( Exception e ) {
                 //ignore
             }
@@ -284,6 +285,9 @@ public final class ConfigurationViewer extends WeakBase
             if( configAccess.isValidRootPath( rootName ) )
                 validatedRoots.add( rootName );
         }
+        
+//        validatedRoots.add( "it.plio.ext.oxsit." );
+
         Collections.sort( validatedRoots );
         ConfigManager configManager = new ConfigManager( validatedRoots, configAccess );
         

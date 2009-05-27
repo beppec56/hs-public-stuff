@@ -78,7 +78,11 @@ class ConfigManager {
      * @return Tree root node for the whole available configuration hierarchy.
      */
     public TreeNode getConfigRootNode() {
-        DefaultMutableTreeNode root = new DefaultMutableTreeNode( "/org.openoffice" );
+//        DefaultMutableTreeNode root = new DefaultMutableTreeNode( "/org.openoffice" );
+        DefaultMutableTreeNode root = new DefaultMutableTreeNode( new ConfigValueList("/org.openoffice","/org.openoffice") );
+        
+        ;
+//        DefaultMutableTreeNode root = new DefaultMutableTreeNode( "/it.plio" );
         addChildren( root );
         return root;
     }

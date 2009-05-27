@@ -136,13 +136,19 @@ class ConfigFrame extends javax.swing.JFrame {
      */
     private void collectDataFromChildren( DefaultMutableTreeNode node, ConfigTableModel model, String prefix, ConfigValueFilter filter ) {
         if( node.isLeaf() ) {
-            ConfigValueList list = (ConfigValueList)node.getUserObject();
-            for( ConfigValue cv : list.getValues( manager.getConfigAccess(), false ) ) {
-                if( filter.isDisplayAble( cv ) ) {
-                    cv.setDisplayPrefix( prefix );
-                    model.add( cv );
-                }
-            }
+        	Object oBj = node.getUserObject();
+        	if(oBj instanceof ConfigValueList) {
+	            ConfigValueList list = (ConfigValueList)node.getUserObject();
+	            for( ConfigValue cv : list.getValues( manager.getConfigAccess(), false ) ) {
+	                if( filter.isDisplayAble( cv ) ) {
+	                    cv.setDisplayPrefix( prefix );
+	                    model.add( cv );
+	                }
+	            }
+        	}
+        	else {
+        		System.out.println(" wrong class found: "+oBj.getClass().getName());
+        	}
         } else {
             for( Enumeration en = node.children(); en.hasMoreElements(); ) {
                 DefaultMutableTreeNode child = (DefaultMutableTreeNode)en.nextElement();
