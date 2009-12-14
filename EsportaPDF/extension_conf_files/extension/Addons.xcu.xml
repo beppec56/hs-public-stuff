@@ -76,7 +76,7 @@
 		    nel codice sorgente di OOo
 		-->
 		<node oor:name="OfficeMenuBarMerging">
-			<node oor:name="it.acca_esse.ooo.extension.DichConf_37_08.PopupMenu" oor:op="replace">
+			<node oor:name="it.acca_esse.oxt.EsportaPDF.PopupMenu" oor:op="replace">
 				<node oor:name="S1" oor:op="replace">
 					<!--
 					    per il merge point vedere in:
