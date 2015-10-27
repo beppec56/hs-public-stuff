@@ -2,8 +2,8 @@ http://stackoverflow.com/questions/1683531/how-to-import-existing-git-repository
 
 git checkout -b new_dest_target master (optional step, the new branch will track the other git repo)
 
-git remote add rack_remote git@github.com:schacon/Rack.git or git remote add /home/beppe...../Rack
-git fetch rack_remote
-git merge -s ours --no-commit rack_remote/master
-git read-tree --prefix=Rack/ -u rack_remote/master
+git remote add new_git_repo git@github.com:schacon/Rack.git or git remote add /home/beppe...../Rack
+git fetch new_git_repo
+git merge -s ours --no-commit new_git_repo/master
+git read-tree --prefix=Rack/ -u new_git_repo/master
 git commit -m "Imported Rack as a subtree." 
