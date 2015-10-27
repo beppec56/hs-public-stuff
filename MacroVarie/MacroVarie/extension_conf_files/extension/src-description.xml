@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    The Contents of this file are made available subject to
+    the terms of GNU Lesser General Public License Version 2.1.
+
+
+    GNU Lesser General Public License Version 2.1
+    =============================================
+    Copyright 2008 by Giuseppe Castagno beppec56@openoffice.org
+
+    This library is free software; you can redistribute it and/or
+    modify it under the terms of the GNU Lesser General Public
+    License version 2.1, as published by the Free Software Foundation.
+
+    This library is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+    Lesser General Public License for more details.
+
+    You should have received a copy of the GNU Lesser General Public
+    License along with this library; if not, write to the Free Software
+    Foundation, Inc., 59 Temple Place, Suite 330, Boston,
+    MA  02111-1307  USA
+-->
+<description xmlns="http://openoffice.org/extensions/description/2006" 
+	     xmlns:d="http://openoffice.org/extensions/description/2006"
+	     xmlns:xlink="http://www.w3.org/1999/xlink">
+  <version value="@VERSION@" />
+  <identifier value="@WEBIDENTBASE@.@NAME@"/>
+  <dependencies >
+    <OpenOffice.org-minimal-version value="@OOOMINVER@" d:name="OpenOffice.org @OOOMINVER@"/>
+  </dependencies>
+  <update-information>
+    <src xlink:href="@WEBHOST@/@WEBPATH@/@WBME@/@NAME@.update.xml" />
+  </update-information>
+  <registration>
+    <simple-license  accept-by="admin" default-license-id="en" suppress-on-update="true" >
+      <license-text xlink:href="registration/lgpl-en.txt" lang="en" license-id="en" />
+      <license-text xlink:href="registration/lgpl-fr.txt" lang="fr" />
+      <license-text xlink:href="registration/lgpl-it.txt" lang="it" />
+    </simple-license>
+  </registration>
+  <display-name>
+	  <name lang="it">Macro Varie: raccolta di macro di uso comune</name>
+	  <name lang="en">Macro Varie: a few useful macros</name>
+  </display-name>
+  <publisher>
+	  <name xlink:href="http://www.acca-esse.it/it/ext"
+		lang="it">Acca Esse</name>
+	  <name xlink:href="http://www.acca-esse.it/en/ext"
+		lang="en">Acca Esse</name>
+  </publisher>
+  <!-- release notes not yet used by Extension manager -->
+  <release-notes>
+	  <src xlink:href="@WEBHOST@/@WEBPATH@/@WBME@/release-notes_it.txt" lang="it" />
+	  <src xlink:href="@WEBHOST@/@WEBPATH@/@WBME@/release-notes_en.txt" lang="en" />
+  </release-notes>
+</description>

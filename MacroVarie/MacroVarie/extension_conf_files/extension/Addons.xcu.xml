@@ -1,0 +1,374 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!--
+    The Contents of this file are made available subject to
+    the terms of GNU Lesser General Public License Version 2.1.
+
+
+    GNU Lesser General Public License Version 2.1
+    =============================================
+    Copyright 2009 by Giuseppe Castagno beppec56@openoffice.org
+
+    This library is free software; you can redistribute it and/or
+    modify it under the terms of the GNU Lesser General Public
+    License version 2.1, as published by the Free Software Foundation.
+
+    This library is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+    Lesser General Public License for more details.
+
+    You should have received a copy of the GNU Lesser General Public
+    License along with this library; if not, write to the Free Software
+    Foundation, Inc., 59 Temple Place, Suite 330, Boston,
+    MA  02111-1307  USA
+-->
+<oor:component-data 
+    xmlns:oor="http://openoffice.org/2001/registry"
+    xmlns:xs="http://www.w3.org/2001/XMLSchema"
+    oor:name="Addons"
+    oor:package="org.openoffice.Office">
+    <!--
+		document described at:
+		http://localhost/ooo-sdk/docs/DevelopersGuide/Components/Components.xhtml#1_7_3_3_Configuration	
+    -->
+    <node oor:name="AddonUI">
+		<node oor:name="OfficeMenuBar">
+	    	<node oor:name="it.acca-esse.oxt.it_acca_esse_MacroVarie.OfficeMenuBar.m1" oor:op="replace">
+				<prop oor:name="Context" oor:type="xs:string">
+			    	<value></value>
+				</prop>
+				<prop oor:name="ImageIdentifier" oor:type="xs:string">
+			    	<value></value>
+				</prop>
+				<prop oor:name="Title" oor:type="xs:string">
+			    	<value>Macro Varie</value>
+				</prop>
+				<node oor:name="Submenu">
+			    	<node oor:name="m1" oor:op="replace">
+						<prop oor:name="Context" oor:type="xs:string">
+				    		<value></value>
+						</prop>
+						<prop oor:name="ImageIdentifier" oor:type="xs:string">
+						    <value></value>
+						</prop>
+						<prop oor:name="Title" oor:type="xs:string">
+				    		<value>Gruppo 1</value>
+						</prop>
+						<node oor:name="Submenu">
+				    		<node oor:name="m1" oor:op="replace">
+								<prop oor:name="Context" oor:type="xs:string">
+					    			<value></value>
+								</prop>
+								<prop oor:name="URL" oor:type="xs:string">
+					    			<value>macro:///it_acca_esse_MacroVarie.Md1.MozProfile</value>
+								</prop>
+								<prop oor:name="ImageIdentifier" oor:type="xs:string">
+					    			<value></value>
+								</prop>
+								<prop oor:name="Title" oor:type="xs:string">
+					    			<value>Signature Mozilla Profile</value>
+								</prop>
+								<prop oor:name="Target" oor:type="xs:string">
+					    			<value>_self</value>
+								</prop>
+				    		</node>
+				    		<node oor:name="m3" oor:op="replace">
+								<prop oor:name="Context" oor:type="xs:string">
+					    			<value>com.sun.star.text.TextDocument,com.sun.star.sheet.SpreadsheetDocument,com.sun.star.drawing.DrawingDocument,com.sun.star.presentation.PresentationDocument,com.sun.star.sdb.OfficeDatabaseDocument,com.sun.star.text.GlobalDocument</value>
+								</prop>
+								<prop oor:name="URL" oor:type="xs:string">
+					    			<value>macro:///it_acca_esse_MacroVarie.Md1.GetTemplatePath</value>
+								</prop>
+								<prop oor:name="ImageIdentifier" oor:type="xs:string">
+					    			<value></value>
+								</prop>
+								<prop oor:name="Title" oor:type="xs:string">
+								    <value>Template info</value>
+								</prop>
+								<prop oor:name="Target" oor:type="xs:string">
+								    <value>_self</value>
+								</prop>
+						    </node>
+						    <node oor:name="m4" oor:op="replace">
+								<prop oor:name="Context" oor:type="xs:string">
+								    <value>com.sun.star.text.TextDocument,com.sun.star.text.GlobalDocument</value>
+								</prop>
+								<prop oor:name="URL" oor:type="xs:string">
+								    <value>macro:///it_acca_esse_MacroVarie.Md1.AddFieldForConditionalSections</value>
+								</prop>
+								<prop oor:name="ImageIdentifier" oor:type="xs:string">
+								    <value></value>
+								</prop>
+								<prop oor:name="Title" oor:type="xs:string">
+								    <value>Hide cond. sections (add NoteIdx=1)</value>
+								</prop>
+								<prop oor:name="Target" oor:type="xs:string">
+								    <value>_self</value>
+								</prop>
+						    </node>
+						    <node oor:name="m5" oor:op="replace">
+								<prop oor:name="Context" oor:type="xs:string">
+								    <value>com.sun.star.text.TextDocument,com.sun.star.text.GlobalDocument</value>
+								</prop>
+								<prop oor:name="URL" oor:type="xs:string">
+								    <value>macro:///it_acca_esse_MacroVarie.Md1.RemoveFieldForConditionalSections</value>
+								</prop>
+								<prop oor:name="ImageIdentifier" oor:type="xs:string">
+								    <value></value>
+								</prop>
+								<prop oor:name="Title" oor:type="xs:string">
+								    <value>Display cond. sections (remove NoteIdx)</value>
+								</prop>
+								<prop oor:name="Target" oor:type="xs:string">
+								    <value>_self</value>
+								</prop>
+						    </node>
+						</node>
+				    </node>
+				    <node oor:name="m2" oor:op="replace">
+						<prop oor:name="Context" oor:type="xs:string">
+						    <value>com.sun.star.text.TextDocument,com.sun.star.sheet.SpreadsheetDocument,com.sun.star.drawing.DrawingDocument,com.sun.star.presentation.PresentationDocument,com.sun.star.sdb.OfficeDatabaseDocument,com.sun.star.text.GlobalDocument</value>
+						</prop>
+						<prop oor:name="ImageIdentifier" oor:type="xs:string">
+						    <value></value>
+						</prop>
+						<prop oor:name="Title" oor:type="xs:string">
+						    <value>Gestione stili</value>
+						</prop>
+						<node oor:name="Submenu">
+						    <node oor:name="m1" oor:op="replace">
+								<prop oor:name="Context" oor:type="xs:string">
+								    <value></value>
+								</prop>
+								<prop oor:name="URL" oor:type="xs:string">
+								    <value>macro:///it_acca_esse_MacroVarie.Md1.StileParagrafo</value>
+								</prop>
+								<prop oor:name="ImageIdentifier" oor:type="xs:string">
+								    <value></value>
+								</prop>
+								<prop oor:name="Title" oor:type="xs:string">
+								    <value>Stile Paragrafo</value>
+								</prop>
+								<prop oor:name="Target" oor:type="xs:string">
+								    <value>_self</value>
+								</prop>
+						    </node>
+						    <node oor:name="m2" oor:op="replace">
+								<prop oor:name="Context" oor:type="xs:string">
+								    <value></value>
+								</prop>
+								<prop oor:name="URL" oor:type="xs:string">
+								    <value>macro:///it_acca_esse_MacroVarie.Md1.StileCodice</value>
+								</prop>
+								<prop oor:name="ImageIdentifier" oor:type="xs:string">
+								    <value></value>
+								</prop>
+								<prop oor:name="Title" oor:type="xs:string">
+								    <value>Stile Codice al paragrafo</value>
+								</prop>
+								<prop oor:name="Target" oor:type="xs:string">
+								    <value>_self</value>
+								</prop>
+						    </node>
+						    <node oor:name="m3" oor:op="replace">
+								<prop oor:name="Context" oor:type="xs:string">
+								    <value></value>
+								</prop>
+								<prop oor:name="URL" oor:type="xs:string">
+								    <value>macro:///it_acca_esse_MacroVarie.Md1.StileCodiceChars</value>
+								</prop>
+								<prop oor:name="ImageIdentifier" oor:type="xs:string">
+								    <value></value>
+								</prop>
+								<prop oor:name="Title" oor:type="xs:string">
+								    <value>Carattere Codice</value>
+								</prop>
+								<prop oor:name="Target" oor:type="xs:string">
+								    <value>_self</value>
+								</prop>
+						    </node>
+						    <node oor:name="m4" oor:op="replace">
+								<prop oor:name="Context" oor:type="xs:string">
+								    <value></value>
+								</prop>
+								<prop oor:name="URL" oor:type="xs:string">
+								    <value>macro:///it_acca_esse_MacroVarie.Md1.StileCodiceStandard</value>
+								</prop>
+								<prop oor:name="ImageIdentifier" oor:type="xs:string">
+								    <value></value>
+								</prop>
+								<prop oor:name="Title" oor:type="xs:string">
+								    <value>Carattere Standard</value>
+								</prop>
+								<prop oor:name="Target" oor:type="xs:string">
+								    <value>_self</value>
+								</prop>
+						    </node>
+						    <node oor:name="m5" oor:op="replace">
+								<prop oor:name="Context" oor:type="xs:string">
+								    <value>com.sun.star.text.TextDocument,com.sun.star.text.GlobalDocument</value>
+								</prop>
+								<prop oor:name="URL" oor:type="xs:string">
+								    <value>macro:///it_acca_esse_MacroVarie.Md1.DeleteExcessParagraphStyles</value>
+								</prop>
+								<prop oor:name="ImageIdentifier" oor:type="xs:string">
+								    <value></value>
+								</prop>
+								<prop oor:name="Title" oor:type="xs:string">
+								    <value>Remove unused paragraph styles</value>
+								</prop>
+								<prop oor:name="Target" oor:type="xs:string">
+								    <value>_self</value>
+								</prop>
+					    	</node>
+						</node>
+				    </node>
+				    <node oor:name="m3" oor:op="replace">
+						<prop oor:name="Context" oor:type="xs:string">
+						    <value></value>
+						</prop>
+						<prop oor:name="ImageIdentifier" oor:type="xs:string">
+						    <value></value>
+						</prop>
+						<prop oor:name="Title" oor:type="xs:string">
+						    <value>Fonts/caratteri</value>
+						</prop>
+						<node oor:name="Submenu">
+						    <node oor:name="m1" oor:op="replace">
+								<prop oor:name="Context" oor:type="xs:string">
+								    <value></value>
+								</prop>
+								<prop oor:name="URL" oor:type="xs:string">
+								    <value>macro:///it_acca_esse_MacroVarie.Md1.FontSummaryDocument</value>
+								</prop>
+								<prop oor:name="ImageIdentifier" oor:type="xs:string">
+								    <value></value>
+								</prop>
+								<prop oor:name="Title" oor:type="xs:string">
+								    <value>FontSummaryDocument</value>
+								</prop>
+								<prop oor:name="Target" oor:type="xs:string">
+								    <value>_self</value>
+								</prop>
+						    </node>
+						    <node oor:name="m2" oor:op="replace">
+								<prop oor:name="Context" oor:type="xs:string">
+								    <value></value>
+								</prop>
+								<prop oor:name="URL" oor:type="xs:string">
+								    <value>macro:///it_acca_esse_MacroVarie.Md1.FontSummaryDocumentIPAExt</value>
+								</prop>
+								<prop oor:name="ImageIdentifier" oor:type="xs:string">
+								    <value></value>
+								</prop>
+								<prop oor:name="Title" oor:type="xs:string">
+								    <value>FontSummaryDocument IPA Extensions only</value>
+								</prop>
+								<prop oor:name="Target" oor:type="xs:string">
+								    <value>_self</value>
+								</prop>
+						    </node>
+						</node>
+				    </node>
+				</node>
+		    </node>
+		</node>
+		<node oor:name="OfficeHelp">
+		    <node oor:name="it.acca-esse.oxt.it_acca_esse_MacroVarie.OfficeHelp" oor:op="replace">
+			<prop oor:name="Context" oor:type="xs:string">
+			    <value></value>
+			</prop>
+			<prop oor:name="URL" oor:type="xs:string">
+			    <value>macro:///it_acca_esse_MacroVarie.Md1.AboutDialogBox</value>
+			</prop>
+			<prop oor:name="ImageIdentifier" oor:type="xs:string">
+			    <value></value>
+			</prop>
+			<prop oor:name="Title" oor:type="xs:string">
+			    <value>Informazioni su 'Macro Varie'...</value>
+			</prop>
+			<prop oor:name="Target" oor:type="xs:string">
+			    <value>_self</value>
+			</prop>
+		    </node>
+		</node>
+		<!-- 
+		     inserisce in menu standard, dopo Inserisci -->
+		<!--
+		    inserisce nel menu Inserisci (in submenu Comando di campo, dopo Autore)
+		    per spiegazioni vedere il file:
+		    officecfg/registry/schema/org/openoffice/Office/Addons.xcs
+		    nel codice sorgente di OOo
+		-->
+		<node oor:name="OfficeMenuBarMerging">
+		    <node oor:name="it.acca-esse.oxt.it_acca_esse_MacroVarie.OfficeMenuBarMerging.m1" oor:op="replace">
+				<node oor:name="S1" oor:op="replace">
+				    <!--
+					per il merge point vedere in:
+					- sw/uiconfig/swriter/menubar/menubar.xml (dove si ha la formazione del menu in Writer, come esempio)
+					- officecfg/registry/data/org/openoffice/Office/UI/GenericCommands.xcu (dove i singoli menu sono descritti)
+					- officecfg/registry/schema/org/openoffice/Office/Addons.xcs e
+					- framework/source/uielement/menubarmerger.cxx dove alcune delle voci disponibili per il merge dei menu
+					tutti i file nel codice sorgente di OOo
+				    -->
+				    <prop oor:name="MergePoint">
+						<!-- significa il menu Inserisci (.uno:InsertMenu) > Comando di campo > ( .uno:FieldMenu )-->
+						<value>.uno:InsertMenu\.uno:FieldMenu\.uno:InsertAuthorField</value>
+						<!-- value>.uno:InsertMenu\.uno:InsertSymbol (solo per riferimento)</value -->
+				    </prop>
+				    <prop oor:name="MergeCommand">
+						<!-- valori possibili per MergeCommand:
+						     AddAfter	dopo il target
+						     AddBefore	prima del target
+						     Replace al posto del target (e lo ripristina togliendo la estensione)
+						     Remove
+						-->
+						<value>AddAfter</value>
+				    </prop>
+				    <prop oor:name="MergeFallback">
+						<!-- valori possibili per MergeFallback
+						     AddPath
+						     Ignore
+						-->
+						<value>AddPath</value>
+				    </prop>
+				    <prop oor:name="MergeContext">
+					<!-- contesto: solo i documenti Writer -->
+						<value>com.sun.star.text.TextDocument</value>
+				    </prop>
+				    <!--
+					 ora il menu aggiunto
+				    -->
+				    <node oor:name="MenuItems">
+						<!-- aggiunge un separatore (COMMENTATO!)
+						<node oor:name="m1" oor:op="replace">
+						    <prop oor:name="URL" oor:type="xs:string">
+							<value>private:separator</value>
+						    </prop>
+						</node --> 
+						<!-- voce aggiunta -->
+						<node oor:name="m2" oor:op="replace">
+						    <!-- comando solo in Writer -->
+						    <prop oor:name="Context" oor:type="xs:string">
+								<value>com.sun.star.text.TextDocument</value>
+						    </prop>
+						    <prop oor:name="ImageIdentifier" oor:type="xs:string">
+								<value/>
+						    </prop>
+						    <prop oor:name="URL" oor:type="xs:string">
+								<value>macro:///it_acca_esse_MacroVarie.Md1.inserisciSegnapostoTesto</value>
+						    </prop>
+						    <prop oor:name="Title" oor:type="xs:string"  oor:localized="true">
+								<value>Inserisci segnaposto testo...</value>
+								<value xml:lang="it">Inserisci segnaposto testo...</value>
+						    </prop>
+						    <prop oor:name="Target" oor:type="xs:string">
+								<value>_self</value>
+						    </prop>
+						</node>
+				    </node>
+				</node>
+		    </node>
+		</node>
+    </node>
+</oor:component-data>
