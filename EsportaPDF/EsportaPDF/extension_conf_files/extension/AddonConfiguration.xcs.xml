@@ -1,0 +1,615 @@
+<?xml version='1.0' encoding='UTF-8'?>
+
+<!--	
+EsportaPDF per OpenOffice.org (OOo)
+
+Permette di gestire 6 profili diversi per l'esportazione
+PDF da OOo
+
+Copyright (C) 2008  Giuseppe Castagno
+
+This library is free software; you can redistribute it and/or
+modify it under the terms of the GNU Lesser General Public
+License as published by the Free Software Foundation.
+
+This library is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+Lesser General Public License for more details.
+
+Questions and/or comments:
+giuseppe.castagno@acca-esse.it
+beppec56@openoffice.org
+
+Note:
+
+Il nome del package utilizza il nome del sito controllato da Acca Esse, in modo da evitare
+collisioni con quello esistente di OpenOffice.
+
+I valori impostati in fondo alla dichiarazione della proprietà, sono i valori default
+che il Configuration Manager restituisce quando non trova il corrispondende nome nel
+file AddonConfiguration.xcu
+
+-->
+
+<oor:component-schema oor:name="Configuration" oor:package="it.acca-esse.oxt.EsportaPDF" xml:lang="en-US" xmlns:oor="http://openoffice.org/2001/registry" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+	<templates>
+		<group oor:name="ExportParameter">
+			<info>
+				<author>Giuseppe Castagno (aka beppec56)</author>
+				<desc>Parametri copiati dalla definizione principale di OOo, dal file: officecfg/registry/schema/org/openoffice/Office/Common.xcs. Il default è quello di OOO al 2008-01-05</desc>
+			</info>
+			<prop oor:name="UseLosslessCompression" oor:type="xs:boolean">
+				<info>
+					<author>SJ</author>
+					<desc>Specifies if graphics are exported to PDF using a lossless compression eg. PNG or if they are compressed using the JPEG format.</desc>
+				</info>
+				<value>false</value>
+			</prop>
+			<prop oor:name="Quality" oor:type="xs:int">
+				<info>
+					<author>SJ</author>
+					<desc>Specifies quality of the JPG export. A higher value results in higher quality and file size.</desc>
+				</info>
+				<constraints>
+					<minInclusive oor:value="1">
+						<info>
+							<desc>Represents lowest value that can be used. The lower the value, the less good is the compression quality and the bigger is be the file size.</desc>
+						</info>
+					</minInclusive>
+					<maxInclusive oor:value="100">
+						<info>
+							<desc>Represents highest value that can be used. The higher the value, the better is the compression quality and the smaller is the file size.</desc>
+						</info>
+					</maxInclusive>
+				</constraints>
+				<value>90</value>
+			</prop>
+			<prop oor:name="ReduceImageResolution" oor:type="xs:boolean">
+				<info>
+					<author>SJ</author>
+					<desc>Specifies if the resolution of each image is reduced to the resolution specified by the property MaxImageResolution.</desc>
+				</info>
+				<value>false</value>
+			</prop>
+			<prop oor:name="MaxImageResolution" oor:type="xs:int">
+				<info>
+					<desc>If the property ReduceImageResolution is set to true all images will be reduced to the given value in DPI.</desc>
+				</info>
+				<constraints>
+					<enumeration oor:value="75">
+						<info>
+							<desc>75</desc>
+						</info>
+					</enumeration>
+					<enumeration oor:value="150">
+						<info>
+							<desc>150</desc>
+						</info>
+					</enumeration>
+					<enumeration oor:value="300">
+						<info>
+							<desc>300</desc>
+						</info>
+					</enumeration>
+					<enumeration oor:value="600">
+						<info>
+							<desc>600</desc>
+						</info>
+					</enumeration>
+					<enumeration oor:value="1200">
+						<info>
+							<desc>1200</desc>
+						</info>
+					</enumeration>
+				</constraints>
+				<value>300</value>
+			</prop>
+			<prop oor:name="UseTaggedPDF" oor:type="xs:boolean">
+				<info>
+					<author>SJ</author>
+					<desc>Determines if PDF are created by using special tags also known as Tagged PDF.</desc>
+				</info>
+				<value>false</value>
+			</prop>
+			<prop oor:name="ExportNotes" oor:type="xs:boolean">
+				<info>
+					<author>SJ</author>
+					<desc>Specifies if notes are exported to PDF.</desc>
+				</info>
+				<value>false</value>
+			</prop>
+			<prop oor:name="ExportBookmarks" oor:type="xs:boolean">
+				<info>
+					<author>PL</author>
+					<desc>Specifies if bookmarks are exported to PDF.</desc>
+				</info>
+				<value>true</value>
+			</prop>
+			<prop oor:name="OpenBookmarkLevels" oor:type="xs:int">
+				<info>
+					<author>PL</author>
+					<desc>Specifies how many bookmark levels should be opened in the reader application when the PDF gets opened.</desc>
+				</info>
+				<value>-1</value>
+			</prop>
+			<prop oor:name="ExportNotesPages" oor:type="xs:boolean">
+				<info>
+					<author>SJ</author>
+					<desc>Specifies if notes pages are exported to PDF. (Notes pages are available in Impress documents only).</desc>
+				</info>
+				<value>false</value>
+			</prop>
+			<prop oor:name="UseTransitionEffects" oor:type="xs:boolean">
+				<info>
+					<author>SJ</author>
+					<desc>Specifies slide transitions are exported to PDF. This option is active only if storing Impress documents.</desc>
+				</info>
+				<value>true</value>
+			</prop>
+			<prop oor:name="ExportFormFields" oor:type="xs:boolean">
+				<info>
+					<author>pl, beppec56: changed default to false</author>
+					<desc>Specifies whether form fields are exported as widgets or only their fixed print representation is exported.</desc>
+				</info>
+				<value>false</value>
+			</prop>
+			<prop oor:name="FormsType" oor:type="xs:int">
+				<info>
+					<desc>Specifies the submitted format of a PDF form.</desc>
+				</info>
+				<constraints>
+					<enumeration oor:value="0">
+						<info>
+							<desc>Specifies that forms type FDF is used.</desc>
+						</info>
+					</enumeration>
+					<enumeration oor:value="1">
+						<info>
+							<desc>Specifies that forms type PDF is used.</desc>
+						</info>
+					</enumeration>
+					<enumeration oor:value="2">
+						<info>
+							<desc>Specifies that forms type HTML is used.</desc>
+						</info>
+					</enumeration>
+					<enumeration oor:value="3">
+						<info>
+							<desc>Specifies that forms type XML is used.</desc>
+						</info>
+					</enumeration>
+				</constraints>
+				<value>0</value>
+			</prop>
+			<prop oor:name="IsSkipEmptyPages" oor:type="xs:boolean">
+				<info>
+					<author>FME</author>
+					<desc>Specifies that automatically inserted empty pages are suppressed. This option is active only if storing Writer documents.</desc>
+				</info>
+				<value>false</value>
+			</prop>
+			<prop oor:name="IsAddStream" oor:type="xs:boolean">
+				<info>
+					<author>PL</author>
+					<desc>Specifies that a stream is inserted to the PDF file which contains the original document for archiving purposes.</desc>
+				</info>
+				<value>false</value>
+			</prop>
+			<prop oor:name="HideViewerMenubar" oor:type="xs:boolean">
+				<info>
+					<author>beppec56</author>
+					<desc>Specifies whether to hide the PDF viewer menubar when the document is active.</desc>
+				</info>
+				<value>false</value>
+			</prop>
+			<prop oor:name="HideViewerToolbar" oor:type="xs:boolean">
+				<info>
+					<author>beppec56</author>
+					<desc>Specifies whether to hide the PDF viewer toolbar when the document is active.</desc>
+				</info>
+				<value>false</value>
+			</prop>
+			<prop oor:name="HideViewerWindowControls" oor:type="xs:boolean">
+				<info>
+					<author>beppec56</author>
+					<desc>Specifies whether to hide the PDF viewer controls when the document is active.</desc>
+				</info>
+				<value>false</value>
+			</prop>
+			<prop oor:name="ResizeWindowToInitialPage" oor:type="xs:boolean">
+				<info>
+					<author>beppec56</author>
+					<desc>Specifies that the PDF viewer window is opened full screen when the document is opened.</desc>
+				</info>
+				<value>false</value>
+			</prop>
+			<prop oor:name="CenterWindow" oor:type="xs:boolean">
+				<info>
+					<author>beppec56</author>
+					<desc>Specifies that the PDF viewer window is centered to the screen when the PDF document is opened.</desc>
+				</info>
+				<value>false</value>
+			</prop>
+			<prop oor:name="OpenInFullScreenMode" oor:type="xs:boolean">
+				<info>
+					<author>beppec56</author>
+					<desc>Specifies that the PDF viewer window is opened full screen, on top of all windows..</desc>
+				</info>
+				<value>false</value>
+			</prop>
+			<prop oor:name="DisplayPDFDocumentTitle" oor:type="xs:boolean">
+				<info>
+					<author>beppec56</author>
+					<desc>Specifies that the title of the document, if present in the document properties, is displayed in the PDF viewer window title bar.</desc>
+				</info>
+				<value>true</value>
+			</prop>
+			<prop oor:name="InitialView" oor:type="xs:int">
+				<info>
+					<author>beppec56</author>
+					<desc>Specifies how the PDF document should be displayed when opened.</desc>
+				</info>
+				<constraints>
+					<enumeration oor:value="0">
+						<info>
+							<desc>Select the default viewer mode, neither outlines or thumbnails.</desc>
+						</info>
+					</enumeration>
+					<enumeration oor:value="1">
+						<info>
+							<desc>The document is opened with outline pane opened</desc>
+						</info>
+					</enumeration>
+					<enumeration oor:value="2">
+						<info>
+							<desc>The document is opened with thumbnail pane opened</desc>
+						</info>
+					</enumeration>
+				</constraints>
+				<value>0</value>
+			</prop>
+			<prop oor:name="Magnification" oor:type="xs:int">
+				<info>
+					<author>beppec56</author>
+					<desc>Specifies the action to be performed when the PDF document is opened.</desc>
+				</info>
+				<constraints>
+					<enumeration oor:value="0">
+						<info>
+							<desc>Opens with default zoom magnification.</desc>
+						</info>
+					</enumeration>
+					<enumeration oor:value="1">
+						<info>
+							<desc>Opens magnified to fit the entire page within the window.</desc>
+						</info>
+					</enumeration>
+					<enumeration oor:value="2">
+						<info>
+							<desc>Opens magnified to fit the entire page width within the window.</desc>
+						</info>
+					</enumeration>
+					<enumeration oor:value="3">
+						<info>
+							<desc>Opens magnified to fit the entire width of its boundig box within the window (cuts out margins).</desc>
+						</info>
+					</enumeration>
+					<enumeration oor:value="4">
+						<info>
+							<desc>Opens with the zoom level specified in the Zoom property.</desc>
+						</info>
+					</enumeration>
+				</constraints>
+				<value>0</value>
+			</prop>
+			<prop oor:name="Zoom" oor:type="xs:int">
+				<info>
+					<author>pl</author>
+					<desc>specifies the zoom level a PDF document is opened with. Only valid if "Magnification" is set to "4".</desc>
+				</info>
+				<value>100</value>
+			</prop>
+			<prop oor:name="InitialPage" oor:type="xs:int">
+				<info>
+					<author>pl</author>
+					<desc>Specifies the page on which a PDF document should be opened in the viewer application.</desc>
+				</info>
+				<value>1</value>
+			</prop>
+			<prop oor:name="PageLayout" oor:type="xs:int">
+				<info>
+					<author>beppec56</author>
+					<desc>Specifies the page layout to be used when the document is opened.</desc>
+				</info>
+				<constraints>
+					<enumeration oor:value="0">
+						<info>
+							<desc>Display the pages according to the reader configuration.</desc>
+						</info>
+					</enumeration>
+					<enumeration oor:value="1">
+						<info>
+							<desc>Display one page at a time.</desc>
+						</info>
+					</enumeration>
+					<enumeration oor:value="2">
+						<info>
+							<desc>Display the pages in one column.</desc>
+						</info>
+					</enumeration>
+					<enumeration oor:value="3">
+						<info>
+							<desc>Display the pages in two columns odd pages on the right, to have the odd pages on the left the FirstPageOnLeft property should be used as well.</desc>
+						</info>
+					</enumeration>
+				</constraints>
+				<value>0</value>
+			</prop>
+			<prop oor:name="FirstPageOnLeft" oor:type="xs:boolean">
+				<info>
+					<author>beppec56</author>
+					<desc>Used with the value 3 of the PageLayout property above, true if the first page (odd) should be on the left side of the screen.</desc>
+				</info>
+				<value>false</value>
+			</prop>
+			<!-- PDF Encryption -->
+			<prop oor:name="Printing" oor:type="xs:int">
+				<info>
+					<author>beppec56</author>
+					<desc>Specifies what printing is allowed.</desc>
+				</info>
+				<constraints>
+					<enumeration oor:value="0">
+						<info>
+							<desc>The document cannot be printed.</desc>
+						</info>
+					</enumeration>
+					<enumeration oor:value="1">
+						<info>
+							<desc>The document can be printed at low resolution only.</desc>
+						</info>
+					</enumeration>
+					<enumeration oor:value="2">
+						<info>
+							<desc>The document can be printed at maximum resolution.</desc>
+						</info>
+					</enumeration>
+				</constraints>
+				<value>2</value>
+			</prop>
+			<prop oor:name="Changes" oor:type="xs:int">
+				<info>
+					<author>beppec56</author>
+					<desc>Specifies the change allowed to the document.</desc>
+				</info>
+				<constraints>
+					<enumeration oor:value="0">
+						<info>
+							<desc>The document cannot be changed.</desc>
+						</info>
+					</enumeration>
+					<enumeration oor:value="1">
+						<info>
+							<desc>Inserting deleting and rotating pages is allowed.</desc>
+						</info>
+					</enumeration>
+					<enumeration oor:value="2">
+						<info>
+							<desc>Filling of form field is allowed.</desc>
+						</info>
+					</enumeration>
+					<enumeration oor:value="3">
+						<info>
+							<desc>Both filling of form field and commenting is allowed.</desc>
+						</info>
+					</enumeration>
+					<enumeration oor:value="4">
+						<info>
+							<desc>All the changes of the previous selections are permitted, with the only exclusion of page extraction (copy).</desc>
+						</info>
+					</enumeration>
+				</constraints>
+				<value>4</value>
+			</prop>
+			<prop oor:name="EnableCopyingOfContent" oor:type="xs:boolean">
+				<info>
+					<author>beppec56</author>
+					<desc>Specifies that the pages and the document content can be extracted to be used in other documents (copy and paste).</desc>
+				</info>
+				<value>true</value>
+			</prop>
+			<prop oor:name="EnableTextAccessForAccessibilityTools" oor:type="xs:boolean">
+				<info>
+					<author>beppec56</author>
+					<desc>Specifies that the document content can be extracted to be used in accessibility applications.</desc>
+				</info>
+				<value>true</value>
+			</prop>
+			<!-- END PDF Encryption -->
+			<!-- PDF Version selection -->
+			<prop oor:name="SelectPdfVersion" oor:type="xs:int">
+				<info>
+					<author>beppec56</author>
+					<desc>Specifies the version of PDF to emit.</desc>
+				</info>
+				<constraints>
+					<enumeration oor:value="0">
+						<info>
+							<desc>PDF 1.4 (default selection).</desc>
+						</info>
+					</enumeration>
+					<enumeration oor:value="1">
+						<info>
+							<desc>PDF/A-1 (ISO 19005-1:2005)</desc>
+						</info>
+					</enumeration>
+				</constraints>
+				<value>0</value>
+			</prop>
+			<!-- END PDF Version selection -->
+			<!-- PDF Relative Link -->
+			<prop oor:name="ExportLinksRelativeFsys" oor:type="xs:boolean">
+				<info>
+					<author>beppec56</author>
+					<desc>Specifies that the file system related hyperlinks (file:// protocol) present in the document will be exported as relative to the source document location.</desc>
+				</info>
+				<value>false</value>
+			</prop>
+			<prop oor:name="PDFViewSelection" oor:type="xs:int">
+				<info>
+					<author>beppec56</author>
+					<desc>Specifies the way the exported PDF will be viewed (experienced) by the user.</desc>
+				</info>
+				<constraints>
+					<enumeration oor:value="0">
+						<info>
+							<desc>Specifies that the PDF will be exported with all the links external to the document treated as URI. This is the Default</desc>
+						</info>
+					</enumeration>
+					<enumeration oor:value="1">
+						<info>
+							<desc>Specifies that the PDF will be exported in order to be viewed through a PDF reader application only. Valid only if not exporting to PDF/A-1 (e.g. SelectPdfVersion not set to 1).</desc>
+						</info>
+					</enumeration>
+					<enumeration oor:value="2">
+						<info>
+							<desc>Specifies that the PDF will be exported in order to be viewed through an Internet browser, using the PDF plug-in provided with it. The bookmark of the URI will be rendered compatible with the target bookmark generated with OOo PDF Export feature (see ExportBookmarksToPDFDestination, below).</desc>
+						</info>
+					</enumeration>
+				</constraints>
+				<value>0</value>
+			</prop>
+			<prop oor:name="ConvertOOoTargetToPDFTarget" oor:type="xs:boolean">
+				<info>
+					<author>beppec56</author>
+					<desc>Specifies that the target documents with .od[tpgs] extension, will have that extension changed to .pdf when the link is exported to PDF. The source document remains untouched.</desc>
+				</info>
+				<value>false</value>
+			</prop>
+			<prop oor:name="ExportBookmarksToPDFDestination" oor:type="xs:boolean">
+				<info>
+					<author>beppec56</author>
+					<desc>Specifies that the bookmarks contained in the source OpenOffice.org file should be exported to the PDF file as Named Destination (see PDF 1.4 section 8.2.1).</desc>
+				</info>
+				<value>false</value>
+			</prop>
+			<!-- PDF hs private elements -->
+			<prop oor:name="hsEmbedAllFonts" oor:type="xs:boolean">
+				<info>
+					<author>beppec56</author>
+					<desc>Specifies that all the fonts should be embedded.</desc>
+				</info>
+				<value>false</value>
+			</prop>
+			<prop oor:name="hsChangeFontName" oor:type="xs:boolean">
+				<info>
+					<author>beppec56</author>
+					<desc>Specifies the number of pages to emit.</desc>
+				</info>
+				<value>true</value>
+			</prop>
+			<!-- END PDF hs private elements -->
+			<!-- PDF Undocumented internal elements -->
+			<prop oor:name="PageRange" oor:type="xs:string">
+				<info>
+					<author>beppec56</author>
+					<desc>Specifies the name of the embedded fonts should be changed.</desc>
+				</info>
+			</prop>
+			<prop oor:name="Selection" oor:type="xs:boolean">
+				<info>
+					<author>beppec56</author>
+					<desc>Specifies that only the selection should used to export PDF.</desc>
+				</info>
+				<value>false</value>
+			</prop>
+			<!-- END PDF Undocumented internal elements -->
+			<prop oor:name="EnableFileSecurity" oor:type="xs:boolean">
+				<info>
+					<author>Giuseppe Castagno (aka beppec56)</author>
+					<desc>se il file PDF deve esse protetto o no, la password è sempre generata in modo pseudo casuale. Nella configurazione di OOo non esiste.</desc>
+				</info>
+				<value>true</value>
+			</prop>
+			<prop oor:name="Description" oor:type="xs:string">
+				<info>
+					<author>Giuseppe Castagno (aka beppec56)</author>
+					<desc>La descrizione in chiaro della configurazione.</desc>
+				</info>
+			</prop>
+		</group>
+		<group oor:name="Message">
+			<prop oor:name="Text" oor:type="xs:string" oor:localized="true"/>
+		</group>
+		<group oor:name="FileResource">
+			<prop oor:name="Url" oor:type="xs:string" oor:localized="true"/>
+		</group>
+	</templates>
+	<component>
+		<group oor:name="DialogParameters">
+				<info>
+					<author>Giuseppe Castagno (aka beppec56)</author>
+					<desc>contiene le definzioni per le preselezioni della dialog box .</desc>
+				</info>
+			<prop oor:name="PDFASelection" oor:type="xs:boolean">
+				<info>
+					<author>Giuseppe Castagno (aka beppec56)</author>
+					<desc>checkbox del PDF/A-1a, default false.</desc>
+				</info>
+				<value>false</value>
+			</prop>
+			<prop oor:name="PresetSelectionPosition" oor:type="xs:int">
+				<info>
+					<author>Giuseppe Castagno (aka beppec56)</author>
+					<desc>posizione numerica del gruppo di selezione della preselezione (radiobox), default 0</desc>
+				</info>
+				<constraints>
+					<enumeration oor:value="0">
+						<info>
+							<desc>Esporta una fattura/offerta/lettera.</desc>
+						</info>
+					</enumeration>
+					<enumeration oor:value="1">
+						<info>
+							<desc>Esporta un manuale.</desc>
+						</info>
+					</enumeration>
+					<enumeration oor:value="2">
+						<info>
+							<desc>Esporta un formulario modificabile.</desc>
+						</info>
+					</enumeration>
+					<enumeration oor:value="3">
+						<info>
+							<desc>Esporta un formulario fisso.</desc>
+						</info>
+					</enumeration>
+				</constraints>
+				<value>0</value>
+			</prop>
+			<prop oor:name="StartReaderWhenDone" oor:type="xs:boolean">
+				<info>
+					<author>Giuseppe Castagno (aka beppec56)</author>
+					<desc>avvia il lettore al termine dell'esportazione</desc>
+				</info>
+				<value>false</value>
+			</prop>
+			<prop oor:name="PathToThePDFReader" oor:type="xs:string">
+				<info>
+					<author>Giuseppe Castagno (aka beppec56)</author>
+					<desc>avvia il lettore (esempio: acroread) al termine dell'esportazione</desc>
+				</info>
+				<value>acroread</value>
+			</prop>
+		</group>
+		<set oor:name="ExportParmsSets" oor:node-type="ExportParameter">
+			<info>
+				<author>Giuseppe Castagno (aka beppec56)</author>
+				<desc>contiene tutti i 6 preset per le funzioni predefinite.</desc>
+			</info>
+		</set>
+		<set oor:name="FileResources" oor:node-type="FileResource"/>
+		<set oor:name="Messages" oor:node-type="Message"/>
+	</component>
+</oor:component-schema>

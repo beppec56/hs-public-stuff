@@ -1,0 +1,373 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE script:module PUBLIC "-//OpenOffice.org//DTD OfficeDocument 1.0//EN" "module.dtd">
+<script:module xmlns:script="http://openoffice.org/2000/script" script:name="DlgConfigCode" script:language="StarBasic">REM  *****  BASIC  *****
+REM LGPL V 2.1 license apply
+REM Author Giuseppe Castagno [giuseppe.castagno@acca-esse.eu]
+REM							 [beppec56@openoffice.org]
+REM OOo minimum version: 2.4, in case of older version the
+REM PDF output filter FilterData values will be ignored...
+
+Option explicit
+
+Dim oImpDlg as object &apos; dialog box per configurazione
+dim	oExpParam as object &apos;parametri di questa configurazione
+dim sTitle as string &apos; titolo della dialog (e della configurazione)
+dim sCurrentControlLabel as string &apos;etichetta della configurazione corrente
+private oChildModel as object &apos;modello della dialog
+
+sub dlgConfigRun( nMaxConfig as integer )
+&apos; check chiamata dei controlli della dialog principale
+	dim nPosition as integer
+
+	for nPosition = 0 to  nMaxConfig step 1
+		if oConfirmDialog.getModel().getByName(&quot;Config&quot; &amp; nPosition ).State = 1 Then
+			dlgConfigRunMode( nPosition )
+			exit for
+		end if
+	next
+end sub
+
+&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;
+sub dlgConfigRunMode( Mode as integer)
+	dim aRect as object
+	dim aRectParent as object
+
+	oImpDlg = Tools.LoadDialog(&quot;it_acca_esse_EsportaPDF&quot;, &quot;DlgConfig&quot;)
+
+	sCurrentControlLabel = &quot;Config&quot; &amp; Mode
+	oExpParam = GetAPreset( sCurrentControlLabel, true )
+	
+	sTitle = GetResString( &quot;Profile&quot;) &amp; &quot;: &quot; &amp; oExpParam.Description
+	LocalizeDialog( oImpDlg )
+	oChildModel = oImpDlg.getModel()
+&apos;correggi la posizione della dialog rispetto al parent
+	aRectParent = oConfirmDialog.getPosSize()
+	aRect = oImpDlg.getPosSize()
+	aRect.X = -( aRect.Width - aRectParent.Width )/2 &apos;centra rispetto alla finestra genitrice
+	aRect.Y = 20
+	oImpDlg.setPosSize( aRect.X, aRect.Y, 0,0, com.sun.star.awt.PosSize.POS )&apos;set only the position values
+&apos;init control dalla configurazione
+	FillDialogControls()
+	if oImpDlg.execute() = 1 then
+&apos;se out ok, legge la configurazione della dialog, aggiorna config
+		StoreDialogControls()		
+	end if
+&apos;se cancel, non fa nulla
+	oExpParam.dispose()
+end sub
+
+&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;
+&apos; inizializza i controlli della dialog
+&apos; prelevando i dati dai parametri
+sub FillDialogControls()
+	oImpDlg.Title = sTitle
+	oImpDlg.getControl(&quot;tfDescription&quot; ).Text = oExpParam.Description
+	if oExpParam.OpenBookmarkLevels = -1 then
+		oChildModel.getByName(&quot;obBmkAllLev&quot;).State = 1
+		oChildModel.getByName(&quot;nfBmkLevNumb&quot;).Enabled = false
+	else
+		oChildModel.getByName(&quot;obBmkLevNumb&quot;).State = 1		
+		oChildModel.getByName(&quot;nfBmkLevNumb&quot;).Value = oExpParam.OpenBookmarkLevels
+	end if
+	if oExpParam.ExportBookmarks then
+		oChildModel.getByName(&quot;cbExpBmk&quot;).State = 1
+	else
+		oChildModel.getByName(&quot;obBmkAllLev&quot;).Enabled = false
+		oChildModel.getByName(&quot;obBmkLevNumb&quot;).Enabled = false
+		oChildModel.getByName(&quot;nfBmkLevNumb&quot;).Enabled = false
+	end if
+	if oExpParam.ExportFormFields then
+		oChildModel.getByName(&quot;lbxFormType&quot;).Enabled = true
+		oImpDlg.getControl(&quot;lbxFormType&quot;).selectItemPos(oExpParam.FormsType,true)
+		oChildModel.getByName(&quot;cbExportForm&quot;).State = 1
+	end if
+	if oExpParam.UseTaggedPDF then
+		oChildModel.getByName(&quot;cbPDFTagged&quot;).State = 1
+	end if
+	if oExpParam.EnableFileSecurity then
+		oChildModel.getByName(&quot;cbProteggiFile&quot;).State = 1
+	else
+		oChildModel.getByName(&quot;cbSecurity&quot;).Enabled = false
+	end if
+	select case oExpParam.MaxImageResolution
+		case 75
+			oImpDlg.getControl(&quot;cbxDPI&quot;).selectItemPos(0,true)
+		case 150
+			oImpDlg.getControl(&quot;cbxDPI&quot;).selectItemPos(1,true)
+		case 300
+			oImpDlg.getControl(&quot;cbxDPI&quot;).selectItemPos(2,true)
+		case 600
+			oImpDlg.getControl(&quot;cbxDPI&quot;).selectItemPos(3,true)
+		case 1200
+			oImpDlg.getControl(&quot;cbxDPI&quot;).selectItemPos(4,true)
+	end select
+	if oExpParam.PDFViewSelection &gt; 2 or oExpParam.PDFViewSelection &lt; 0 then
+		oExpParam.PDFViewSelection = 0
+	end if
+	if bIsLinkCapable then
+		oImpDlg.getControl(&quot;lbPDFLinkMode&quot;).selectItemPos(oExpParam.PDFViewSelection,true)
+	else
+		oChildModel.getByName(&quot;lbPDFLinkMode&quot;).Enabled = false
+	end if
+
+	if oExpParam.ReduceImageResolution then
+		oChildModel.getByName(&quot;cbRiduciRisol&quot;).State = 1
+	else
+		oChildModel.getByName(&quot;cbxDPI&quot;).Enabled = false
+	end if
+	oImpDlg.getModel().getByName(&quot;nfpercentuale&quot;).Value = oExpParam.Quality
+	if oExpParam.UseLosslessCompression then
+		oChildModel.getByName(&quot;rbCompr&quot;).State = 1
+		oChildModel.getByName(&quot;nfpercentuale&quot;).Enabled = false
+	else
+		oChildModel.getByName(&quot;rbCompJPEG&quot;).State = 1
+	end if
+	oImpDlg.getControl(&quot;lbxOpenMode&quot;).selectItemPos(_
+				CheckLimits(oExpParam.InitialView , 0 , 2),true)
+	oImpDlg.getControl(&quot;lbPageLayout&quot;).selectItemPos(CheckLimits(oExpParam.PageLayout, 1, 3),true)					
+	oImpDlg.getControl(&quot;lbxZooming&quot;).selectItemPos(CheckLimits(oExpParam.Magnification, 0, 4),true)
+	oChildModel.getByName(&quot;nfZoomFactor&quot;).Value = CheckLimits(oExpParam.Zoom, 1, 32767 )
+	if oExpParam.Magnification &lt;&gt; 4 then
+		oChildModel.getByName(&quot;nfZoomFactor&quot;).Enabled = false
+	end if
+	oImpDlg.getModel().getByName(&quot;nfFirstPage&quot;).Value = oExpParam.InitialPage
+	if oExpParam.UseTransitionEffects then
+		oChildModel.getByName(&quot;cbTransEffect&quot;).State = 1
+	end if
+	
+&apos;	if oExpParam.PageRange then
+&apos;		oChildModel.getByName(&quot;obPages&quot;).State = 1
+&apos;	else
+		if oExpParam.Selection then
+			oChildModel.getByName(&quot;obSelection&quot;).State = 1
+		else
+			oChildModel.getByName(&quot;obAllDoc&quot;).State = 1			
+		end if
+&apos;	end if
+
+
+	if bHasPrivateFontProp then
+		if oExpParam.hsChangeFontName then
+			oChildModel.getByName(&quot;cbChangeFontName&quot;).State = 1
+		end if
+	else
+		oChildModel.getByName(&quot;cbChangeFontName&quot;).Enabled = false	
+	end if
+	
+	if bHasPrivateEmbedProp then
+		if oExpParam.hsEmbedAllFonts then
+			oChildModel.getByName(&quot;cbEmbedAllFonts&quot;).State = 1
+		end if
+	else
+		oChildModel.getByName(&quot;cbEmbedAllFonts&quot;).Enabled = false	
+	end if
+
+end sub
+
+&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;
+&apos; rende persistenti i parametri
+sub StoreDialogControls()
+	if oChildModel.getByName(&quot;cbExpBmk&quot;).State = 1 then
+		oExpParam.ExportBookmarks = true
+		if oChildModel.getByName(&quot;obBmkAllLev&quot;).State = 1 then
+			oExpParam.OpenBookmarkLevels = -1
+		else
+			oExpParam.OpenBookmarkLevels = oChildModel.getByName(&quot;nfBmkLevNumb&quot;).Value
+		end if
+	else
+		oExpParam.ExportBookmarks = false		
+	end if
+
+	oExpParam.ExportFormFields = (oChildModel.getByName(&quot;cbExportForm&quot;).State = 1)
+
+	if oExpParam.ExportFormFields then
+		oExpParam.FormsType = oImpDlg.getControl(&quot;lbxFormType&quot;).getSelectedItemPos()
+	end if
+
+	oExpParam.UseTaggedPDF = ( oChildModel.getByName(&quot;cbPDFTagged&quot;).State = 1 )
+	oExpParam.EnableFileSecurity = ( oChildModel.getByName(&quot;cbProteggiFile&quot;).State = 1 )
+
+	if oChildModel.getByName(&quot;cbRiduciRisol&quot;).State = 1 then
+		oExpParam.ReduceImageResolution = true
+
+		select case oImpDlg.getControl(&quot;cbxDPI&quot;).getSelectedItemPos()
+		case 0
+			oExpParam.MaxImageResolution = 75
+		case 1
+			oExpParam.MaxImageResolution = 150
+		case 2
+			oExpParam.MaxImageResolution = 300
+		case 3
+			oExpParam.MaxImageResolution = 600
+		case 4
+			oExpParam.MaxImageResolution = 1200			
+		end select
+	else
+		oExpParam.ReduceImageResolution = false
+	end if
+	if oChildModel.getByName(&quot;rbCompr&quot;).State = 1 then
+		oExpParam.UseLosslessCompression = true
+	else
+		oExpParam.UseLosslessCompression = false
+		oExpParam.Quality = oImpDlg.getModel().getByName(&quot;nfpercentuale&quot;).Value
+	end if						
+
+	oExpParam.PDFViewSelection = CheckLimits(oImpDlg.getControl(&quot;lbPDFLinkMode&quot;).getSelectedItemPos(), 0 ,2 )
+	oExpParam.InitialView = CheckLimits(oImpDlg.getControl(&quot;lbxOpenMode&quot;).getSelectedItemPos() ,0 , 2)
+	oExpParam.Magnification = CheckLimits(oImpDlg.getControl(&quot;lbxZooming&quot;).getSelectedItemPos() ,0 , 4)
+	oExpParam.PageLayout = CheckLimits( oImpDlg.getControl(&quot;lbPageLayout&quot;).getSelectedItemPos(), 0, 3 )
+	oExpParam.InitialPage = CheckLimits( oImpDlg.getModel().getByName(&quot;nfFirstPage&quot;).Value, 1, 32767 )
+	oExpParam.Zoom = CheckLimits(oImpDlg.getModel().getByName(&quot;nfZoomFactor&quot;).Value, 1 , 100)
+	oExpParam.Description = oImpDlg.getControl(&quot;tfDescription&quot; ).Text
+
+	oExpParam.UseTransitionEffects = ( oChildModel.getByName(&quot;cbTransEffect&quot;).State = 1 )
+	
+	oExpParam.Selection = ( oChildModel.getByName(&quot;obSelection&quot;).State = 1 )
+
+	oExpParam.hsChangeFontName  = ( oChildModel.getByName(&quot;cbChangeFontName&quot;).State = 1 )
+	oExpParam.hsEmbedAllFonts = ( oChildModel.getByName(&quot;cbEmbedAllFonts&quot;).State = 1 )
+
+&apos;aggiorna la dialog box principale con la nuova descrizione
+	oConfirmDialog.getModel().getByName(sCurrentControlLabel ).Label = oExpParam.Description
+
+	oExpParam.CommitChanges()
+end sub
+
+&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;
+Function CheckLimits(nValue as long, nMin as integer, nMax as integer) as integer
+	if nValue &gt; nMax then
+		CheckLimits() = nMax
+	elseif nValue &lt; nMin then
+			CheckLimits() = nMin
+	else
+		CheckLimits() = nValue
+	endif
+end function
+
+&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;
+&apos; trattamento eventi dialogo
+&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;
+&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;
+
+sub cbProteggiFileToggle( oEvent as object )
+		oChildModel.getByName(&quot;cbSecurity&quot;).Enabled = ( oEvent.Source.State = 1 )
+end sub
+
+&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;
+sub cbSecurity( oEvent as object )
+	dlgSecurityRun( oImpDlg, oExpParam )
+end sub
+
+sub btGetLastExport( oEvent as object )
+	dim oPDFExportParm, oConfirmDlg
+
+&apos;avvisa
+	oConfirmDlg = Tools.LoadDialog(&quot;it_acca_esse_EsportaPDF&quot;, &quot;DlgGetParmsHelp&quot;)
+	oConfirmDlg.getModel().PositionY = 20&apos;20 unità più in basso della finestra genitrice
+	oConfirmDlg.getModel().PositionX = -( oConfirmDlg.getModel().Width - oImpDlg.getModel().Width )/2 &apos;centra rispetto alla finestra genitrice
+	LocalizeDialog( oConfirmDlg )
+	if oConfirmDlg.execute() = 1 then
+&apos;legge la registry dell&apos;export PDF ed assegna i parametri ai parametri attuali
+&apos;poi forza una visualizzazione dello stato nella dialog
+		oPDFExportParm = GetPDFExportParms()
+&apos;assegna i parametri
+		with oExpParam
+			.CenterWindow							= oPDFExportParm.CenterWindow 				&apos;boolean                    True  read-only, may be void 
+			.Changes								= oPDFExportParm.Changes					&apos;long                          4  read-only, may be void 
+			.DisplayPDFDocumentTitle				= oPDFExportParm.DisplayPDFDocumentTitle	&apos;boolean                    True  read-only, may be void 
+			.EnableCopyingOfContent					= oPDFExportParm.EnableCopyingOfContent		&apos;boolean                    True  read-only, may be void 
+			.EnableTextAccessForAccessibilityTools 	= oPDFExportParm.EnableTextAccessForAccessibilityTools &apos;boolean        True  read-only, may be void 
+			.ExportBookmarks						= oPDFExportParm.ExportBookmarks			&apos;boolean                    True  read-only, may be void 
+
+			.ExportFormFields						= oPDFExportParm.ExportFormFields			&apos;boolean                    True  read-only, may be void 
+			.ExportNotes							= oPDFExportParm.ExportNotes				&apos;boolean                   False  read-only, may be void 
+			.ExportNotesPages						= oPDFExportParm.ExportNotesPages			&apos;boolean                   False  read-only, may be void 
+			.FirstPageOnLeft						= oPDFExportParm.FirstPageOnLeft			&apos;boolean                   False  read-only, may be void 
+			.FormsType								= oPDFExportParm.FormsType                 &apos;long                          0  read-only, may be void 
+			.HideViewerMenubar						= oPDFExportParm.HideViewerMenubar         &apos;boolean                   False  read-only, may be void 
+			.HideViewerToolbar						= oPDFExportParm.HideViewerToolbar         &apos;boolean                    True  read-only, may be void 
+			.HideViewerWindowControls				= oPDFExportParm.HideViewerWindowControls&apos;  boolean                   False  read-only, may be void 
+			.InitialPage							= oPDFExportParm.InitialPage	&apos;long                          1  read-only, may be void 
+			.InitialView							= oPDFExportParm.InitialView	&apos;long                          0  read-only, may be void 
+			.IsAddStream							= oPDFExportParm.IsAddStream&apos;boolean                   False  read-only, may be void 
+			.IsSkipEmptyPages						= oPDFExportParm.IsSkipEmptyPages&apos;boolean                   False  read-only, may be void 
+			.Magnification							= oPDFExportParm.Magnification&apos;long                          0  read-only, may be void 
+			.MaxImageResolution						= oPDFExportParm.MaxImageResolution&apos;long                        300  read-only, may be void 
+			.OpenBookmarkLevels						= oPDFExportParm.OpenBookmarkLevels&apos;long                         -1  read-only, may be void 
+			.OpenInFullScreenMode					= oPDFExportParm.OpenInFullScreenMode&apos;boolean                    True  read-only, may be void 
+			.PageLayout								= oPDFExportParm.PageLayout&apos;long                          0  read-only, may be void 
+			.Printing								= oPDFExportParm.Printing&apos;long                          2  read-only, may be void 
+			.Quality								= oPDFExportParm.Quality&apos;long                         90  read-only, may be void 
+			.ReduceImageResolution					= oPDFExportParm.ReduceImageResolution&apos;boolean                   False  read-only, may be void 
+			.ResizeWindowToInitialPage				= oPDFExportParm.ResizeWindowToInitialPage&apos;boolean                   False  read-only, may be void 
+			.UseLosslessCompression					= oPDFExportParm.UseLosslessCompression&apos;boolean                   False  read-only, may be void 
+			.UseTaggedPDF							= oPDFExportParm.UseTaggedPDF&apos;boolean                   False  read-only, may be void 
+			.UseTransitionEffects					= oPDFExportParm.UseTransitionEffects&apos;boolean                    True  read-only, may be void 
+			.Zoom									= oPDFExportParm.Zoom&apos;long                        100  read-only, may be void 
+&apos;i parametri non in 2.3 ma attesi per 2.4 vengono controllati se esistenti
+&apos;con errore
+			On error goto notfound
+			if bIsPDFACapable then
+				.SelectPdfVersion						= oPDFExportParm.SelectPdfVersion&apos;long                          0  read-only, may be void 
+				.ExportBookmarksToPDFDestination		= oPDFExportParm.ExportBookmarksToPDFDestination	&apos;boolean             False  read-only, may be void 
+				.ExportLinksRelativeFsys				= oPDFExportParm.ExportLinksRelativeFsys&apos;boolean                   False  read-only, may be void 
+				.ConvertOOoTargetToPDFTarget			= oPDFExportParm.ConvertOOoTargetToPDFTarget&apos;boolean                 False  read-only, may be void 
+				.PDFViewSelection						= oPDFExportParm.PDFViewSelection&apos;long                          0  read-only, may be void 
+			end if
+			if bHasPrivateProp then
+				.hsChangeFontName						= oPDFExportParm.hsChangeFontName&apos;boolean
+				.hsEmbedAllFonts						= oPDFExportParm.hsEmbedAllFonts&apos;boolean
+			end if
+notfound:
+			on error goto 0
+		end with
+		FillDialogControls()	
+	end if
+end sub
+
+&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;
+sub lbxZoomingToggle( oEvent as object )
+&apos;legge status della selezione
+	oChildModel.getByName(&quot;nfZoomFactor&quot;).Enabled = ( oEvent.Source.getSelectedItemPos() = 4 )
+end sub
+
+&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;
+sub cbExpBmkToggle( oEvent as object )
+	dim bStatus as boolean
+	bStatus = ( oEvent.Source.State = 1)
+	oImpDlg.getModel().getByName(&quot;obBmkAllLev&quot;).Enabled = bStatus
+	oImpDlg.getModel().getByName(&quot;obBmkLevNumb&quot;).Enabled = bStatus
+	oImpDlg.getModel().getByName(&quot;nfBmkLevNumb&quot;).Enabled = bStatus
+end sub
+
+&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;
+sub cbExportFormToggle( oEvent as object )
+	oImpDlg.getModel().getByName(&quot;lbxFormType&quot;).Enabled = oEvent.Source.State
+end sub
+
+&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;
+sub obBmkAllLevToggle( oEvent as object )
+	oImpDlg.getModel().getByName(&quot;nfBmkLevNumb&quot;).Enabled = oImpDlg.getModel().getByName(&quot;obBmkLevNumb&quot;).State
+end sub
+
+&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;
+sub obBmkLevNumbToggle( oEvent as object )
+	oImpDlg.getModel().getByName(&quot;nfBmkLevNumb&quot;).Enabled = oEvent.Source.State
+end sub
+
+&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;
+sub cbRiduciRisolToggle( oEvent as object )
+		oImpDlg.getModel().getByName(&quot;cbxDPI&quot;).Enabled = ( oEvent.Source.State = 1 )
+end sub
+
+&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;
+sub rbCompJPEGToggle( oEvent as object )
+		oImpDlg.getModel().getByName(&quot;nfpercentuale&quot;).Enabled = oEvent.Source.Model.State
+end sub
+
+&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;
+sub rbComprToggle( oEvent as object )
+		oImpDlg.getModel().getByName(&quot;nfpercentuale&quot;).Enabled = oImpDlg.getModel().getByName(&quot;rbCompJPEG&quot;).State
+end sub
+
+</script:module>

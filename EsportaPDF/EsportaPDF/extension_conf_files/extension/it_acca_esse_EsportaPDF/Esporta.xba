@@ -1,0 +1,562 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE script:module PUBLIC "-//OpenOffice.org//DTD OfficeDocument 1.0//EN" "module.dtd">
+<script:module xmlns:script="http://openoffice.org/2000/script" script:name="Esporta" script:language="StarBasic">REM  *****  BASIC  *****
+REM LGPL V 2.1 license apply
+REM Author Giuseppe Castagno [giuseppe.castagno@acca-esse.eu]
+REM							 [beppec56@openoffice.org]
+REM OOo minimum version: 2.4, in case of older version the
+REM PDF output filter FilterData values will be ignored...
+
+&apos;
+Option Explicit
+
+Dim sFilterName As String
+Dim oConfirmDialog as Object
+Dim oDoc As Object
+Dim oModel as object
+Dim oProgressBarModel as Object
+
+Dim bEncryptFile as boolean
+Dim bRestrictPermissions as boolean
+
+&apos;this effective from m238 only
+Dim nPDFTypeSelected as integer	&apos;0 = PDF 1.4
+								&apos;1 = PDF/A-1a
+
+Dim bExportBookmarksToPDFDestination as boolean&apos; if true the od? bookmarks are converted to pdf named destinations
+Dim bConvertOOoTargetToPDFTarget as boolean &apos;if true the od? document extension is changed to pdf
+Dim bExportLinksRelativeFsys as boolean &apos;0 = absolute, 1 = relative to file system
+Dim nPDFViewSelection as integer 	&apos;0 exported as URI,
+									&apos;1 as Remote Goto (for PDF application, 2, 3
+									&apos;2 viewed with Internet browser+bookmark
+dim oDialogParms as object	&apos;parametri della finestra di dialogo
+							&apos;contengono l&apos;ultimo posizionamento dei controlli
+dim oExpInvoice as object
+dim oExpManual as object
+dim oExpForm as object
+dim oExpFixForm as object
+dim bIsPDFACapable as boolean
+dim bIsLinkCapable as boolean
+dim bHasPrivateFontProp as boolean
+dim bHasPrivateEmbedProp as boolean
+dim sReaderApp as string
+dim bStartReaderApp as boolean
+
+Const MAX_CONFIGURATIONS = 5 &apos;massimo numero di configurazioni - 1
+
+&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;
+&apos; avviare da questa funzione (main function)
+Sub Main
+	GlobalScope.BasicLibraries.LoadLibrary(&quot;Tools&quot;)&apos;contiene LoadDialog, usata più sotto
+&apos; abilitare per debug con xray
+&apos; GlobalScope.BasicLibraries.LoadLibrary(&quot;XrayTool&quot;)&apos;
+&apos; chiede quale inizializzazione fare: fatture, lettere o manuali
+&apos; prima carica la Dialog window, Tools.LoadDialog è una chiamata
+&apos; standard present nell&apos;installazione di OOo, libreria macro Tools
+	CheckOOoCapabilities()
+
+	oConfirmDialog = Tools.LoadDialog(&quot;it_acca_esse_EsportaPDF&quot;, &quot;DlgSelTipoEsportaz&quot;)
+&apos; legge le impostazioni memorizzate in configurazione, imposta la dialog box
+	oDialogParms = GetDialogParms()
+	bStartReaderApp = oDialogParms.StartReaderWhenDone
+	sReaderApp = oDialogParms.PathToThePDFReader
+
+	if bIsPDFACapable then
+			oConfirmDialog.getModel().getByName(&quot;SelezionaPDFA1a&quot;).State =_
+				IIF( oDialogParms.PDFASelection, 1, 0 )
+	else
+		oConfirmDialog.getModel().getByName(&quot;SelezionaPDFA1a&quot;).State = 0
+		oConfirmDialog.getModel().getByName(&quot;SelezionaPDFA1a&quot;).Enabled = false
+	end if
+
+	dim nPosition as integer
+	dim oConfigParms as object
+	for nPosition = 0 to MAX_CONFIGURATIONS step 1
+		oConfigParms = GetAPreset( &quot;Config&quot; &amp; nPosition )
+		oConfirmDialog.getModel().getByName(&quot;Config&quot; &amp; nPosition ).Label = oConfigParms.Description
+	next
+	nPosition = oDialogParms.PresetSelectionPosition
+	oConfirmDialog.getModel().getByName(&quot;Config&quot; &amp; nPosition ).State = 1
+	
+	oConfirmDialog.getModel().getByName(&quot;cbOpenWithReader&quot;).State = _
+		IIF( bStartReaderApp,  1, 0 )
+
+	oConfirmDialog.getModel().getByName(&quot;cbConfigReader&quot;).Enabled = bStartReaderApp
+
+	LocalizeDialog( oConfirmDialog )
+
+	if oConfirmDialog.execute() = 1 then
+		if CheckDocExport() then 
+			ExportingWithDialog
+		End if		
+	end if
+End Sub
+
+sub cbOpenWithReaderToggle( oEvent as object )
+	oConfirmDialog.getModel().getByName(&quot;cbConfigReader&quot;).Enabled =_
+		( oConfirmDialog.getModel().getByName(&quot;cbOpenWithReader&quot;).State = 1 )
+end sub
+
+&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;
+Function InitGlobalVars as boolean
+&apos;init dei parametri standard
+&apos;disabilita la visualizzazione
+	InitGlobalVars=false
+	On Error goto NOINIT
+	if not CheckDocExport() then
+		exit function
+	end if	
+	HideSpecialChars()
+	bEncryptFile = true
+	bRestrictPermissions = true
+	bExportBookmarksToPDFDestination = true&apos; if true the od? bookmarks are converted to pdf named destinations
+	bConvertOOoTargetToPDFTarget = true	&apos;if true the od? document extension is changed to pdf
+	bExportLinksRelativeFsys = true		&apos;0 = absolute, 1 = relative to file system
+	nPDFViewSelection = 1 				&apos;0 exported as URI,
+										&apos;1 as Remote Goto (for PDF reader application)
+										&apos;2 viewed with Internet browser+bookmark
+	InitGlobalVars=true
+	On error goto 0
+	exit function
+NOINIT:
+	On error goto 0
+end function
+
+&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;
+Sub ExportingWithDialog
+	dim oCancelButtonModel as object
+	dim oExportButtonModel as object
+	dim nPDFTypeA as integer
+	dim nPosition as integer
+
+&apos; disabilita entrambi i pulsanti
+&apos; metodo 1
+	oCancelButtonModel = oConfirmDialog.getModel().getByName(&quot;CancelButton&quot;)
+	oCancelButtonModel.Enabled = False
+&apos; metodo 2
+	oExportButtonModel = oConfirmDialog.Model.ExportButton
+	oExportButtonModel.Enabled = False
+
+	nPDFTypeA = 0
+	if oConfirmDialog.getModel().getByName(&quot;SelezionaPDFA1a&quot;).State = 1 Then
+		nPDFTypeA = 1
+	end if
+
+	bStartReaderApp = false
+	if oConfirmDialog.getModel().getByName(&quot;cbOpenWithReader&quot;).State = 1 Then
+		bStartReaderApp = true
+	end if
+
+	for nPosition = 0 to  MAX_CONFIGURATIONS step 1
+		if oConfirmDialog.getModel().getByName(&quot;Config&quot; &amp; nPosition ).State = 1 Then
+			PDF_esporta_config( nPDFTypeA, nPosition )
+			exit for
+		end if
+	next
+
+&apos;chiude la finestra di dialogo
+	oConfirmDialog.endExecute()	
+End Sub
+
+&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;
+Sub cbSettingsPressed( oEvent as object )
+	dlgConfigRun( MAX_CONFIGURATIONS )
+end sub
+
+&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;
+Sub StoreDialogConf(nPDFA as integer, nRadioPos as integer)
+	oDialogParms.PDFASelection = (nPDFA = 1)
+	oDialogParms.PresetSelectionPosition = nRadioPos
+	oDialogParms.StartReaderWhenDone = bStartReaderApp
+	oDialogParms.PathToThePDFReader = sReaderApp
+	oDialogParms.CommitChanges
+end sub
+
+&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;
+Function CheckDocExport as boolean
+
+	CheckDocExport = false
+	On Error Goto NOCHECK
+	oDoc = ThisComponent
+&apos; check se è già stato salvato o ha già un nome
+	If oDoc.hasLocation() Then
+&apos; determina il tipo di filtro da impostare per l&apos;esportazione
+		sFilterName = GetPDFFilter( oDoc )
+		if sFilterName &lt;&gt; &quot;&quot; Then
+			CheckDocExport = true
+		End if
+	Else
+&apos;non salvato: messaggio e termina
+		displayMessageErr( GetResString( &quot;Unsaved doc!&quot; ) )
+	End If
+	on error goto 0
+	exit function
+NOCHECK:
+&apos;	displayMessageErr( &quot;Error is: &quot; &amp; str(err)  &amp; &quot;, if error = 12, then syntax error!&quot; )
+	displayMessageErr( &quot;Error is: &quot; &amp; &quot;, if error = 12, then syntax error!&quot; )
+	on error goto 0
+end Function
+
+&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;
+Sub PDF_esporta( oOptions as object )
+	dim sPDFURL as string
+	if CheckDocExport then
+&apos; costruisce il nome file dalla radice del file corrente
+		sPDFURL = BuildPDFFileName( oDoc )
+&apos; esporta il file
+		DoExport( oDoc , sPDFURL, oOptions )
+	end if
+End Sub
+
+&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;
+&apos; funzioni per i menu, di lavoro
+Sub PDF_esporta_config(nPDFType as integer, WhichConfig as integer)
+	StoreDialogConf( nPDFType, WhichConfig )
+	if InitGlobalVars() then
+		nPDFTypeSelected = nPDFType
+		InitGlobalVars	&apos;prima dell&apos;InitOptionValues....
+		PDF_Esporta( GeneralInitParm( WhichConfig ) )
+	end if
+end sub
+
+&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;
+&apos; dal nome file (url)
+&apos; toglie il tipo file (.odt, .ott, .ods, ecc...), se esiste
+&apos; e  rinomina in .pdf
+&apos; da per scontato che il file abbia nome: x.y
+&apos; dove y è il tipo standard di OOo o MS Office: nome.???
+&apos; elimina ultimi tre caratteri e sostituisce con pdf
+&apos; se non è nome.??? allora aggiunge .pdf
+&apos; se l&apos;emissione è PDF/A-1a allora aggiunge .pdfa. prima di pdf
+&apos; così il nome file diventa file.pdfa.pdf
+Function BuildPDFFileName(oDoc)
+	dim sPDFAExt as string
+	dim sUrl as string
+	dim nLen as integer
+	dim nIlpunto as integer
+
+	sPDFAExt = &quot;&quot;
+
+	if nPDFTypeSelected = 1 then
+		sPDFAExt = &quot;pdfa.&quot;
+	end if
+
+	sUrl = oDoc.getURL()
+	nLen = Len(sUrl)
+	nIlPunto = Len(sUrl) - 3
+	if Mid(sUrl, nIlPunto, 1 ) = &quot;.&quot; then
+		BuildPDFFileName() = Mid(sUrl, 1, nIlPunto ) + sPDFAExt + &quot;pdf&quot;
+	else
+		BuildPDFFileName() = sUrl + &quot;.&quot; + sPDFAExt + &quot;pdf&quot;
+	end if
+End Function
+
+&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;
+&apos; utilissima funzione copiata dalla documentazione di Andrew D. Pitonyak
+&apos;
+Function GetPDFFilter(oDoc)
+  REM Author: Alain Viret [Alain.Viret@bger.admin.ch]
+  REM Modified by Andrew Pitonyak
+  &apos; adattata come presa dagli autori sopra indicati
+  Dim sImpress as string
+  Dim sCalc as string
+  Dim sDraw as string
+  Dim sBase as string
+  Dim sMath as string
+  Dim sWrite as string
+  Dim sMaster as string
+
+  GetPDFFilter = &quot;&quot;
+ 
+  On Local Error GoTo NOTYPE
+  sCalc    = &quot;com.sun.star.sheet.SpreadsheetDocument&quot;
+  sImpress = &quot;com.sun.star.presentation.PresentationDocument&quot;
+  sDraw    = &quot;com.sun.star.drawing.DrawingDocument&quot;
+  sBase    = &quot;com.sun.star.sdb.DatabaseDocument&quot;
+  sMath    = &quot;com.sun.star.formula.FormulaProperties&quot;
+  sWrite   = &quot;com.sun.star.text.TextDocument&quot;
+  sMaster  = &quot;com.sun.star.text.GlobalDocument&quot;
+
+	If oDoc.SupportsService(sCalc) Then
+    	GetPDFFilter = &quot;calc_pdf_Export&quot;
+	ElseIf  oDoc.SupportsService(sWrite) Then
+		GetPDFFilter = &quot;writer_pdf_Export&quot;
+	ElseIf  oDoc.SupportsService(sDraw) Then
+		GetPDFFilter = &quot;draw_pdf_Export&quot;
+	ElseIf  oDoc.SupportsService(sMath) Then
+		GetPDFFilter = &quot;math_pdf_Export&quot;
+	ElseIf  oDoc.SupportsService(sImpress) Then
+			GetPDFFilter = &quot;impress_pdf_Export&quot;
+	ElseIf  oDoc.SupportsService(sMaster) Then
+    	GetPDFFilter = &quot;writer_globaldocument_pdf_Export&quot;
+  	End If
+	on error goto 0
+  exit function
+NOTYPE:
+   	on error goto 0
+End Function
+
+&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;
+&apos; esporta in PDF, se il file già esiste,
+&apos; viene sovrascritto senza appello !
+Sub DoExport( oDoc as object, toURL as string, oFilterOptions as object)
+	dim oStatusIndicator as Object
+	dim oExpOptions as object
+	dim sCommand as string
+
+&apos;check se file destinazione è scrivibile:
+	if okWriteFile( toURL ) then
+
+&apos; c&apos;è un solo oggetto utilizzabile per lo status:
+		oStatusIndicator = StarDesktop.getActiveFrame().createStatusIndicator()
+
+&apos; ora esporta il file, con impostazione parametri già inizializzati
+		oExpOptions = Array(_
+			FillPropVal( &quot;FilterName&quot;, sFilterName ),_
+			FillPropVal( &quot;FilterData&quot;,  oFilterOptions ),_
+			FillPropVal( &quot;StatusIndicator&quot;,  oStatusIndicator )_
+			)
+		oDoc.storeToURL( toURL, oExpOptions )
+&apos; al termine, avvia il reader, se richiesto
+		on error goto notfound
+		if bStartReaderApp then
+			sCommand = &quot;&quot;&quot;&quot; &amp; sReaderApp &amp; &quot;&quot;&quot; &quot; &amp; &quot;&quot;&quot;&quot; &amp; convertFromURL(toURL) &amp; &quot;&quot;&quot;&quot;
+			shell(sCommand, 10 )		
+		end if
+		On error goto 0
+		exit sub
+notfound:
+		On error goto 0
+		displayMessageErr( GetResString( &quot;Command not found&quot; ) &amp; &quot;: &quot; &amp; sReaderApp )
+		exit sub
+	else
+		displayMessageErr( convertFromURL(toURL) &amp; CHR(10) &amp; GetResString( &quot;still open?&quot; )
+	end if
+End Sub
+
+function okWriteFile( sFileURL as string ) as boolean
+	dim sFileLocal as string
+
+	sFileLocal = convertFromURL( sFileURL )
+
+	on error goto nowrite
+	kill( sFileLocal )
+	okWriteFile() = true
+	exit function	
+nowrite:
+	if err = 53 or err = 0 then
+		okWriteFile() = true
+		on error goto 0
+		exit function	
+	end if
+	on error goto 0
+	print err
+	okWriteFile() = false	
+end function
+
+
+&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;
+&apos; inizializza la maggior parte delle proprietà ( OOo v 2.2 ) usate dal filtro PDF nell&apos;esportazione
+&apos; le specifiche sono a:
+&apos; http://specs.openoffice.org/appwide/pdf_export/PDFExportDialog.odt
+&apos; e anche a:
+&apos; http://qa.openoffice.org/issues/show_bug.cgi?id=67578#desc1
+&apos; tre funzioni, una per le fatture una per i manuali e una per i formulari
+&apos; i formulari sono ancora da mettere a punto...
+
+&apos;genera una password PSEUDOCASUALE
+&apos;quindi non è casuale, è solo pseudo
+&apos;se lo si desidera mettere qui una password a scelta fissa come parametro di ritorno
+Function GeneratePassword as String
+	dim i as integer
+	dim CarattereCPseudoCasuale as integer
+	dim PseudoRandomPassword as string
+&apos;	GeneratePassword = &quot;una password qualsiasi di 32 caratteri&quot;
+
+	PseudoRandomPassword = &quot;&quot;
+
+	for i = 1 to 32
+	 CarattereCPseudoCasuale = CInt(1 + Rnd() * (255 - 1))
+&apos;	 Print CarattereCPseudoCasuale
+	 PseudoRandomPassword = PseudoRandomPassword + Chr(CarattereCPseudoCasuale)
+	next i
+
+	GeneratePassword() = PseudoRandomPassword
+End Function
+
+&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;
+Function GeneralInitParm( Which as integer ) as object
+	dim oConfigParam as object
+	dim indi as integer
+&apos; 40 proprietà
+	dim oArrayOut(40) as new com.sun.star.beans.PropertyValue
+	
+	oConfigParam = GetAPreset( &quot;Config&quot; &amp; Which )
+
+	with oConfigParam
+		oArrayOut( indi ) = FillPropVal( &quot;UseLosslessCompression&quot;, .UseLosslessCompression )
+		indi = indi + 1
+		oArrayOut(1) = FillPropVal( &quot;Quality&quot;, .Quality )
+		indi = indi + 1
+		oArrayOut(indi) = FillPropVal( &quot;ReduceImageResolution&quot;, .ReduceImageResolution )
+		indi = indi + 1
+		oArrayOut(indi) = FillPropVal( &quot;MaxImageResolution&quot;, .MaxImageResolution )
+		indi = indi + 1
+		oArrayOut(indi) = FillPropVal( &quot;UseTaggedPDF&quot;,  .UseTaggedPDF )
+		indi = indi + 1
+		oArrayOut(indi) = FillPropVal( &quot;ExportNotes&quot;, .ExportNotes )
+		indi = indi + 1
+		oArrayOut(indi) = FillPropVal( &quot;ExportBookmarks&quot;, .ExportBookmarks )
+		indi = indi + 1
+		oArrayOut(indi) = FillPropVal( &quot;OpenBookmarkLevels&quot;, .OpenBookmarkLevels )
+		indi = indi + 1
+		oArrayOut(indi) = FillPropVal( &quot;ExportNotesPages&quot;, .ExportNotesPages )
+		indi = indi + 1
+		oArrayOut(indi) = FillPropVal( &quot;UseTransitionEffects&quot;, .UseTransitionEffects )
+		indi = indi + 1
+		oArrayOut(indi) = FillPropVal( &quot;ExportFormFields&quot;, .ExportFormFields )
+		indi = indi + 1
+		oArrayOut(indi) = FillPropVal( &quot;FormsType&quot;, .FormsType )
+		indi = indi + 1
+		oArrayOut(indi) = FillPropVal( &quot;IsSkipEmptyPages&quot;, .IsSkipEmptyPages )
+		indi = indi + 1
+		oArrayOut(indi) = FillPropVal( &quot;IsAddStream&quot;, .IsAddStream )
+		indi = indi + 1
+		oArrayOut(indi) = FillPropVal( &quot;HideViewerMenubar&quot;, .HideViewerMenubar )
+		indi = indi + 1
+		oArrayOut(indi) = FillPropVal( &quot;HideViewerToolbar&quot;, .HideViewerToolbar )
+		indi = indi + 1
+		oArrayOut(indi) = FillPropVal( &quot;HideViewerWindowControls&quot;, .HideViewerWindowControls )
+		indi = indi + 1
+		oArrayOut(indi) = FillPropVal( &quot;ResizeWindowToInitialPage&quot;, .ResizeWindowToInitialPage )
+		indi = indi + 1
+		oArrayOut(indi) = FillPropVal( &quot;CenterWindow&quot;, .CenterWindow )
+		indi = indi + 1
+		oArrayOut(indi) = FillPropVal( &quot;OpenInFullScreenMode&quot;, .OpenInFullScreenMode )
+		indi = indi + 1
+		oArrayOut(indi) = FillPropVal( &quot;DisplayPDFDocumentTitle&quot;, .DisplayPDFDocumentTitle )
+		indi = indi + 1
+		oArrayOut(indi) = FillPropVal( &quot;InitialView&quot;, .InitialView )
+		indi = indi + 1
+		oArrayOut(indi) = FillPropVal( &quot;Magnification&quot;, .Magnification )
+		indi = indi + 1
+		oArrayOut(indi) = FillPropVal( &quot;Zoom&quot;, .Zoom )
+		indi = indi + 1
+		oArrayOut(indi) = FillPropVal( &quot;InitialPage&quot;, .InitialPage )
+		indi = indi + 1
+		oArrayOut(indi) = FillPropVal( &quot;PageLayout&quot;,  .PageLayout )
+		indi = indi + 1
+		oArrayOut(indi) = FillPropVal( &quot;FirstPageOnLeft&quot;,  .FirstPageOnLeft )
+		indi = indi + 1
+		oArrayOut(indi) = FillPropVal( &quot;EncryptFile&quot;, .EnableFileSecurity )
+		indi = indi + 1
+		oArrayOut(indi) = FillPropVal( &quot;RestrictPermissions&quot;, .EnableFileSecurity )
+		indi = indi + 1
+		oArrayOut(indi) = FillPropVal( &quot;PermissionPassword&quot;, GeneratePassword() )
+		indi = indi + 1
+		oArrayOut(indi) = FillPropVal( &quot;Printing&quot;,  .Printing )
+		indi = indi + 1
+		oArrayOut(indi) = FillPropVal( &quot;Changes&quot;, .Changes  )
+		indi = indi + 1
+		oArrayOut(indi) = FillPropVal( &quot;EnableCopyingOfContent&quot;, .EnableCopyingOfContent )
+		indi = indi + 1
+		oArrayOut(indi) = FillPropVal( &quot;EnableTextAccessForAccessibilityTools&quot;, .EnableTextAccessForAccessibilityTools  )
+		indi = indi + 1
+		oArrayOut(indi) = FillPropVal( &quot;SelectPdfVersion&quot;, nPDFTypeSelected )
+		indi = indi + 1
+		oArrayOut(indi) = FillPropVal( &quot;ExportLinksRelativeFsys&quot;, .ExportLinksRelativeFsys )
+		indi = indi + 1
+		oArrayOut(indi) = FillPropVal( &quot;PDFViewSelection&quot;, .PDFViewSelection )
+		indi = indi + 1
+		oArrayOut(indi) = FillPropVal( &quot;ConvertOOoTargetToPDFTarget&quot;, .ConvertOOoTargetToPDFTarget )
+		indi = indi + 1
+		oArrayOut(indi) = FillPropVal( &quot;ExportBookmarksToPDFDestination&quot;, .ExportBookmarksToPDFDestination )
+		indi = indi + 1
+		oArrayOut(indi) = FillPropVal( &quot;hsChangeFontName&quot;, .hsChangeFontName )
+		indi = indi + 1
+		oArrayOut(indi) = FillPropVal( &quot;hsEmbedAllFonts&quot;, .hsEmbedAllFonts )
+		
+&apos;verificare se il documento ha una selezione, se esiste deve essere assegnata come proprietà
+		if .Selection then
+			indi = indi + 1
+			redim preserve oArrayOut(indi)
+			oArrayOut(indi).Name = &quot;Selection&quot;
+&apos;nota, se la selezione è vuota, si otterrà un documento vuoto			
+			oArrayOut(indi).Value = oDoc.GetCurrentSelection()
+		end if
+&apos;else veririfcare se ha una stringa per le pagine, se si la deve inviare come proprietà
+	end with
+
+&apos;	xray 	oArrayOut
+
+	GeneralInitParm() = oArrayOut
+end function
+
+&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;
+Function FillPropVal( Optional cName As String, Optional uValue ) As com.sun.star.beans.PropertyValue
+	Dim oPropertyValue As New com.sun.star.beans.PropertyValue
+	If Not IsMissing( cName ) Then
+		oPropertyValue.Name = cName
+	EndIf
+	If Not IsMissing( uValue ) Then
+		oPropertyValue.Value = uValue
+	EndIf
+	FillPropVal() = oPropertyValue
+End Function
+
+&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;
+sub HideSpecialChars
+	rem ----------------------------------------------------------------------
+	rem define variables
+	dim document   as object
+	dim dispatcher as object
+	rem ----------------------------------------------------------------------
+	rem get access to the document
+	document   = ThisComponent.CurrentController.Frame
+	dispatcher = createUnoService(&quot;com.sun.star.frame.DispatchHelper&quot;)
+
+	rem ----------------------------------------------------------------------
+	dim args2(0) as new com.sun.star.beans.PropertyValue
+	args2(0).Name = &quot;ControlCodes&quot;
+	args2(0).Value = false
+	dispatcher.executeDispatch(document, &quot;.uno:ControlCodes&quot;, &quot;&quot;, 0, args2())
+end sub
+
+&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;
+sub DisplaySpecialChars
+	rem ----------------------------------------------------------------------
+	rem define variables
+	dim document   as object
+	dim dispatcher as object
+	rem ----------------------------------------------------------------------
+	rem get access to the document
+	document   = ThisComponent.CurrentController.Frame
+	dispatcher = createUnoService(&quot;com.sun.star.frame.DispatchHelper&quot;)
+
+	rem ----------------------------------------------------------------------
+	dim args1(0) as new com.sun.star.beans.PropertyValue
+	args1(0).Name = &quot;ControlCodes&quot;
+	args1(0).Value = true
+
+	dispatcher.executeDispatch(document, &quot;.uno:ControlCodes&quot;, &quot;&quot;, 0, args1())
+end sub
+
+&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;&apos;
+&apos; about box dialog
+sub AboutBox
+	dim oAboutBoxDlg as object
+	
+	GlobalScope.BasicLibraries.LoadLibrary(&quot;Tools&quot;)&apos;contiene LoadDialog, usata più sotto
+	oAboutBoxDlg = Tools.LoadDialog(&quot;it_acca_esse_EsportaPDF&quot;, &quot;AboutBox&quot;)
+	oAboutBoxDlg.execute()
+end sub
+
+sub displayMessageErr( sStringErr as string )
+	dim sTitle as string
+	
+	sTitle = GetResString( &quot;EsportaPDF error&quot; )
+
+	MsgBox sStringErr, 0 , sTitle
+end sub
+
+</script:module>

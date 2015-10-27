@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE dlg:window PUBLIC "-//OpenOffice.org//DTD OfficeDocument 1.0//EN" "dialog.dtd">
+<dlg:window xmlns:dlg="http://openoffice.org/2000/dialog" xmlns:script="http://openoffice.org/2000/script" dlg:id="AboutBox" dlg:left="198" dlg:top="103" dlg:width="160" dlg:height="182" dlg:closeable="true" dlg:moveable="true" dlg:title="About EsportaPDF">
+ <dlg:bulletinboard>
+  <dlg:button dlg:id="CommandButton1" dlg:tab-index="0" dlg:left="54" dlg:top="160" dlg:width="51" dlg:height="14" dlg:default="true" dlg:value="Ok" dlg:button-type="ok"/>
+  <dlg:textfield dlg:id="TextField1" dlg:tab-index="1" dlg:left="2" dlg:top="3" dlg:width="154" dlg:height="143" dlg:multiline="true" dlg:readonly="true" dlg:value="EsportaPDF&#x0a;(it_acca_esse_EsportaPDF)&#x0a;Licenza LGPL 2.1&#x0a;Copyright (c) 2008 Giuseppe Castagno&#x0a;&#x0a;Esporta il documento corrente in PDF o PDF/A-1a,&#x0a;con un dialogo di richiesta per alcune preimpostazioni.&#x0a;Contiene anche menu e toolbar con impostazioni&#x0a;predefinite.&#x0a;La password per i non PDF/A-1a viene impostata&#x0a;in modo PSEUDO CASUALE.&#x0a;&#x0a;Riavviare OOo dopo installazione o eventuale&#x0a;aggiornamento.&#x0a;&#x0a;sito per informazioni: http://www.acca-esse.it/it/ext&#x0a;e-mail: ooo-hs@acca-esse.it&#x0a;"/>
+ </dlg:bulletinboard>
+</dlg:window>

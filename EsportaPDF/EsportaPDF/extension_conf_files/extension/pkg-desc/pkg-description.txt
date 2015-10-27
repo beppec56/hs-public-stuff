@@ -1,0 +1,12 @@
+EsportaPDF
+(it_acca_esse_EsportaPDF)
+Licenza LGPL 2.1
+Copyright (c) 2008 Giuseppe Castagno
+
+Esporta il documento corrente in PDF o PDF/A-1a, con un dialogo di richiesta per alcune preimpostazioni.
+Contiene menu e toolbar con impostazioni predefinite.
+
+La password per i documenti non PDF/A-1a viene impostata in modo PSEUDO CASUALE.
+Riavviare OOo dopo installazione o eventuale aggiornamento.
+
+sito: http://www.acca-esse.it/it/ext

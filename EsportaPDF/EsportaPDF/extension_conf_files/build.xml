@@ -1,0 +1,397 @@
+<!--
+    The Contents of this file are made available subject to
+    the terms of GNU Lesser General Public License Version 2.1.
+
+
+    GNU Lesser General Public License Version 2.1
+    =============================================
+    Copyright 2008 by Giuseppe Castagno beppec56@openoffice.org
+
+    This library is free software; you can redistribute it and/or
+    modify it under the terms of the GNU Lesser General Public
+    License version 2.1, as published by the Free Software Foundation.
+
+    This library is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+    Lesser General Public License for more details.
+
+    You should have received a copy of the GNU Lesser General Public
+    License along with this library; if not, write to the Free Software
+    Foundation, Inc., 59 Temple Place, Suite 330, Boston,
+    MA  02111-1307  USA
+-->
+
+<!--
+add comments here.........
+
+ATTENTION:
+the default target must be removed
+
+build-extension
+
+-->
+<project name="EsportaPDF" default="deploy-home" basedir=".">
+	<!-- project name="EsportaPDF" default="deploy-web-local" basedir="." -->
+	<description>
+        build EsportaPDF extension (main build).
+    </description>
+	<!-- set global properties for this build -->
+	<property name="project_name" value="EsportaPDF" />
+	<property name="basic_script" value="it_acca_esse_EsportaPDF" />
+	<property name="support_files" value="extension_conf_files" />
+	<property name="doc_dir" value="${basedir}/../doc" />
+	<property name="src" location="src" />
+	<property name="build" location="build" />
+	<property name="dist" location="dist" />
+
+	<!--
+		first build signature_component.jar
+		the build the extension
+	-->
+
+	<buildnumber />
+	<!--
+		next line is to avoid "modified in the future" warning
+		may be is not needed for slower PC machine
+	-->
+	<sleep milliseconds="2000" />
+
+	<!-- properties used when building/deploying the extension -->
+	<!--
+		version used for updating the extension, displayed on OOo interface
+		when the version is manually updated, please remove the "build.number" file from the
+		project directory
+	-->
+	<property name="version" value="0.2.4" />
+	<property name="longversion" value="${version}.${build.number}" />
+	<property name="spec_version" value="1.0.0" />
+
+	<property name="webidentbase" value="it.acca-esse.oxt" />
+	<!-- local (intranet) web properties -->
+	<property name="webhost" value="http://192.168.3.6" />
+	<property name="webhost_ext" value="http://www.acca-esse.it" />
+	<property name="webpath" value="w2/acca-esse.it/dwnld/ooohs/extensions" />
+	<property name="webpath_ext" value="dwnld/ooohs/ext-www" />
+	<property name="copywebpath" value="/var/www/${webpath}" />
+	<!-- the following line prepares the copy (ftp) to be sent manually the external web site -->
+	<property name="copywebpath_ext" value="/var/www/w2/acca-esse.it/${webpath_ext}" />
+
+	<!-- minimum OOo version -->
+	<property name="ooominversion" value="2.4" />
+
+	<!-- base name of the extension file -->
+	<property name="ext_name" value="EsportaPDF" />
+	<!-- set the property at the lower case chars -->
+	<script language="javascript"> <![CDATA[
+    // getting the value, EsportaPDF is the project name
+	//IMPORTANT a JavaScript interpreter is needed for this	(javax.script.ScriptException)	
+		EsportaPDF.setProperty("ext_name_small", EsportaPDF.getProperty("ext_name").toLowerCase());
+		]]> </script>
+	<!-- Display the values -->
+  	<!-- echo>myprop=${ext_name}</echo>
+  	<echo>Myprop=${ext_name_small}</echo -->
+
+	<!-- web repository subdirectory, uses lower case path -->
+	<property name="wbme" value="${ext_name_small}" />
+
+	<!-- extension subdirectories -->
+	<property name="ico" value="/icons" />
+	<property name="img" value="/images" />
+	<property name="meta" value="/META-INF" />
+	<property name="oui" value="/Office/UI" />
+	<property name="pdesc" value="/pkg-desc" />
+	<property name="lic" value="/registration" />
+	<property name="option_gui" value="/dialogs" />
+	<property name="macro_script" value="/${basic_script}" />
+
+	<property name="extension_dir" location="extension" />
+	<property name="extension_dest_dir" location="build" />
+	<property name="extension_file" value="${ext_name}.oxt" />
+	<property name="readme_it" value="release-notes_it.txt" />
+	<property name="readme_en" value="release-notes_en.txt" />
+	<property name="briefdoc_it" value="brief-manual.pdfa.pdf" />
+	
+	<!-- directory to zip for archive -->
+	<property name="archr" location="../to-be-zipped" />
+	<property name="tar_dest" location="../tgz-files" />
+	<property name="arc1h" location="${archr}/${project_name}-${version}" />
+	<property name="archv" location="${archr}/${project_name}-${version}-${build.number}" />
+
+	<target name="prepare-extension" description="builds the extension package">
+		<!-- prepare first component jar -->
+		<!--- begin subtask -->	
+
+		<!-- make dest dir -->
+		<mkdir dir="${extension_dest_dir}" />
+		<copy todir="${extension_dest_dir}${ico}">
+			<!-- the icons files -->
+			<fileset dir="${extension_dir}${ico}">
+				<include name="**/*.*" />
+			</fileset>
+		</copy>
+
+		<!-- copy todir="${extension_dest_dir}${img}" -->
+			<!-- the icons files >
+			<fileset dir="${extension_dir}${img}">
+				<include name="**/*.bmp" />
+				<include name="**/*.png" />
+			</fileset>
+		</copy -->
+
+		<!-- copy metafile -->
+		<copy todir="${extension_dest_dir}${meta}">
+			<fileset dir="${extension_dir}${meta}">
+				<include name="**/*.xml" />
+			</fileset>
+		</copy>
+
+		<!-- copy Office/UI -->
+		<copy file="${extension_dir}${oui}/BaseWindowState.xcu.xml" tofile="${extension_dest_dir}${oui}/BaseWindowState.xcu"/>
+		<copy file="${extension_dir}${oui}/BasicIDEWindowState.xcu.xml" tofile="${extension_dest_dir}${oui}/BasicIDEWindowState.xcu"/>
+		<copy file="${extension_dir}${oui}/CalcWindowState.xcu.xml" tofile="${extension_dest_dir}${oui}/CalcWindowState.xcu"/>
+		<copy file="${extension_dir}${oui}/DrawWindowState.xcu.xml" tofile="${extension_dest_dir}${oui}/DrawWindowState.xcu"/>
+		<copy file="${extension_dir}${oui}/ImpressWindowState.xcu.xml" tofile="${extension_dest_dir}${oui}/ImpressWindowState.xcu"/>
+		<copy file="${extension_dir}${oui}/MathWindowState.xcu.xml" tofile="${extension_dest_dir}${oui}/MathWindowState.xcu"/>
+		<copy file="${extension_dir}${oui}/StartModuleWindowState.xcu.xml" tofile="${extension_dest_dir}${oui}/StartModuleWindowState.xcu"/>
+		<copy file="${extension_dir}${oui}/WriterWindowState.xcu.xml" tofile="${extension_dest_dir}${oui}/WriterWindowState.xcu"/>
+
+		<copy todir="${extension_dest_dir}${pdesc}">
+			<fileset dir="${extension_dir}${pdesc}">
+				<include name="**/*.txt" />
+			</fileset>
+		</copy>
+
+		<copy todir="${extension_dest_dir}${lic}">
+			<fileset dir="${extension_dir}${lic}">
+				<include name="**/*.txt" />
+			</fileset>
+		</copy>
+
+		<!-- copy todir="${extension_dest_dir}${option_gui}">
+			<fileset dir="${extension_dir}${option_gui}">
+				<include name="**/*.xdl" />
+				<include name="**/*.properties" />
+			</fileset>
+		</copy -->
+		
+		<copy todir="${extension_dest_dir}${macro_script}">
+			<fileset dir="${extension_dir}${macro_script}">
+				<include name="**/*.*" />
+			</fileset>
+		</copy>
+		
+		<copy file="COPYING" tofile="${extension_dest_dir}/COPYING" />
+		<copy file="${extension_dir}/AddonConfiguration.xcs.xml" tofile="${extension_dest_dir}/AddonConfiguration.xcs" />
+		<copy file="${extension_dir}/AddonConfiguration.xcu.xml" tofile="${extension_dest_dir}/AddonConfiguration.xcu" />
+		<!-- copy file="${extension_dir}/AddonMessages.xcu.xml" tofile="${extension_dest_dir}/AddonMessages.xcu" / -->
+		<copy file="${extension_dir}/Addons.xcu.xml" tofile="${extension_dest_dir}/Addons.xcu" />
+		<!-- copy file="${extension_dir}/ProtocolHandler.xcu.xml" tofile="${extension_dest_dir}/ProtocolHandler.xcu" />
+		<copy file="${extension_dir}/SynchronousJob.xcu.xml" tofile="${extension_dest_dir}/SynchronousJob.xcu" />
+		<copy file="${extension_dir}/DisableCommands.xcu.xml" tofile="${extension_dest_dir}/DisableCommands.xcu" />
+		<copy file="${extension_dir}/OptionsDialog.xcu.xml" tofile="${extension_dest_dir}/OptionsDialog.xcu" / -->
+
+		<!--- end of subtask -->
+	</target>
+
+	<!-- dependency of description.xml from build number -->
+	<dependset>
+		<srcfilelist dir="${basedir}" files="build.number" />
+		<targetfilelist dir="${extension_dest_dir}" files="description.xml" />
+	</dependset>
+
+	<target name="build-extension" depends="prepare-extension" description="build the extension">
+		<!-- prepare the file description.xml, from src-description.xml, changing tokens -->
+		<copy file="${extension_dir}/src-description.xml" tofile="${extension_dest_dir}/description.xml">
+			<filterset>
+				<filter token="VERSION" value="${longversion}" />
+				<filter token="WEBIDENTBASE" value="${webidentbase}" />
+				<filter token="NAME" value="${ext_name}" />
+				<filter token="OOOMINVER" value="${ooominversion}" />
+				<filter token="WEBHOST" value="${webhost}" />
+				<filter token="WEBPATH" value="${webpath}" />
+				<filter token="WBME" value="${wbme}" />
+			</filterset >
+		</copy>
+
+		<zip basedir="${extension_dest_dir}" destfile="${extension_file}" />
+	</target>
+
+	<target name="deploy-home" depends="clean,prepare-extension" description="deploy extension in user home directory">
+		<!-- prepare the file description.xml, from src-description.xml, changing tokens -->
+		<copy file="${extension_dir}/src-description.xml" tofile="${extension_dest_dir}/description.xml">
+			<filterset>
+				<filter token="VERSION" value="${longversion}" />
+				<filter token="WEBIDENTBASE" value="${webidentbase}" />
+				<filter token="NAME" value="${ext_name}" />
+				<filter token="OOOMINVER" value="${ooominversion}" />
+				<filter token="WEBHOST" value="${webhost}" />
+				<filter token="WEBPATH" value="${webpath}" />
+				<filter token="WBME" value="${wbme}" />
+			</filterset >
+		</copy>
+
+		<zip basedir="${extension_dest_dir}" destfile="${extension_file}" />
+
+		<!-- the following line is to simplify the first add of the extension (disable if not needed) -->
+		<copy file="${extension_file}" todir="${user.home}" />
+	</target>
+
+	<target name="deploy-web-local" depends="deploy-home" description="deploy extension in local intranet: http://192.168.3.6">
+
+		<mkdir dir="${copywebpath}/${wbme}" />
+		<!-- to avoid "modified in the future" warning -->
+		<sleep milliseconds="900" />
+		<dependset>
+			<srcfilelist dir="${extension_dest_dir}" files="description.xml" />
+			<targetfilelist dir="${copywebpath}/${wbme}" files="${ext_name}.update.xml" />
+		</dependset>
+
+		<copy file="${extension_dir}/src-update.xml" tofile="${copywebpath}/${wbme}/${ext_name}.update.xml">
+			<filterset>
+				<filter token="VERSION" value="${longversion}" />
+				<filter token="WEBIDENTBASE" value="${webidentbase}" />
+				<filter token="NAME" value="${ext_name}" />
+				<filter token="WEBHOST" value="${webhost}" />
+				<filter token="WEBPATH" value="${webpath}" />
+				<filter token="WBME" value="${wbme}" />
+			</filterset >
+		</copy>
+
+		<copy file="${extension_file}" tofile="${copywebpath}/${wbme}/${extension_file}" />
+		<!-- copy realease description files -->
+		<copy file="${extension_dir}/${readme_en}" tofile="${copywebpath}/${wbme}/${readme_en}" />
+		<copy file="${extension_dir}/${readme_it}" tofile="${copywebpath}/${wbme}/${readme_it}" />
+	</target>
+
+	<target name="deploy-web" depends="clean,prepare-extension" description="deploy extension for Internet: http://www.acca-esse.it">
+		<!-- prepare the file description.xml, from src-description.xml, changing tokens -->
+		<copy file="${extension_dir}/src-description.xml" tofile="${extension_dest_dir}/description.xml">
+			<filterset>
+				<filter token="VERSION" value="${version}" />
+				<filter token="WEBIDENTBASE" value="${webidentbase}" />
+				<filter token="NAME" value="${ext_name}" />
+				<filter token="OOOMINVER" value="${ooominversion}" />
+				<filter token="WEBHOST" value="${webhost_ext}" />
+				<filter token="WEBPATH" value="${webpath_ext}" />
+				<filter token="WBME" value="${wbme}" />
+			</filterset >
+		</copy>
+
+		<zip basedir="${extension_dest_dir}" destfile="${extension_file}" />
+
+		<mkdir dir="${copywebpath_ext}/${wbme}" />
+		<!-- to avoid "modified in the future" warning -->
+		<sleep milliseconds="900" />
+		<dependset>
+			<srcfilelist dir="${extension_dest_dir}" files="description.xml" />
+			<targetfilelist dir="${copywebpath_ext}/${wbme}" files="${ext_name}.update.xml" />
+		</dependset>
+
+		<copy file="${extension_dir}/src-update.xml" tofile="${copywebpath_ext}/${wbme}/${ext_name}.update.xml">
+			<filterset>
+				<filter token="VERSION" value="${longversion}" />
+				<filter token="WEBIDENTBASE" value="${webidentbase}" />
+				<filter token="NAME" value="${ext_name}" />
+				<filter token="WEBHOST" value="${webhost_ext}" />
+				<filter token="WEBPATH" value="${webpath_ext}" />
+				<filter token="WBME" value="${wbme}" />
+			</filterset >
+		</copy>
+
+		<copy file="${extension_file}" tofile="${copywebpath_ext}/${wbme}/${extension_file}" />
+		<!-- copy realease description files -->
+		<copy file="${extension_dir}/${readme_en}" tofile="${copywebpath_ext}/${wbme}/${readme_en}" />
+		<copy file="${extension_dir}/${readme_it}" tofile="${copywebpath_ext}/${wbme}/${readme_it}" />
+		<!-- copy the brief document -->
+		<!--echo>doc= ${doc_dir}</echo -->
+		<copy  file="${doc_dir}/${briefdoc_it}" tofile="${copywebpath_ext}/${wbme}/${briefdoc_it}" />
+		<!-- copy>  file="${doc_dir}/${briefdoc_en}" tofile="${copywebpath_ext}/${wbme}/${briefdoc_en}" </copy -->
+
+		<!-- the following line is to simplify the first add of the extension (disable if not needed) -->
+		<!-- copy file="${extension_file}" todir="${user.home}" / -->
+	</target>
+	
+	<target name="clean" description="clean up the project">
+		<!-- Delete the ${build} and ${dist} directory trees -->
+		<!-- delete dir="${archr}" />
+		<delete dir="${build}" />
+		<delete dir="${dist}" / -->
+		<delete dir="${extension_dest_dir}" />
+	</target>
+
+	<!-- target name="build-arch-sub" depends="clean,build-extension" description="aux target to build the zip archive of the project" -->
+	<target name="build-arch-sub" depends="clean" description="aux target to build the zip archive of the project">
+		<delete dir="${arch}" />
+		<mkdir dir="${arch}" />
+		<!-- copy src files -->
+
+		<!-- copy extension specific files -->
+		<copy todir="${arch}/${support_files}/extension">
+			<fileset dir="${extension_dir}">
+				<include name="**/*" />
+			</fileset>
+		</copy>
+		
+		<!-- delete file="${arch}/${support_files}/extension/${extension_jar_file}" / -->
+
+		<copy todir="${arch}/${support_files}/extension">
+			<filelist dir="${extension_dir}">
+				<file name="src-description.xml" />
+				<file name="src-update.xml" />
+				<file name="release-notes_it.txt" />
+				<file name="release-notes_en.txt" />
+				<file name="AddonConfiguration.xcs.xml"/>
+				<file name="AddonConfiguration.xcu.xml"/>
+				<!-- file name="AddonMessages.xcu.xml"/ -->
+				<file name="Addons.xcu.xml"/>
+				<file name="ProtocolHandler.xcu.xml"/>
+				<!-- file name="SynchronousJob.xcu.xml"/ >
+				<file name="AsynchronousJob.xcu.xml"/ >
+				<file name="DisableCommands.xcu.xml"/ -->
+			</filelist>
+		</copy>
+
+		<!-- copy file="${basedir}/localization-master.ods" tofile="${arch}/${support_files}/localization-master.ods" / -->
+		<copy file="${basedir}/COPYING" tofile="${arch}/${support_files}/COPYING" />
+		<copy file="${basedir}/README" tofile="${arch}/${support_files}/README" />
+		<copy file="${basedir}/build.xml" tofile="${arch}/${support_files}/build.xml" />
+		<copy file="${basedir}/build.number" tofile="${arch}/${support_files}/build.number" />
+		<copy file="${basedir}/${extension_file}" tofile="${arch}/${support_files}/${extension_file}" />
+
+		<!-- copy documentation files -->
+		<copy todir="${arch}/doc/">
+			<fileset dir="${doc_dir}">
+				<include name="**/*" />
+			</fileset>
+		</copy>
+
+		<mkdir dir="${tar_dest}"/>
+		<zip basedir="${archr}" destfile="${tar_dest}/${project_name}-${version}.zip" />
+		<!-- tar basedir="${archr}" destfile="${tar_dest}/${project_name}-${version}.tar"/ -->
+	</target>
+	
+	<target name="build-arch-zip" depends="build-arch-sub"  description="build the zip archive of the project, only versioning">
+		
+		<!-- bzip2 src="${tar_dest}/${project_name}-${version}.tar" destfile="${tar_dest}/${project_name}-${version}.tar.bz2" / -->
+		<delete file="${tar_dest}/${project_name}-${version}.tar" />
+
+		<delete dir="${archr}" />
+	</target>
+
+	<!-- target name="build-arch" depends="build-arch-sub"  description="build the tar.bz2 archive of the project, only versioning">
+		
+		<bzip2 src="${tar_dest}/${project_name}-${version}.tar" destfile="${tar_dest}/${project_name}-${version}.tar.bz2" />
+		<delete file="${tar_dest}/${project_name}-${version}.tar" />
+
+		<delete dir="${archr}" />
+	</target -->
+
+	<!-- target name="build-arch-v" depends="build-arch-sub"  description="build the tar.bz2 archive of the project, versioning + build number">
+		
+		<bzip2 src="${tar_dest}/${project_name}-${version}.tar" destfile="${tar_dest}/${project_name}-${version}-${build.number}.tar.bz2" />
+		<delete file="${tar_dest}/${project_name}-${version}.tar" />
+
+		<delete dir="${archr}" />		
+	</target -->
+</project>

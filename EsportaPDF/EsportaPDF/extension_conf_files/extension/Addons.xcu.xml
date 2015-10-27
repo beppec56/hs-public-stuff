@@ -1,0 +1,146 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<oor:component-data 
+	xmlns:oor="http://openoffice.org/2001/registry"
+	xmlns:xs="http://www.w3.org/2001/XMLSchema"
+	oor:name="Addons"
+	oor:package="org.openoffice.Office">
+	<node oor:name="AddonUI">
+		<node oor:name="OfficeToolBar">
+			<node oor:name="it.acca-esse.oxt.EsportaPDF.OfficeToolBar" oor:op="replace">
+				<node oor:name="m1" oor:op="replace">
+					<prop oor:name="Context" oor:type="xs:string">
+						<value>com.sun.star.text.TextDocument,com.sun.star.sheet.SpreadsheetDocument,com.sun.star.drawing.DrawingDocument,com.sun.star.presentation.PresentationDocument,com.sun.star.formula.FormulaProperties,com.sun.star.text.GlobalDocument</value>
+					</prop>
+					<prop oor:name="URL" oor:type="xs:string">
+						<value>macro:///it_acca_esse_EsportaPDF.Esporta.Main</value>
+					</prop>
+					<prop oor:name="ImageIdentifier" oor:type="xs:string">
+						<value>%origin%/icons/pdf2</value>
+					</prop>
+					<prop oor:name="Title" oor:type="xs:string"  oor:localized="true">
+						<value xml:lang="en">Start Esport PDF dialog. Request issuing format.</value>
+						<value xml:lang="it">Avvia dialogo Esporta PDF. Richiede formato emissione.</value>
+					</prop>
+					<prop oor:name="Target" oor:type="xs:string">
+						<value>_self</value>
+					</prop>
+				</node>
+			</node>
+		</node>
+		<!-- menu speciale per toolbar Strumenti -->
+		<!--  node oor:name="AddonMenu">
+			<node oor:name="it.acca_esse.oxt.EsportaPDF.AddonMenu.m1" oor:op="replace">
+				<prop oor:name="Context" oor:type="xs:string">
+					<value>com.sun.star.text.TextDocument,com.sun.star.sheet.SpreadsheetDocument,com.sun.star.drawing.DrawingDocument,com.sun.star.presentation.PresentationDocument,com.sun.star.formula.FormulaProperties,com.sun.star.text.GlobalDocument</value>
+				</prop>
+				<prop oor:name="ImageIdentifier" oor:type="xs:string">
+					<value>%origin%/icons/pdf2</value>
+				</prop>
+				<prop oor:name="URL" oor:type="xs:string">
+					<value>macro:///it_acca_esse_EsportaPDF.Esporta.Main</value>
+				</prop>
+				<prop oor:name="Title" oor:type="xs:string"  oor:localized="true">
+					<value xml:lang="en">Export PDF</value>
+					<value xml:lang="it">Esporta PDF</value>
+				</prop>
+				<prop oor:name="Target" oor:type="xs:string">
+					<value>_self</value>
+				</prop>
+			</node>
+		</node -->		
+		<node oor:name="OfficeHelp">
+			<node oor:name="it.acca_esse.oxt.EsportaPDF.OfficeHelp" oor:op="replace">
+				<prop oor:name="Context" oor:type="xs:string">
+					<value></value>
+				</prop>
+				<prop oor:name="URL" oor:type="xs:string">
+					<value>macro:///it_acca_esse_EsportaPDF.Esporta.AboutBox</value>
+				</prop>
+				<prop oor:name="ImageIdentifier" oor:type="xs:string">
+					<value></value>
+				</prop>
+				<prop oor:name="Title" oor:type="xs:string" oor:localized="true">
+					<value xml:lang="en">About EsportaPDF...</value>
+					<value xml:lang="it">Informazioni su EsportaPDF...</value>
+				</prop>
+				<prop oor:name="Target" oor:type="xs:string">
+					<value>_self</value>
+				</prop>
+			</node>
+		</node>
+	<!-- menu standard (File) -->
+		<!--
+		    inserisce nel menu File (dopo proprietà, prima della firma standard)
+		    per spiegazioni vedere il file:
+		    officecfg/registry/schema/org/openoffice/Office/Addons.xcs
+		    nel codice sorgente di OOo
+		-->
+		<node oor:name="OfficeMenuBarMerging">
+			<node oor:name="it.acca_esse.oxt.EsportaPDF.PopupMenu" oor:op="replace">
+				<node oor:name="S1" oor:op="replace">
+					<!--
+					    per il merge point vedere in:
+					    - sw/uiconfig/swriter/menubar/menubar.xml (dove si ha la formazione del menu in Writer, come esempio)
+					    - officecfg/registry/data/org/openoffice/Office/UI/GenericCommands.xcu (dove i singoli menu sono descritti)
+					    - officecfg/registry/schema/org/openoffice/Office/Addons.xcs e
+					    - framework/source/uielement/menubarmerger.cxx dove alcune delle voci disponibili per il merge dei menu
+					    tutti i file nel codice sorgente di OOo
+					-->
+					<prop oor:name="MergePoint">
+						<!-- significa il menu File (.uno:PickList) > Templates > ( .uno:TemplateMenu )-->
+						<value>.uno:PickList\.uno:ExportToPDF</value>
+					</prop>
+					<prop oor:name="MergeCommand">
+						<!-- valori possibili per MergeCommand:
+							AddAfter	dopo il target
+							AddBefore	prima del target
+							Replace		al posto del target (e lo ripristina togliendo la estensione)
+							Remove		
+						-->
+						<value>AddAfter</value>
+					</prop>
+					<prop oor:name="MergeFallback">
+						<!-- valori possibili per MergeFallback
+							AddPath
+							Ignore
+						-->
+						<value>AddPath</value>
+					</prop>
+					<prop oor:name="MergeContext">
+						<!-- contesto: solo i documenti Writer -->
+						<value>com.sun.star.text.TextDocument,com.sun.star.sheet.SpreadsheetDocument,com.sun.star.drawing.DrawingDocument,com.sun.star.presentation.PresentationDocument,com.sun.star.formula.FormulaProperties,com.sun.star.text.GlobalDocumentcom.sun.star.text.TextDocument,com.sun.star.sheet.SpreadsheetDocument,com.sun.star.drawing.DrawingDocument,com.sun.star.presentation.PresentationDocument,com.sun.star.formula.FormulaProperties,com.sun.star.text.GlobalDocument</value>
+					</prop>
+					<node oor:name="MenuItems">
+				        <!-- aggiunge un separatore -->
+						<!-- node oor:name="m1" oor:op="replace">
+						    <prop oor:name="URL" oor:type="xs:string">
+							<value>private:separator</value>
+						    </prop>
+						</node -->
+						<!-- voce aggiunta -->
+						<node oor:name="m2" oor:op="replace">
+							<!-- comando solo in Writer -->
+							<prop oor:name="Context" oor:type="xs:string">
+								<value>com.sun.star.text.TextDocument,com.sun.star.sheet.SpreadsheetDocument,com.sun.star.drawing.DrawingDocument,com.sun.star.presentation.PresentationDocument,com.sun.star.formula.FormulaProperties,com.sun.star.text.GlobalDocumentcom.sun.star.text.TextDocument,com.sun.star.sheet.SpreadsheetDocument,com.sun.star.drawing.DrawingDocument,com.sun.star.presentation.PresentationDocument,com.sun.star.formula.FormulaProperties,com.sun.star.text.GlobalDocument</value>
+							</prop>
+							<prop oor:name="ImageIdentifier" oor:type="xs:string">
+								<value/>
+							</prop>
+							<prop oor:name="URL" oor:type="xs:string">
+								<value>macro:///it_acca_esse_EsportaPDF.Esporta.Main</value>
+							</prop>
+							<prop oor:name="Title" oor:type="xs:string"  oor:localized="true">
+								<value>Prepara dichiarazione</value>
+								<value xml:lang="en">Easy PDF export...</value>
+								<value xml:lang="it">Esporta facile PDF...</value>
+							</prop>
+							<prop oor:name="Target" oor:type="xs:string">
+							    <value>_self</value>
+							</prop>
+						</node>
+					</node>
+				</node>
+			</node>
+		</node>		
+	</node>
+</oor:component-data>
