@@ -71,8 +71,8 @@ build-extension
 	<!-- local (intranet) web properties -->
 	<property name="webhost" value="http://192.168.3.6" />
 	<property name="webhost_ext" value="http://www.acca-esse.it" />
-	<property name="webpath" value="w2/acca-esse.it/dwnld/ooohs/extensions" />
-	<property name="webpath_ext" value="dwnld/ooohs/ext-www" />
+	<property name="webpath" value="w2/acca-esse.it/dwnld/hs/extensions" />
+	<property name="webpath_ext" value="dwnld/hs/ext-www" />
 	<property name="copywebpath" value="/var/www/${webpath}" />
 	<!-- the following line prepares the copy (ftp) to be sent manually the external web site -->
 	<property name="copywebpath_ext" value="/var/www/w2/acca-esse.it/${webpath_ext}" />
