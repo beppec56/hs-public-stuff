@@ -1,0 +1,104 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!--
+    The Contents of this file are made available subject to
+    the terms of GNU Lesser General Public License Version 2.1.
+
+
+    GNU Lesser General Public License Version 2.1
+    =============================================
+    Copyright 2008 by Giuseppe Castagno beppec56@openoffice.org
+
+    This library is free software; you can redistribute it and/or
+    modify it under the terms of the GNU Lesser General Public
+    License version 2.1, as published by the Free Software Foundation.
+
+    This library is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+    Lesser General Public License for more details.
+
+    You should have received a copy of the GNU Lesser General Public
+    License along with this library; if not, write to the Free Software
+    Foundation, Inc., 59 Temple Place, Suite 330, Boston,
+    MA  02111-1307  USA
+-->
+<oor:component-data 
+	xmlns:oor="http://openoffice.org/2001/registry"
+	xmlns:xs="http://www.w3.org/2001/XMLSchema"
+	oor:package="org.openoffice.Office"
+	oor:name="Addons"	>
+	<node oor:name="AddonUI">
+		<!-- menu standard (File) -->
+		<!--
+		    inserisce nel menu File (dopo proprietà, prima della firma standard)
+		    per spiegazioni vedere il file:
+		    officecfg/registry/schema/org/openoffice/Office/Addons.xcs
+		    nel codice sorgente di OOo
+		-->
+		<node oor:name="OfficeMenuBarMerging">
+			<node oor:name="it.acca-esse.ext.configview.PopupMenu" oor:op="replace">
+                <node oor:name="S1" oor:op="replace">
+					<!--
+					    per il merge point vedere in:
+					    - sw/uiconfig/swriter/menubar/menubar.xml (dove si ha la formazione del menu in Writer, come esempio)
+					    - officecfg/registry/data/org/openoffice/Office/UI/GenericCommands.xcu (dove i singoli menu sono descritti)
+					    - framework/source/uielement/menubarmerger.cxx alcune delle voci disponibili per il merge dei menu
+					    entrambi nel codice sorgente di OOo
+					-->
+                    <prop oor:name="MergePoint">
+                        <value>.uno:ToolsMenu\.uno:OptionsTreeDialog</value>
+                    </prop>
+                    <prop oor:name="MergeCommand">
+                        <value>AddAfter</value>
+                    </prop>
+                    <prop oor:name="MergeFallback">
+                        <value>AddPath</value>
+                    </prop>
+                    
+                    <node oor:name="MenuItems">
+                        <node oor:name="m1" oor:op="replace">
+                            <prop oor:name="URL" oor:type="xs:string">
+                                <value>org.openoffice.config.configurationviewer:ViewConfig</value>
+                            </prop>
+                            <prop oor:name="ImageIdentifier" oor:type="xs:string">
+                                <value/>
+                            </prop>
+                            <prop oor:name="Target" oor:type="xs:string">
+                                <value>_self</value>
+                            </prop>
+                            <prop oor:name="Context" oor:type="xs:string">
+                                <value>com.sun.star.frame.Bibliography,com.sun.star.chart.ChartDocument,com.sun.star.drawing.DrawingDocument,com.sun.star.formula.FormulaProperties,com.sun.star.presentation.PresentationDocument,com.sun.star.sheet.SpreadsheetDocument,com.sun.star.text.TextDocument</value>
+                            </prop>
+                            <prop oor:name="Title" oor:type="xs:string">
+                                <value/>
+                                <value xml:lang="en">Configuration...</value>
+                            </prop>
+                        </node>
+                    </node>
+                </node>
+			</node>
+		</node>
+
+		<!--  node oor:name="OfficeHelp">
+			<node oor:name="it.plio.ext.xades.OfficeHelp" oor:op="replace">
+				<prop oor:name="Context" oor:type="xs:string">
+					<value></value>
+				</prop>
+				<prop oor:name="URL" oor:type="xs:string">
+					<value>it.plio.ext.xades.comp.SignatureHandler:HelpAbout</value>
+				</prop>
+				<prop oor:name="ImageIdentifier" oor:type="xs:string">
+					<value></value>
+				</prop>
+				<prop oor:name="Title" oor:type="xs:string" oor:localized="true">
+					<value xml:lang="en">About XADES (IT) digital signature...</value>
+					<value xml:lang="it">Informazioni su firma digitale XADES (IT)...</value>
+					<value xml:lang="fr">A propos de signature numérique XADES (IT)...</value>
+				</prop>
+				<prop oor:name="Target" oor:type="xs:string">
+					<value>_self</value>
+				</prop>
+			</node>
+		</node -->
+	</node>
+</oor:component-data>
