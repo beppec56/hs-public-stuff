@@ -31,7 +31,7 @@ the default target must be removed
 build-extension
 
 -->
-<project name="EsportaPDF" default="deploy-home" basedir=".">
+<project name="EsportaPDF" default="deploy-web-local" basedir=".">
 	<!-- project name="EsportaPDF" default="deploy-web-local" basedir="." -->
 	<description>
         build EsportaPDF extension (main build).
@@ -69,7 +69,7 @@ build-extension
 
 	<property name="webidentbase" value="it.acca-esse.oxt" />
 	<!-- local (intranet) web properties -->
-	<property name="webhost" value="http://192.168.3.6" />
+	<property name="webhost" value="http://192.168.1.40" />
 	<property name="webhost_ext" value="http://www.acca-esse.it" />
 	<property name="webpath" value="w2/acca-esse.it/dwnld/hs/extensions" />
 	<property name="webpath_ext" value="dwnld/hs/ext-www" />
@@ -237,7 +237,7 @@ build-extension
 		<copy file="${extension_file}" todir="${user.home}" />
 	</target>
 
-	<target name="deploy-web-local" depends="deploy-home" description="deploy extension in local intranet: http://192.168.3.6">
+	<target name="deploy-web-local" depends="deploy-home" description="deploy extension in local intranet: http://192.168.1.40">
 
 		<mkdir dir="${copywebpath}/${wbme}" />
 		<!-- to avoid "modified in the future" warning -->
