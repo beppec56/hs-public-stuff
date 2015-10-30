@@ -78,7 +78,7 @@ build-extension
 	<property name="copywebpath_ext" value="/var/www/w2/acca-esse.it/${webpath_ext}" />
 
 	<!-- minimum OOo version -->
-	<property name="ooominversion" value="4.0" />
+	<property name="ooominversion" value="3.0" />
 
 	<!-- base name of the extension file -->
 	<property name="ext_name" value="EsportaPDF" />
@@ -268,7 +268,7 @@ build-extension
 		<!-- prepare the file description.xml, from src-description.xml, changing tokens -->
 		<copy file="${extension_dir}/src-description.xml" tofile="${extension_dest_dir}/description.xml">
 			<filterset>
-				<filter token="VERSION" value="${version}" />
+				<filter token="VERSION" value="${longversion}" />
 				<filter token="WEBIDENTBASE" value="${webidentbase}" />
 				<filter token="NAME" value="${ext_name}" />
 				<filter token="OOOMINVER" value="${ooominversion}" />
