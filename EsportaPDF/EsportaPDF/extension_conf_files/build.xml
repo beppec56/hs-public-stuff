@@ -63,7 +63,7 @@ build-extension
 		when the version is manually updated, please remove the "build.number" file from the
 		project directory
 	-->
-	<property name="version" value="0.2.4" />
+	<property name="version" value="0.2.6" />
 	<property name="longversion" value="${version}.${build.number}" />
 	<property name="spec_version" value="1.0.0" />
 
@@ -78,7 +78,7 @@ build-extension
 	<property name="copywebpath_ext" value="/var/www/w2/acca-esse.it/${webpath_ext}" />
 
 	<!-- minimum OOo version -->
-	<property name="ooominversion" value="2.4" />
+	<property name="ooominversion" value="4.0" />
 
 	<!-- base name of the extension file -->
 	<property name="ext_name" value="EsportaPDF" />

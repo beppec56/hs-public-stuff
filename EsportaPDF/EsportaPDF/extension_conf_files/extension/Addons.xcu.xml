@@ -7,6 +7,7 @@
 	<node oor:name="AddonUI">
 		<node oor:name="OfficeToolBar">
 			<node oor:name="it.acca-esse.oxt.EsportaPDF.OfficeToolBar" oor:op="replace">
+				<!-- a single button node -->
 				<node oor:name="m1" oor:op="replace">
 					<prop oor:name="Context" oor:type="xs:string">
 						<value>com.sun.star.text.TextDocument,com.sun.star.sheet.SpreadsheetDocument,com.sun.star.drawing.DrawingDocument,com.sun.star.presentation.PresentationDocument,com.sun.star.formula.FormulaProperties,com.sun.star.text.GlobalDocument</value>

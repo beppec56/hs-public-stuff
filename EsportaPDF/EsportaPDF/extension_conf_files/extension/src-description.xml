@@ -45,9 +45,9 @@
 	  <name lang="en">Easier PDF export</name>
   </display-name>
   <publisher>
-	  <name xlink:href="http://www.acca-esse.it/it/ext"
+	  <name xlink:href="http://www.acca-esse.it/it"
 		lang="it">Acca Esse</name>
-	  <name xlink:href="http://www.acca-esse.it/en/ext"
+	  <name xlink:href="http://www.acca-esse.it/en"
 		lang="en">Acca Esse</name>
   </publisher>
   <!-- release notes not yet used by Extension manager -->
