@@ -63,7 +63,7 @@ build-extension
 		when the version is manually updated, please remove the "build.number" file from the
 		project directory
 	-->
-	<property name="version" value="0.2.6" />
+	<property name="version" value="0.2.7" />
 	<property name="longversion" value="${version}.${build.number}" />
 	<property name="spec_version" value="1.0.0" />
 
@@ -221,7 +221,7 @@ build-extension
 		<!-- prepare the file description.xml, from src-description.xml, changing tokens -->
 		<copy file="${extension_dir}/src-description.xml" tofile="${extension_dest_dir}/description.xml">
 			<filterset>
-				<filter token="VERSION" value="${longversion}" />
+				<filter token="VERSION" value="${version}" />
 				<filter token="WEBIDENTBASE" value="${webidentbase}" />
 				<filter token="NAME" value="${ext_name}" />
 				<filter token="OOOMINVER" value="${ooominversion}" />
@@ -249,7 +249,7 @@ build-extension
 
 		<copy file="${extension_dir}/src-update.xml" tofile="${copywebpath}/${wbme}/${ext_name}.update.xml">
 			<filterset>
-				<filter token="VERSION" value="${longversion}" />
+				<filter token="VERSION" value="${version}" />
 				<filter token="WEBIDENTBASE" value="${webidentbase}" />
 				<filter token="NAME" value="${ext_name}" />
 				<filter token="WEBHOST" value="${webhost}" />
@@ -268,7 +268,7 @@ build-extension
 		<!-- prepare the file description.xml, from src-description.xml, changing tokens -->
 		<copy file="${extension_dir}/src-description.xml" tofile="${extension_dest_dir}/description.xml">
 			<filterset>
-				<filter token="VERSION" value="${longversion}" />
+				<filter token="VERSION" value="${version}" />
 				<filter token="WEBIDENTBASE" value="${webidentbase}" />
 				<filter token="NAME" value="${ext_name}" />
 				<filter token="OOOMINVER" value="${ooominversion}" />
@@ -290,7 +290,7 @@ build-extension
 
 		<copy file="${extension_dir}/src-update.xml" tofile="${copywebpath_ext}/${wbme}/${ext_name}.update.xml">
 			<filterset>
-				<filter token="VERSION" value="${longversion}" />
+				<filter token="VERSION" value="${version}" />
 				<filter token="WEBIDENTBASE" value="${webidentbase}" />
 				<filter token="NAME" value="${ext_name}" />
 				<filter token="WEBHOST" value="${webhost_ext}" />
