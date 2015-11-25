@@ -7,6 +7,7 @@ Esporta il documento corrente in PDF o PDF/A-1a, con un dialogo di richiesta per
 Contiene menu e toolbar con impostazioni predefinite.
 
 La password per i documenti non PDF/A-1a viene impostata in modo PSEUDO CASUALE.
-Riavviare OOo dopo installazione o eventuale aggiornamento.
+Riavviare LibreOffice o Apache OpenOffice dopo l'installazione o eventuale aggiornamento.
 
-sito: http://www.acca-esse.it/it/ext
+Sito: http://www.acca-esse.it/it/ext
+Codice sorgente: https://github.com/beppec56/hs-public-stuff.git
